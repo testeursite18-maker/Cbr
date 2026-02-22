@@ -1,10 +1,6 @@
-
-
-
-
 // ========================================
 // C.B.R. Île-de-France - JavaScript Complet
-// Version 2.0 - Sécurisé & Responsive
+// Version 3.0 - Corrigé et Fonctionnel
 // ========================================
 
 'use strict';
@@ -14,7 +10,6 @@
 // ========================================
 
 const defaultData = {
-    // Informations entreprise
     company: {
         name: "C.B.R. Île-de-France",
         tagline: "Maçonnerie & Rénovation",
@@ -32,17 +27,17 @@ const defaultData = {
         zones: ["Créteil", "Paris", "Val-de-Marne", "Seine-Saint-Denis", "Essonne", "Hauts-de-Seine"]
     },
     
-    // Personnalisation
     customization: {
         primaryColor: "#f97316",
         secondaryColor: "#dc2626",
-        logoImage: null, // Base64 ou URL
+        logoImage: null,
         heroImage: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=2000",
         animationsEnabled: true,
-        particlesEnabled: true
+        particlesEnabled: true,
+        googleMapsPlaceId: "ChIJGT2DyuVz5kcRGgeZhDj3Dgg",
+        googleMapsApiKey: ""
     },
     
-    // Réseaux sociaux
     social: {
         instagram: { url: "https://instagram.com/cbr.iledefrance", active: true },
         facebook: { url: "https://facebook.com/cbr.iledefrance", active: true },
@@ -50,7 +45,6 @@ const defaultData = {
         whatsapp: { url: "https://wa.me/33612345678", active: true }
     },
     
-    // Statistiques
     stats: {
         projectsPro: 127,
         projectsParticulier: 243,
@@ -58,7 +52,6 @@ const defaultData = {
         projectsThisYear: 45
     },
     
-    // Expertises
     expertises: [
         {
             id: 1,
@@ -83,38 +76,29 @@ const defaultData = {
         }
     ],
     
-    // Portfolio
     portfolio: [],
-    
-    // Témoignages (avec système de modération)
     testimonials: [],
-    
-    // Utilisateurs clients (sécurisé - mots de passe hashés en production)
     users: [],
     
-    // SEO
     seo: {
         title: "C.B.R. Île-de-France | Maçonnerie & Rénovation à Créteil",
         description: "Expert en maçonnerie et rénovation à Créteil depuis 15 ans. Devis gratuit, garantie décennale. Interventions sur Paris et Île-de-France.",
         keywords: "maçonnerie, rénovation, créteil, construction, bâtiment, île-de-france"
     },
     
-    // Leads (demandes de devis)
     leads: [],
     
-    // Admin credentials (à changer en production !)
     admin: {
-        username: "cbr",
-        password: "1098"
+        username: "admin",
+        password: "admin123"
     }
 };
 
 // ========================================
-// SÉCURITÉ ET CHIFFREMENT BASIQUE
+// SÉCURITÉ
 // ========================================
 
 const Security = {
-    // Génère un hash simple (à remplacer par bcrypt en production)
     hashPassword(password) {
         let hash = 0;
         for (let i = 0; i < password.length; i++) {
@@ -125,12 +109,10 @@ const Security = {
         return hash.toString(16);
     },
     
-    // Génère un token de session unique
     generateToken() {
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
     },
     
-    // Vérifie la force du mot de passe
     checkPasswordStrength(password) {
         const checks = {
             length: password.length >= 8,
@@ -143,64 +125,30 @@ const Security = {
         return { checks, score, strong: score >= 4 };
     },
     
-    // Sanitize input pour prévenir XSS
     sanitizeInput(input) {
+        if (!input) return '';
         const div = document.createElement('div');
         div.textContent = input;
         return div.innerHTML;
     },
     
-    // Validation email
     isValidEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     },
     
-    // Validation téléphone français
     isValidPhone(phone) {
         return /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/.test(phone.replace(/\s/g, ''));
     }
 };
 
 // ========================================
-// GESTION DU STOCKAGE SÉCURISÉ
+// STOCKAGE
 // ========================================
 
 const Storage = {
-    // Clé de chiffrement simple (à remplacer par une vraie clé en production)
-    ENCRYPTION_KEY: 'cbr_secure_key_2024',
-    
-    // Chiffrement basique des données sensibles
-    encrypt(data) {
+    save(key, data) {
         try {
-            const json = JSON.stringify(data);
-            return btoa(json.split('').map((char, i) => 
-                String.fromCharCode(char.charCodeAt(0) ^ this.ENCRYPTION_KEY.charCodeAt(i % this.ENCRYPTION_KEY.length))
-            ).join(''));
-        } catch (e) {
-            console.error('Encryption error:', e);
-            return null;
-        }
-    },
-    
-    // Déchiffrement
-    decrypt(encrypted) {
-        try {
-            const decoded = atob(encrypted);
-            const json = decoded.split('').map((char, i) => 
-                String.fromCharCode(char.charCodeAt(0) ^ this.ENCRYPTION_KEY.charCodeAt(i % this.ENCRYPTION_KEY.length))
-            ).join('');
-            return JSON.parse(json);
-        } catch (e) {
-            console.error('Decryption error:', e);
-            return null;
-        }
-    },
-    
-    // Sauvegarde sécurisée
-    save(key, data, encrypt = false) {
-        try {
-            const value = encrypt ? this.encrypt(data) : JSON.stringify(data);
-            localStorage.setItem(key, value);
+            localStorage.setItem(key, JSON.stringify(data));
             return true;
         } catch (e) {
             console.error('Storage save error:', e);
@@ -208,37 +156,28 @@ const Storage = {
         }
     },
     
-    // Chargement sécurisé
-    load(key, encrypted = false) {
+    load(key) {
         try {
             const value = localStorage.getItem(key);
-            if (!value) return null;
-            return encrypted ? this.decrypt(value) : JSON.parse(value);
+            return value ? JSON.parse(value) : null;
         } catch (e) {
             console.error('Storage load error:', e);
             return null;
         }
     },
     
-    // Suppression
     remove(key) {
         localStorage.removeItem(key);
-    },
-    
-    // Nettoyage complet
-    clear() {
-        localStorage.clear();
     }
 };
 
 // ========================================
-// GESTION DES DONNÉES
+// DONNÉES
 // ========================================
 
 function getData() {
     const saved = Storage.load('cbr_data');
     if (saved) {
-        // Fusion avec les valeurs par défaut pour les nouveaux champs
         return { ...defaultData, ...saved };
     }
     Storage.save('cbr_data', defaultData);
@@ -256,15 +195,13 @@ function initData() {
 }
 
 // ========================================
-// SYSTÈME DE SESSION
+// SESSION
 // ========================================
 
 const Session = {
     CURRENT_USER_KEY: 'cbr_current_user',
     ADMIN_KEY: 'cbr_admin_session',
-    TOKEN_KEY: 'cbr_session_token',
     
-    // Démarre une session utilisateur
     startUserSession(user) {
         const sessionData = {
             id: user.id,
@@ -274,29 +211,24 @@ const Session = {
             timestamp: Date.now()
         };
         sessionStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(sessionData));
-        sessionStorage.setItem(this.TOKEN_KEY, sessionData.token);
         return sessionData;
     },
     
-    // Démarre une session admin
     startAdminSession() {
         const sessionData = {
             token: Security.generateToken(),
             timestamp: Date.now(),
-            expires: Date.now() + (2 * 60 * 60 * 1000) // 2 heures
+            expires: Date.now() + (2 * 60 * 60 * 1000)
         };
         sessionStorage.setItem(this.ADMIN_KEY, JSON.stringify(sessionData));
-        sessionStorage.setItem(this.TOKEN_KEY, sessionData.token);
         return sessionData;
     },
     
-    // Récupère l'utilisateur connecté
     getCurrentUser() {
         try {
             const userJson = sessionStorage.getItem(this.CURRENT_USER_KEY);
             if (!userJson) return null;
             const user = JSON.parse(userJson);
-            // Vérifie si la session n'est pas expirée (24h)
             if (Date.now() - user.timestamp > 24 * 60 * 60 * 1000) {
                 this.clearUserSession();
                 return null;
@@ -307,13 +239,11 @@ const Session = {
         }
     },
     
-    // Vérifie si admin est connecté
     isAdminLoggedIn() {
         try {
             const adminJson = sessionStorage.getItem(this.ADMIN_KEY);
             if (!adminJson) return false;
             const admin = JSON.parse(adminJson);
-            // Vérifie expiration
             if (Date.now() > admin.expires) {
                 this.clearAdminSession();
                 return false;
@@ -324,34 +254,23 @@ const Session = {
         }
     },
     
-    // Déconnexion utilisateur
     clearUserSession() {
         sessionStorage.removeItem(this.CURRENT_USER_KEY);
-        sessionStorage.removeItem(this.TOKEN_KEY);
     },
     
-    // Déconnexion admin
     clearAdminSession() {
         sessionStorage.removeItem(this.ADMIN_KEY);
-        sessionStorage.removeItem(this.TOKEN_KEY);
-    },
-    
-    // Déconnexion complète
-    clearAll() {
-        sessionStorage.clear();
     }
 };
 
 // ========================================
-// SYSTÈME UTILISATEURS CLIENTS
+// SYSTÈME UTILISATEURS
 // ========================================
 
 const UserSystem = {
-    // Inscription d'un nouveau client
     register(name, email, password, phone = '') {
         const data = getData();
         
-        // Validation
         name = Security.sanitizeInput(name.trim());
         email = email.trim().toLowerCase();
         
@@ -363,42 +282,36 @@ const UserSystem = {
             return { success: false, message: 'Email invalide' };
         }
         
-        const passwordCheck = Security.checkPasswordStrength(password);
-        if (!passwordCheck.strong) {
-            return { success: false, message: 'Mot de passe trop faible. Utilisez au moins 8 caractères avec majuscules, minuscules, chiffres et caractères spéciaux.' };
+        if (password.length < 6) {
+            return { success: false, message: 'Le mot de passe doit contenir au moins 6 caractères' };
         }
         
-        // Vérifie si l'email existe déjà
         if (data.users.find(u => u.email === email)) {
             return { success: false, message: 'Cet email est déjà utilisé' };
         }
         
-        // Crée le nouvel utilisateur
         const newUser = {
-            id: Date.now().toString(36) + Math.random().toString(36).substr(2),
+            id: Date.now().toString(),
             name: name,
             email: email,
             passwordHash: Security.hashPassword(password),
             phone: phone,
             createdAt: new Date().toISOString(),
-            isVerified: false, // Pour validation email future
-            projects: [] // Liste des projets associés
+            isVerified: false
         };
         
         data.users.push(newUser);
         saveData(data);
         
-        // Connecte automatiquement
         const session = Session.startUserSession(newUser);
         
         return { 
             success: true, 
-            message: 'Compte créé avec succès ! Bienvenue chez C.B.R.',
+            message: 'Compte créé avec succès !',
             user: session
         };
     },
     
-    // Connexion
     login(email, password) {
         const data = getData();
         email = email.trim().toLowerCase();
@@ -421,54 +334,24 @@ const UserSystem = {
         };
     },
     
-    // Déconnexion
     logout() {
         Session.clearUserSession();
         return { success: true, message: 'Déconnexion réussie' };
-    },
-    
-    // Récupère l'utilisateur complet par ID
-    getUserById(userId) {
-        const data = getData();
-        return data.users.find(u => u.id === userId);
-    },
-    
-    // Met à jour le profil
-    updateProfile(userId, updates) {
-        const data = getData();
-        const userIndex = data.users.findIndex(u => u.id === userId);
-        
-        if (userIndex === -1) {
-            return { success: false, message: 'Utilisateur non trouvé' };
-        }
-        
-        // Mise à jour sécurisée
-        if (updates.name) {
-            data.users[userIndex].name = Security.sanitizeInput(updates.name.trim());
-        }
-        if (updates.phone) {
-            data.users[userIndex].phone = updates.phone;
-        }
-        
-        saveData(data);
-        return { success: true, message: 'Profil mis à jour' };
     }
 };
 
 // ========================================
-// SYSTÈME DE TÉMOIGNAGES
+// SYSTÈME TÉMOIGNAGES
 // ========================================
 
 const TestimonialSystem = {
-    // Soumettre un nouvel avis (client connecté requis)
-    submit(projectName, rating, content, images = []) {
+    submit(projectName, rating, content) {
         const currentUser = Session.getCurrentUser();
         
         if (!currentUser) {
-            return { success: false, message: 'Vous devez être connecté pour laisser un avis. <a href="#" onclick="showAuthModal()">Se connecter</a>' };
+            return { success: false, message: 'Vous devez être connecté pour laisser un avis' };
         }
         
-        // Validation
         projectName = Security.sanitizeInput(projectName.trim());
         content = Security.sanitizeInput(content.trim());
         rating = parseInt(rating);
@@ -487,49 +370,28 @@ const TestimonialSystem = {
         
         const data = getData();
         
-        // Vérifie si l'utilisateur a déjà laissé un avis pour ce projet
-        const existingIndex = data.testimonials.findIndex(t => 
-            t.userId === currentUser.id && t.projectName === projectName
-        );
-        
         const testimonialData = {
-            id: existingIndex >= 0 ? data.testimonials[existingIndex].id : Date.now().toString(),
+            id: Date.now().toString(),
             userId: currentUser.id,
             userName: currentUser.name,
             userEmail: currentUser.email,
             projectName: projectName,
             rating: rating,
             content: content,
-            images: images.slice(0, 5), // Max 5 images
             date: new Date().toISOString(),
-            visible: false, // En attente de modération
-            featured: false,
-            adminResponse: null,
-            likes: 0
+            visible: false,
+            featured: false
         };
         
-        if (existingIndex >= 0) {
-            // Met à jour l'avis existant (remet en modération)
-            data.testimonials[existingIndex] = {
-                ...data.testimonials[existingIndex],
-                ...testimonialData,
-                visible: false, // Remet en modération
-                featured: false,
-                updatedAt: new Date().toISOString()
-            };
-        } else {
-            data.testimonials.push(testimonialData);
-        }
-        
+        data.testimonials.push(testimonialData);
         saveData(data);
         
         return { 
             success: true, 
-            message: 'Votre avis a été soumis et est en attente de validation par notre équipe. Merci !'
+            message: 'Votre avis a été soumis et est en attente de validation'
         };
     },
     
-    // Récupérer les témoignages visibles
     getVisible(featuredOnly = false) {
         const data = getData();
         let testimonials = data.testimonials.filter(t => t.visible === true);
@@ -538,11 +400,9 @@ const TestimonialSystem = {
             testimonials = testimonials.filter(t => t.featured === true);
         }
         
-        // Trie par date décroissante
         return testimonials.sort((a, b) => new Date(b.date) - new Date(a.date));
     },
     
-    // Récupérer tous les témoignages (admin)
     getAll(filter = 'all') {
         if (!Session.isAdminLoggedIn()) return [];
         
@@ -560,7 +420,6 @@ const TestimonialSystem = {
         return testimonials.sort((a, b) => new Date(b.date) - new Date(a.date));
     },
     
-    // Modérer un témoignage (admin)
     moderate(id, updates) {
         if (!Session.isAdminLoggedIn()) {
             return { success: false, message: 'Accès non autorisé' };
@@ -579,15 +438,11 @@ const TestimonialSystem = {
         if (updates.featured !== undefined) {
             data.testimonials[index].featured = updates.featured;
         }
-        if (updates.adminResponse !== undefined) {
-            data.testimonials[index].adminResponse = Security.sanitizeInput(updates.adminResponse);
-        }
         
         saveData(data);
         return { success: true, message: 'Témoignage mis à jour' };
     },
     
-    // Supprimer un témoignage
     delete(id) {
         if (!Session.isAdminLoggedIn()) {
             return { success: false, message: 'Accès non autorisé' };
@@ -601,14 +456,13 @@ const TestimonialSystem = {
 };
 
 // ========================================
-// GESTION DU FORMULAIRE DE CONTACT
+// SYSTÈME CONTACT
 // ========================================
 
 const ContactSystem = {
     submit(formData) {
         const data = getData();
         
-        // Validation et sanitization
         const lead = {
             id: Date.now().toString(),
             name: Security.sanitizeInput(formData.get('name') || ''),
@@ -618,13 +472,9 @@ const ContactSystem = {
             address: Security.sanitizeInput(formData.get('address') || ''),
             message: Security.sanitizeInput(formData.get('message') || ''),
             date: new Date().toISOString(),
-            status: 'new',
-            notes: [],
-            contactedAt: null,
-            convertedAt: null
+            status: 'new'
         };
         
-        // Validation
         if (!lead.name || lead.name.length < 2) {
             return { success: false, message: 'Veuillez entrer votre nom' };
         }
@@ -640,16 +490,7 @@ const ContactSystem = {
         data.leads.push(lead);
         saveData(data);
         
-        // Notification admin (simulation)
-        this.notifyAdmin(lead);
-        
         return { success: true, message: 'Votre demande a été envoyée ! Nous vous répondrons sous 24h.' };
-    },
-    
-    notifyAdmin(lead) {
-        // Simulation de notification
-        console.log('Nouveau lead:', lead);
-        // En production: envoi d'email ou notification push
     },
     
     getLeads(filter = 'all') {
@@ -678,20 +519,13 @@ const ContactSystem = {
         }
         
         lead.status = status;
-        
-        if (status === 'contacted') {
-            lead.contactedAt = new Date().toISOString();
-        } else if (status === 'converted') {
-            lead.convertedAt = new Date().toISOString();
-        }
-        
         saveData(data);
         return { success: true, message: 'Statut mis à jour' };
     }
 };
 
 // ========================================
-// SYSTÈME DE PERSONNALISATION
+// PERSONNALISATION
 // ========================================
 
 const Customization = {
@@ -703,7 +537,6 @@ const Customization = {
         root.style.setProperty('--primary', colors.primaryColor);
         root.style.setProperty('--secondary', colors.secondaryColor);
         
-        // Calcule les dérivés
         const primaryDark = this.adjustColor(colors.primaryColor, -20);
         root.style.setProperty('--primary-dark', primaryDark);
     },
@@ -747,7 +580,6 @@ const Customization = {
         data.customization = { ...data.customization, ...settings };
         saveData(data);
         
-        // Applique immédiatement
         this.applyColors();
         this.applyLogo();
         this.applyHeroImage();
@@ -757,13 +589,19 @@ const Customization = {
 };
 
 // ========================================
-// UTILITAIRES UI
+// UI UTILITAIRES
 // ========================================
 
 const UI = {
-    // Toast notifications
     toast(message, type = 'info', duration = 4000) {
-        const container = document.getElementById('toastContainer') || this.createToastContainer();
+        let container = document.getElementById('toastContainer');
+        
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
         
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
@@ -783,20 +621,12 @@ const UI = {
         container.appendChild(toast);
         
         setTimeout(() => {
-            toast.classList.add('hiding');
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
             setTimeout(() => toast.remove(), 300);
         }, duration);
     },
     
-    createToastContainer() {
-        const container = document.createElement('div');
-        container.id = 'toastContainer';
-        container.className = 'toast-container';
-        document.body.appendChild(container);
-        return container;
-    },
-    
-    // Toggle menu mobile
     toggleMenu() {
         const menu = document.getElementById('mobileMenu');
         const toggle = document.querySelector('.menu-toggle');
@@ -806,97 +636,11 @@ const UI = {
             toggle.classList.toggle('active');
             document.body.style.overflow = menu.classList.contains('show') ? 'hidden' : '';
         }
-    },
-    
-    // Animation au scroll
-    initScrollAnimations() {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    
-                    // Animation des nombres
-                    if (entry.target.classList.contains('stat-number')) {
-                        this.animateNumber(entry.target);
-                    }
-                }
-            });
-        }, { 
-            threshold: 0.1, 
-            rootMargin: '0px 0px -50px 0px' 
-        });
-        
-        document.querySelectorAll('.animate-on-scroll').forEach(el => {
-            observer.observe(el);
-        });
-    },
-    
-    animateNumber(element) {
-        const target = parseInt(element.textContent);
-        const suffix = element.textContent.replace(/[0-9]/g, '');
-        const duration = 2000;
-        const start = performance.now();
-        
-        element.textContent = '0' + suffix;
-        
-        const update = (currentTime) => {
-            const elapsed = currentTime - start;
-            const progress = Math.min(elapsed / duration, 1);
-            const easeProgress = 1 - Math.pow(1 - progress, 3); // easeOutCubic
-            const current = Math.floor(easeProgress * target);
-            
-            element.textContent = current + suffix;
-            
-            if (progress < 1) {
-                requestAnimationFrame(update);
-            }
-        };
-        
-        requestAnimationFrame(update);
-    },
-    
-    // Header scroll effect
-    initHeaderScroll() {
-        const header = document.getElementById('header');
-        if (!header) return;
-        
-        let lastScroll = 0;
-        
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.scrollY;
-            
-            if (currentScroll > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-            
-            lastScroll = currentScroll;
-        }, { passive: true });
-    },
-    
-    // Effet magnétique sur les boutons
-    initMagneticButtons() {
-        if (window.matchMedia('(pointer: coarse)').matches) return; // Désactive sur tactile
-        
-        document.querySelectorAll('.magnetic-btn').forEach(btn => {
-            btn.addEventListener('mousemove', (e) => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                
-                btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-            });
-            
-            btn.addEventListener('mouseleave', () => {
-                btn.style.transform = '';
-            });
-        });
     }
 };
 
 // ========================================
-// RENDU DES SECTIONS
+// FONCTIONS DE RENDU
 // ========================================
 
 function renderStats() {
@@ -914,7 +658,7 @@ function renderStats() {
     container.innerHTML = stats.map((stat, i) => `
         <div class="stat-box animate-on-scroll" style="transition-delay: ${i * 0.1}s">
             <div class="stat-icon">${stat.icon}</div>
-            <div class="stat-number animate-on-scroll">${stat.value}${stat.suffix}</div>
+            <div class="stat-number">${stat.value}${stat.suffix}</div>
             <div class="stat-label">${stat.label}</div>
         </div>
     `).join('');
@@ -1044,7 +788,7 @@ function renderTestimonials() {
     const container = document.getElementById('testimonialsGrid');
     if (!container) return;
     
-    const testimonials = TestimonialSystem.getVisible(true); // Uniquement les mis en avant
+    const testimonials = TestimonialSystem.getVisible(true);
     
     if (testimonials.length === 0) {
         container.innerHTML = `
@@ -1076,11 +820,9 @@ function renderTestimonials() {
 function renderFooter() {
     const data = getData();
     
-    // Description
     const desc = document.getElementById('footerDesc');
     if (desc) desc.textContent = data.company.description;
     
-    // Réseaux sociaux
     const socialContainer = document.getElementById('socialLinks');
     if (socialContainer) {
         const icons = {
@@ -1098,7 +840,6 @@ function renderFooter() {
         socialContainer.innerHTML = links || '<span style="color: var(--gray-500); font-size: 14px;">Aucun réseau social</span>';
     }
     
-    // Contact
     const elements = {
         footerAddress: `📍 ${data.company.address}`,
         footerPhone: `📞 <a href="tel:${data.company.phone.replace(/\s/g, '')}">${data.company.phone}</a>`,
@@ -1111,18 +852,15 @@ function renderFooter() {
         if (el) el.innerHTML = content;
     });
     
-    // Zones
     const zones = document.getElementById('zonesTags');
     if (zones) {
         zones.innerHTML = data.company.zones.map(z => `<span>${z}</span>`).join('');
     }
     
-    // Année copyright
     document.querySelectorAll('#currentYear').forEach(el => {
         el.textContent = new Date().getFullYear();
     });
     
-    // Noms entreprise
     document.querySelectorAll('#copyrightName, #footerCompanyName').forEach(el => {
         el.textContent = data.company.name;
     });
@@ -1136,51 +874,8 @@ function renderFooter() {
     });
 }
 
-function renderContactInfo() {
-    const data = getData();
-    
-    const container = document.getElementById('contactInfoItems');
-    if (container) {
-        container.innerHTML = `
-            <div class="info-item animate-on-scroll">
-                <div class="info-icon">📍</div>
-                <div>
-                    <h4>Adresse</h4>
-                    <p>${data.company.address}</p>
-                </div>
-            </div>
-            <div class="info-item animate-on-scroll">
-                <div class="info-icon">📞</div>
-                <div>
-                    <h4>Téléphone</h4>
-                    <a href="tel:${data.company.phone.replace(/\s/g, '')}">${data.company.phone}</a>
-                </div>
-            </div>
-            <div class="info-item animate-on-scroll">
-                <div class="info-icon">✉️</div>
-                <div>
-                    <h4>Email</h4>
-                    <a href="mailto:${data.company.email}">${data.company.email}</a>
-                </div>
-            </div>
-            <div class="info-item animate-on-scroll">
-                <div class="info-icon">🕐</div>
-                <div>
-                    <h4>Horaires</h4>
-                    <p>Lun-Ven: ${data.company.hours.weekday}<br>Sam: ${data.company.hours.saturday}</p>
-                </div>
-            </div>
-        `;
-    }
-    
-    const zones = document.getElementById('contactZones');
-    if (zones) {
-        zones.innerHTML = data.company.zones.map(z => `<span>${z}</span>`).join('');
-    }
-}
-
 // ========================================
-// INTERACTIONS
+// FONCTIONS GLOBALES
 // ========================================
 
 function openProjectModal(id) {
@@ -1232,213 +927,17 @@ function setPortfolioFilter(category) {
     renderPortfolioFull();
 }
 
-// Gestion du formulaire de contact
-function handleContactSubmit(e) {
-    e.preventDefault();
-    const form = e.target;
-    const submitBtn = form.querySelector('.btn-submit');
-    
-    // Loading state
-    submitBtn.classList.add('loading');
-    submitBtn.disabled = true;
-    
-    const formData = new FormData(form);
-    const result = ContactSystem.submit(formData);
-    
-    setTimeout(() => {
-        submitBtn.classList.remove('loading');
-        submitBtn.disabled = false;
-        
-        if (result.success) {
-            form.style.display = 'none';
-            const success = document.getElementById('formSuccess');
-            if (success) {
-                success.style.display = 'block';
-                success.classList.add('animate-scale');
-            }
-            UI.toast(result.message, 'success');
-        } else {
-            UI.toast(result.message, 'error');
-        }
-    }, 1000);
-}
-
-// Gestion des témoignages
-function handleTestimonialSubmit(e) {
-    e.preventDefault();
-    const form = e.target;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    
-    submitBtn.classList.add('loading');
-    submitBtn.disabled = true;
-    
-    const formData = new FormData(form);
-    const result = TestimonialSystem.submit(
-        formData.get('projectName'),
-        formData.get('rating'),
-        formData.get('content')
-    );
-    
-    setTimeout(() => {
-        submitBtn.classList.remove('loading');
-        submitBtn.disabled = false;
-        
-        if (result.success) {
-            form.reset();
-            UI.toast(result.message, 'success');
-        } else {
-            UI.toast(result.message, 'error');
-        }
-    }, 1000);
-}
-
-// ========================================
-// AUTHENTIFICATION UI
-// ========================================
-
-function showAuthModal() {
-    // Crée le modal si nécessaire
-    let modal = document.getElementById('authModal');
-    
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'authModal';
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-content" style="max-width: 500px;">
-                <button class="modal-close" onclick="closeAuthModal()">&times;</button>
-                <div class="auth-tabs">
-                    <button class="auth-tab active" onclick="switchAuthTab('login')">Connexion</button>
-                    <button class="auth-tab" onclick="switchAuthTab('register')">Inscription</button>
-                </div>
-                
-                <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" name="email" required placeholder="votre@email.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Mot de passe</label>
-                        <input type="password" name="password" required placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="btn-submit">Se connecter</button>
-                </form>
-                
-                <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Nom complet</label>
-                            <input type="text" name="name" required placeholder="Jean Dupont">
-                        </div>
-                        <div class="form-group">
-                            <label>Téléphone</label>
-                            <input type="tel" name="phone" placeholder="06 12 34 56 78">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" name="email" required placeholder="votre@email.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Mot de passe</label>
-                        <input type="password" name="password" required placeholder="Min. 8 caractères" minlength="8">
-                        <small style="color: var(--gray-500); font-size: 12px;">8 caractères minimum avec majuscules, minuscules, chiffres et caractères spéciaux</small>
-                    </div>
-                    <button type="submit" class="btn-submit">Créer mon compte</button>
-                </form>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
-    
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeAuthModal() {
-    const modal = document.getElementById('authModal');
-    if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-    }
-}
-
-function switchAuthTab(tab) {
-    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-    
-    event.target.classList.add('active');
-    document.getElementById(tab + 'Form').classList.add('active');
-}
-
-function handleLogin(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    
-    const result = UserSystem.login(
-        formData.get('email'),
-        formData.get('password')
-    );
-    
-    if (result.success) {
-        UI.toast(result.message, 'success');
-        closeAuthModal();
-        updateUIForLoggedUser(result.user);
-    } else {
-        UI.toast(result.message, 'error');
-    }
-}
-
-function handleRegister(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    
-    const result = UserSystem.register(
-        formData.get('name'),
-        formData.get('email'),
-        formData.get('password'),
-        formData.get('phone')
-    );
-    
-    if (result.success) {
-        UI.toast(result.message, 'success');
-        closeAuthModal();
-        updateUIForLoggedUser(result.user);
-    } else {
-        UI.toast(result.message, 'error');
-    }
-}
-
-function updateUIForLoggedUser(user) {
-    // Met à jour l'UI pour montrer que l'utilisateur est connecté
-    // Par exemple, change le bouton "Se connecter" en "Mon compte"
-    const authButtons = document.querySelectorAll('.auth-button');
-    authButtons.forEach(btn => {
-        btn.textContent = `👤 ${user.name}`;
-        btn.onclick = () => {
-            // Menu déroulant ou redirection vers profil
-            if (confirm('Se déconnecter ?')) {
-                UserSystem.logout();
-                location.reload();
-            }
-        };
-    });
-}
-
 // ========================================
 // INITIALISATION
 // ========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialise les données
     initData();
     
-    // Applique la personnalisation
     Customization.applyColors();
     Customization.applyLogo();
     Customization.applyHeroImage();
     
-    // Rendu des sections
     renderStats();
     renderExpertises();
     renderServicesDetailed();
@@ -1447,20 +946,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderFilterButtons();
     renderTestimonials();
     renderFooter();
-    renderContactInfo();
     
-    // Initialise les interactions
-    UI.initHeaderScroll();
-    UI.initScrollAnimations();
-    UI.initMagneticButtons();
-    
-    // Vérifie si utilisateur connecté
-    const currentUser = Session.getCurrentUser();
-    if (currentUser) {
-        updateUIForLoggedUser(currentUser);
-    }
-    
-    // SEO
     const data = getData();
     if (data.seo?.title) {
         document.title = data.seo.title;
@@ -1470,26 +956,24 @@ document.addEventListener('DOMContentLoaded', () => {
         metaDesc.content = data.seo.description;
     }
     
-    // Fermeture modals avec Escape
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeModal();
-            closeAuthModal();
         }
     });
 });
 
-// Expose les fonctions globales nécessaires
+// Expositions globales
 window.toggleMenu = UI.toggleMenu;
 window.openProjectModal = openProjectModal;
 window.closeModal = closeModal;
 window.setPortfolioFilter = setPortfolioFilter;
-window.showAuthModal = showAuthModal;
-window.closeAuthModal = closeAuthModal;
-window.switchAuthTab = switchAuthTab;
-window.handleLogin = handleLogin;
-window.handleRegister = handleRegister;
-window.submitForm = handleContactSubmit;
-window.submitTestimonial = handleTestimonialSubmit;
-app.js
-Affichage de app.js en cours...
+window.UI = UI;
+window.Session = Session;
+window.UserSystem = UserSystem;
+window.TestimonialSystem = TestimonialSystem;
+window.ContactSystem = ContactSystem;
+window.Customization = Customization;
+window.getData = getData;
+window.saveData = saveData;
+window.Security = Security;
