@@ -1,3 +1,7 @@
+
+
+
+
 // ========================================
 // C.B.R. Île-de-France - JavaScript Complet
 // Version 2.0 - Sécurisé & Responsive
@@ -1487,3 +1491,5 @@ window.handleLogin = handleLogin;
 window.handleRegister = handleRegister;
 window.submitForm = handleContactSubmit;
 window.submitTestimonial = handleTestimonialSubmit;
+app.js
+Affichage de app.js en cours...
