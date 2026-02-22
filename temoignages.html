@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Avis Clients | C.B.R. Île-de-France</title>
+    <meta name="description" content="Lisez les avis de nos clients satisfaits et partagez votre expérience avec C.B.R. Île-de-France.">
+    <meta name="theme-color" content="#f97316">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Styles spécifiques témoignages */
+        .testimonials-hero {
+            background: linear-gradient(135deg, var(--dark-light) 0%, var(--dark) 100%);
+            padding: 140px 0 80px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .testimonials-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 20% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+        }
+        
+        .testimonials-hero .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonials-hero h1 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            margin-bottom: 16px;
+            font-weight: 800;
+        }
+        
+        .testimonials-hero p {
+            color: var(--gray-300);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Système d'authentification */
+        .auth-section {
+            padding: 60px 0;
+            background: var(--gray-50);
+        }
+        
+        .auth-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: white;
+            padding: 8px;
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow);
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 14px 24px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 15px;
+        }
+        
+        .auth-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: var(--shadow);
+        }
+        
+        .auth-form {
+            display: none;
+            background: white;
+            padding: 32px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            animation: fadeInUp 0.4s ease;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .auth-form h3 {
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .form-hint {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 6px;
+        }
+        
+        .password-strength {
+            height: 4px;
+            background: var(--gray-200);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .password-strength.show {
+            display: block;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: all var(--transition-base);
+            border-radius: 2px;
+        }
+        
+        .password-strength-bar.weak { width: 33%; background: #ef4444; }
+        .password-strength-bar.medium { width: 66%; background: #f59e0b; }
+        .password-strength-bar.strong { width: 100%; background: #10b981; }
+        
+        /* Formulaire témoignage */
+        .testimonial-form-section {
+            display: none;
+            padding: 60px 0;
+            background: white;
+        }
+        
+        .testimonial-form-section.active {
+            display: block;
+        }
+        
+        .testimonial-form-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .user-welcome {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-radius: var(--radius-lg);
+            border: 1px solid #bbf7d0;
+        }
+        
+        .user-avatar {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .user-welcome h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--dark);
+        }
+        
+        .user-welcome p {
+            margin: 4px 0 0;
+            color: var(--gray-600);
+            font-size: 14px;
+        }
+        
+        .logout-btn {
+            margin-left: auto;
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-full);
+            color: var(--gray-600);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .logout-btn:hover {
+            background: var(--gray-50);
+            color: var(--dark);
+        }
+        
+        /* Rating */
+        .rating-group {
+            margin-bottom: 24px;
+        }
+        
+        .rating-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 8px;
+            font-size: 36px;
+        }
+        
+        .rating-stars input {
+            display: none;
+        }
+        
+        .rating-stars label {
+            cursor: pointer;
+            color: var(--gray-300);
+            transition: all var(--transition-fast);
+            line-height: 1;
+        }
+        
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label,
+        .rating-stars input:checked ~ label {
+            color: #fbbf24;
+        }
+        
+        .rating-stars:hover label {
+            color: #fbbf24;
+        }
+        
+        .rating-stars label:hover ~ label {
+            color: var(--gray-300);
+        }
+        
+        /* Liste témoignages */
+        .testimonials-list-section {
+            padding: 80px 0;
+            background: var(--gray-50);
+        }
+        
+        .testimonials-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        
+        .testimonial-card-full {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            transition: all var(--transition-base);
+            border: 1px solid var(--gray-100);
+        }
+        
+        .testimonial-card-full:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .testimonial-card-full .stars {
+            color: #fbbf24;
+            margin-bottom: 16px;
+            font-size: 20px;
+            letter-spacing: 2px;
+        }
+        
+        .testimonial-card-full .content {
+            color: var(--gray-700);
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        
+        .testimonial-card-full .project {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #ffedd5;
+            color: var(--primary);
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-card-full .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-100);
+        }
+        
+        .testimonial-card-full .author-avatar {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .testimonial-card-full .author-info h4 {
+            margin: 0;
+            font-size: 15px;
+            color: var(--dark);
+        }
+        
+        .testimonial-card-full .author-info p {
+            margin: 4px 0 0;
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+        
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+            padding: 6px 12px;
+            background: #d1fae5;
+            color: #065f46;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* Empty state */
+        .empty-testimonials {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--gray-500);
+        }
+        
+        .empty-testimonials .icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+            opacity: 0.5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .testimonials-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .auth-tabs {
+                flex-direction: column;
+            }
+            
+            .user-welcome {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logout-btn {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header scrolled" id="header">
+        <div class="container">
+            <a href="index.html" class="logo" id="mainLogo">
+                <div class="logo-box" id="logoBox">CBR</div>
+                <div class="logo-text">
+                    <h1 id="companyName">C.B.R. Île-de-France</h1>
+                </div>
+            </a>
+            
+            <nav class="nav">
+                <a href="index.html">Accueil</a>
+                <a href="services.html">Services</a>
+                <a href="realisations.html">Réalisations</a>
+                <a href="temoignages.html" class="active">Témoignages</a>
+                <a href="contact.html">Contact</a>
+                <a href="tel:0612345678" class="btn-phone" id="headerPhone">06 12 34 56 78</a>
+            </nav>
+            
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Accueil</a>
+        <a href="services.html">Services</a>
+        <a href="realisations.html">Réalisations</a>
+        <a href="temoignages.html">Témoignages</a>
+        <a href="contact.html">Contact</a>
+        <div class="mobile-menu-footer">
+            <a href="tel:0612345678" class="btn-primary">📞 Appeler maintenant</a>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="testimonials-hero">
+        <div class="container">
+            <span class="badge">Témoignages</span>
+            <h1>Avis de nos clients</h1>
+            <p>Découvrez les retours d'expérience de nos clients et partagez le vôtre</p>
+        </div>
+    </section>
+
+    <!-- Auth Section (visible si non connecté) -->
+    <section class="auth-section" id="authSection">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="switchTab('login')">Connexion</button>
+                    <button class="auth-tab" onclick="switchTab('register')">Créer un compte</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form active" onsubmit="handleLoginSubmit(event)">
+                    <h3>🔐 Connexion</h3>
+                    <p style="color: var(--gray-500); margin-bottom: 24px; font-size: 14px;">
+                        Connectez-vous pour laisser un avis sur votre projet.
+                    </p>
+                    
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" name="email" required placeholder="votre@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Mot de passe *</label>
+                        <input type="password" name="password" required placeholder="••••••••">
+                    </div>
+                    
+                    <button type="submit" class="btn-submit" style="margin-top: 8px;">
+                        Se connecter
+                    </button>
+                </form>
+                
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form" onsubmit="handleRegisterSubmit(event)">
+                    <h3>📝 Créer un compte client</h3>
+                    <p style="color: var(--gray-500); margin-bottom: 24px; font-size: 14px;">
+                        Créez votre compte pour partager votre expérience.
+                    </p>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nom complet *</label>
+                            <input type="text" name="name" required placeholder="Jean Dupont" minlength="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Téléphone</label>
+                            <input type="tel" name="phone" placeholder="06 12 34 56 78">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" name="email" required placeholder="votre@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Mot de passe *</label>
+                        <input type="password" name="password" id="regPassword" required 
+                               placeholder="Min. 8 caractères" minlength="8"
+                               oninput="checkPasswordStrength(this.value)">
+                        <div class="password-strength" id="pwdStrength">
+                            <div class="password-strength-bar" id="pwdStrengthBar"></div>
+                        </div>
+                        <p class="form-hint">8 caractères minimum avec majuscules, minuscules, chiffres et caractères spéciaux</p>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit" style="margin-top: 8px;">
+                        Créer mon compte
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Form Section (visible si connecté) -->
+    <section class="testimonial-form-section" id="testimonialFormSection">
+        <div class="container">
+            <div class="testimonial-form-container">
+                <div class="user-welcome">
+                    <div class="user-avatar" id="userAvatar">J</div>
+                    <div>
+                        <h3>Bonjour <span id="userName">Jean</span> ! 👋</h3>
+                        <p>Vous pouvez maintenant laisser un avis sur votre projet.</p>
+                    </div>
+                    <button class="logout-btn" onclick="handleLogout()">
+                        Déconnexion
+                    </button>
+                </div>
+                
+                <form id="testimonialForm" onsubmit="handleTestimonialSubmit(event)" 
+                      style="background: var(--gray-50); padding: 32px; border-radius: var(--radius-xl);">
+                    <h3 style="margin-bottom: 24px; font-size: 1.25rem;">✍️ Votre avis</h3>
+                    
+                    <div class="form-group">
+                        <label>Nom du projet *</label>
+                        <input type="text" name="projectName" required 
+                               placeholder="Ex: Rénovation complète maison Créteil" minlength="3">
+                    </div>
+                    
+                    <div class="rating-group">
+                        <label>Votre note *</label>
+                        <div class="rating-stars">
+                            <input type="radio" name="rating" id="star5" value="5" required>
+                            <label for="star5">★</label>
+                            <input type="radio" name="rating" id="star4" value="4">
+                            <label for="star4">★</label>
+                            <input type="radio" name="rating" id="star3" value="3">
+                            <label for="star3">★</label>
+                            <input type="radio" name="rating" id="star2" value="2">
+                            <label for="star2">★</label>
+                            <input type="radio" name="rating" id="star1" value="1">
+                            <label for="star1">★</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Votre témoignage *</label>
+                        <textarea name="content" rows="5" required 
+                                  placeholder="Décrivez votre expérience avec notre entreprise... (min. 20 caractères)"
+                                  minlength="20"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Photos du projet (optionnel)</label>
+                        <input type="file" name="photos" accept="image/*" multiple 
+                               style="padding: 12px; background: white;">
+                        <p class="form-hint">Vous pouvez ajouter jusqu'à 5 photos de votre projet</p>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">
+                        📤 Soumettre mon avis
+                    </button>
+                    
+                    <p style="text-align: center; margin-top: 16px; font-size: 13px; color: var(--gray-500);">
+                        Votre avis sera publié après validation par notre équipe
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials List -->
+    <section class="testimonials-list-section">
+        <div class="container">
+            <div class="section-header-center" style="margin-bottom: 48px;">
+                <span class="section-badge">Avis vérifiés</span>
+                <h2 class="section-title">Ce que disent nos clients</h2>
+            </div>
+            
+            <div class="testimonials-list" id="testimonialsList">
+                <!-- Rempli dynamiquement -->
+            </div>
+            
+            <div class="empty-testimonials" id="emptyTestimonials" style="display: none;">
+                <div class="icon">💬</div>
+                <h3>Aucun témoignage pour le moment</h3>
+                <p>Soyez le premier à partager votre expérience !</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta-bg-pattern"></div>
+        <div class="container">
+            <div class="cta-content">
+                <h2>Vous avez un projet en tête ?</h2>
+                <p>Contactez-nous pour un devis gratuit et personnalisé.</p>
+                <div class="cta-buttons">
+                    <a href="contact.html" class="btn-white magnetic-btn">
+                        <span>📋 Demander un devis</span>
+                    </a>
+                    <a href="tel:0612345678" class="btn-outline-white magnetic-btn" id="ctaPhoneBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        <span id="ctaPhoneText">06 12 34 56 78</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <div class="logo-box small" id="footerLogoBox">CBR</div>
+                        <div>
+                            <h3 id="footerCompanyName">C.B.R. Île-de-France</h3>
+                            <p id="footerTagline">Maçonnerie & Rénovation</p>
+                        </div>
+                    </div>
+                    <p class="footer-desc" id="footerDesc"></p>
+                    <div class="social-links" id="socialLinks"></div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Liens rapides</h4>
+                    <a href="index.html">Accueil</a>
+                    <a href="services.html">Nos Services</a>
+                    <a href="realisations.html">Réalisations</a>
+                    <a href="temoignages.html">Témoignages</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact</h4>
+                    <p id="footerAddress"></p>
+                    <p id="footerPhone"></p>
+                    <p id="footerEmail"></p>
+                    <p id="footerHours"></p>
+                </div>
+                
+                <div class="footer-zones">
+                    <h4>Zone d'intervention</h4>
+                    <div class="zones-tags" id="zonesTags"></div>
+                    <div class="guarantee">
+                        <div class="guarantee-icon">🛡️</div>
+                        <div>
+                            <strong>Garantie Décennale</strong>
+                            <p>Tous nos travaux sont couverts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© <span id="currentYear"></span> <span id="copyrightName">C.B.R. Île-de-France</span>. Tous droits réservés.</p>
+                <div class="footer-legal">
+                    <a href="#">Mentions légales</a>
+                    <a href="./admin.html" class="admin-link" title="Accès Administration" aria-label="Admin">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Gestion des onglets
+        function switchTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Form').classList.add('active');
+        }
+        
+        // Vérification force mot de passe
+        function checkPasswordStrength(password) {
+            const strengthDiv = document.getElementById('pwdStrength');
+            const strengthBar = document.getElementById('pwdStrengthBar');
+            
+            if (password.length > 0) {
+                strengthDiv.classList.add('show');
+            } else {
+                strengthDiv.classList.remove('show');
+                return;
+            }
+            
+            let score = 0;
+            if (password.length >= 8) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+            
+            strengthBar.className = 'password-strength-bar';
+            
+            if (score <= 2) {
+                strengthBar.classList.add('weak');
+            } else if (score <= 4) {
+                strengthBar.classList.add('medium');
+            } else {
+                strengthBar.classList.add('strong');
+            }
+        }
+        
+        // Soumission login
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const result = UserSystem.login(
+                formData.get('email'),
+                formData.get('password')
+            );
+            
+            if (result.success) {
+                UI.toast(result.message, 'success');
+                updateUIForUser(result.user);
+            } else {
+                UI.toast(result.message, 'error');
+            }
+        }
+        
+        // Soumission register
+        function handleRegisterSubmit(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const result = UserSystem.register(
+                formData.get('name'),
+                formData.get('email'),
+                formData.get('password'),
+                formData.get('phone')
+            );
+            
+            if (result.success) {
+                UI.toast(result.message, 'success');
+                updateUIForUser(result.user);
+            } else {
+                UI.toast(result.message, 'error');
+            }
+        }
+        
+        // Déconnexion
+        function handleLogout() {
+            const result = UserSystem.logout();
+            UI.toast(result.message, 'info');
+            location.reload();
+        }
+        
+        // Soumission témoignage
+        function handleTestimonialSubmit(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const result = TestimonialSystem.submit(
+                formData.get('projectName'),
+                formData.get('rating'),
+                formData.get('content')
+            );
+            
+            if (result.success) {
+                UI.toast(result.message, 'success');
+                e.target.reset();
+                document.getElementById('pwdStrength').classList.remove('show');
+            } else {
+                UI.toast(result.message, 'error');
+            }
+        }
+        
+        // Mise à jour UI selon état connexion
+        function updateUIForUser(user) {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('testimonialFormSection').classList.add('active');
+            
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+        }
+        
+        // Rendu des témoignages
+        function renderTestimonialsList() {
+            const container = document.getElementById('testimonialsList');
+            const empty = document.getElementById('emptyTestimonials');
+            const testimonials = TestimonialSystem.getVisible();
+            
+            if (testimonials.length === 0) {
+                container.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+            
+            container.style.display = 'grid';
+            empty.style.display = 'none';
+            
+            container.innerHTML = testimonials.map((t, i) => `
+                <div class="testimonial-card-full animate-on-scroll" style="transition-delay: ${i * 0.1}s">
+                    <div class="stars">${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)}</div>
+                    <span class="project">📁 ${t.projectName}</span>
+                    <p class="content">"${t.content}"</p>
+                    <div class="author">
+                        <div class="author-avatar">${t.userName.charAt(0).toUpperCase()}</div>
+                        <div class="author-info">
+                            <h4>${t.userName}</h4>
+                            <p>${new Date(t.date).toLocaleDateString('fr-FR')}</p>
+                        </div>
+                        <span class="verified-badge">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Vérifié
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            // Vérifie si utilisateur connecté
+            const currentUser = Session.getCurrentUser();
+            if (currentUser) {
+                updateUIForUser(currentUser);
+            }
+            
+            // Rendu des témoignages
+            renderTestimonialsList();
+            
+            // Mise à jour téléphone
+            const data = getData();
+            const ctaPhoneText = document.getElementById('ctaPhoneText');
+            const ctaPhoneBtn = document.getElementById('ctaPhoneBtn');
+            if (ctaPhoneText && ctaPhoneBtn) {
+                ctaPhoneText.textContent = data.company.phone;
+                ctaPhoneBtn.href = `tel:${data.company.phone.replace(/\s/g, '')}`;
+            }
+        });
+    </script>
+</body>
+</html>

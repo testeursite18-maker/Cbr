@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Contact | C.B.R. Île-de-France</title>
+    <meta name="description" content="Contactez C.B.R. Île-de-France pour un devis gratuit. Maçonnerie et rénovation à Créteil et en Île-de-France.">
+    <meta name="theme-color" content="#f97316">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Styles spécifiques contact */
+        .contact-hero {
+            background: linear-gradient(135deg, var(--dark-light) 0%, var(--dark) 100%);
+            padding: 140px 0 80px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .contact-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(circle at 80% 20%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(220, 38, 38, 0.1) 0%, transparent 50%);
+        }
+        
+        .contact-hero .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .contact-hero h1 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            margin-bottom: 16px;
+            font-weight: 800;
+        }
+        
+        .contact-hero p {
+            color: var(--gray-300);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .contact-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+        
+        .contact-feature {
+            text-align: center;
+            padding: 24px;
+        }
+        
+        .contact-feature-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .contact-feature h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .contact-feature p {
+            font-size: 14px;
+            color: var(--gray-300);
+            margin: 0;
+        }
+        
+        /* Section contact principale */
+        .contact-main {
+            padding: 80px 0;
+            background: var(--gray-50);
+        }
+        
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 48px;
+            align-items: start;
+        }
+        
+        /* Info cards */
+        .contact-info-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border: 1px solid var(--gray-100);
+        }
+        
+        .contact-info-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        
+        .contact-info-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .contact-info-item:first-of-type {
+            padding-top: 0;
+        }
+        
+        .contact-info-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #ffedd5 0%, #fee2e2 100%);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .contact-info-content h4 {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .contact-info-content p,
+        .contact-info-content a {
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            transition: color var(--transition-base);
+        }
+        
+        .contact-info-content a:hover {
+            color: var(--primary);
+        }
+        
+        /* Zones card */
+        .zones-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .zones-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        }
+        
+        .zones-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .zones-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: relative;
+        }
+        
+        .zones-list span {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-base);
+        }
+        
+        .zones-list span:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Formulaire */
+        .contact-form-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-100);
+        }
+        
+        .contact-form-card h2 {
+            font-size: 1.75rem;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .contact-form-card > p {
+            color: var(--gray-500);
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .form-group label .required {
+            color: var(--secondary);
+            margin-left: 4px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            transition: all var(--transition-base);
+            font-family: inherit;
+            background: white;
+        }
+        
+        .form-group input:hover,
+        .form-group select:hover,
+        .form-group textarea:hover {
+            border-color: var(--gray-300);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+        }
+        
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            padding-right: 40px;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-hint {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 6px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .checkbox-group label {
+            font-size: 14px;
+            color: var(--gray-600);
+            line-height: 1.5;
+            cursor: pointer;
+        }
+        
+        .checkbox-group label a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+        
+        .btn-submit span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(249, 115, 22, 0.5);
+        }
+        
+        .btn-submit:hover::before {
+            opacity: 1;
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Success state */
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .form-success.show {
+            display: block;
+            animation: scaleIn 0.5s ease;
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            font-size: 48px;
+            color: #059669;
+            box-shadow: 0 10px 30px -10px rgba(5, 150, 105, 0.3);
+        }
+        
+        .form-success h3 {
+            font-size: 1.75rem;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+        
+        .form-success p {
+            color: var(--gray-600);
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+        
+        .btn-secondary-return {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: var(--gray-100);
+            color: var(--dark);
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            transition: all var(--transition-base);
+        }
+        
+        .btn-secondary-return:hover {
+            background: var(--gray-200);
+            transform: translateY(-2px);
+        }
+        
+        /* Map section - GOOGLE MAPS INTEGRE */
+        .map-section {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .map-container {
+            height: 450px;
+            background: var(--gray-200);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            filter: grayscale(20%);
+            transition: filter 0.3s;
+        }
+        
+        .map-container iframe:hover {
+            filter: grayscale(0%);
+        }
+        
+        /* Fallback si pas de carte */
+        .map-fallback {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-500);
+            background: var(--gray-100);
+        }
+        
+        .map-fallback-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-features {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .contact-info-card,
+            .zones-card {
+                margin-bottom: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .contact-hero {
+                padding: 120px 0 60px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form-card {
+                padding: 24px;
+            }
+            
+            .map-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header scrolled" id="header">
+        <div class="container">
+            <a href="index.html" class="logo" id="mainLogo">
+                <div class="logo-box" id="logoBox">CBR</div>
+                <div class="logo-text">
+                    <h1 id="companyName">C.B.R. Île-de-France</h1>
+                </div>
+            </a>
+            
+            <nav class="nav">
+                <a href="index.html">Accueil</a>
+                <a href="services.html">Services</a>
+                <a href="realisations.html">Réalisations</a>
+                <a href="temoignages.html">Témoignages</a>
+                <a href="contact.html" class="active">Contact</a>
+                <a href="tel:0612345678" class="btn-phone" id="headerPhone">06 12 34 56 78</a>
+            </nav>
+            
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Accueil</a>
+        <a href="services.html">Services</a>
+        <a href="realisations.html">Réalisations</a>
+        <a href="temoignages.html">Témoignages</a>
+        <a href="contact.html">Contact</a>
+        <div class="mobile-menu-footer">
+            <a href="tel:0612345678" class="btn-primary">📞 Appeler maintenant</a>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="contact-hero">
+        <div class="container">
+            <span class="badge">Contactez-nous</span>
+            <h1>Parlons de votre projet</h1>
+            <p>Obtenez un devis gratuit sous 24h. Notre équipe d'experts est à votre écoute.</p>
+            
+            <div class="contact-features">
+                <div class="contact-feature">
+                    <div class="contact-feature-icon">⚡</div>
+                    <h3>Réponse rapide</h3>
+                    <p>Devis sous 24 heures</p>
+                </div>
+                <div class="contact-feature">
+                    <div class="contact-feature-icon">💬</div>
+                    <h3>Conseil personnalisé</h3>
+                    <p>Accompagnement sur mesure</p>
+                </div>
+                <div class="contact-feature">
+                    <div class="contact-feature-icon">🛡️</div>
+                    <h3>Garantie décennale</h3>
+                    <p>Tous nos travaux couverts</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Main -->
+    <section class="contact-main">
+        <div class="container">
+            <div class="contact-wrapper">
+                <!-- Left: Info -->
+                <div class="contact-info">
+                    <div class="contact-info-card">
+                        <h3>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            Nos coordonnées
+                        </h3>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">📍</div>
+                            <div class="contact-info-content">
+                                <h4>Adresse</h4>
+                                <p id="contactAddress">12 Rue de la Paix, 94000 Créteil</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">📞</div>
+                            <div class="contact-info-content">
+                                <h4>Téléphone</h4>
+                                <a href="tel:0612345678" id="contactPhone">06 12 34 56 78</a>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">✉️</div>
+                            <div class="contact-info-content">
+                                <h4>Email</h4>
+                                <a href="mailto:contact@cbr-iledefrance.fr" id="contactEmail">contact@cbr-iledefrance.fr</a>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">🕐</div>
+                            <div class="contact-info-content">
+                                <h4>Horaires d'ouverture</h4>
+                                <p id="contactHours">Lun-Ven: 7h00 - 19h00<br>Sam: 8h00 - 17h00</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="zones-card">
+                        <h3>🗺️ Zones d'intervention</h3>
+                        <div class="zones-list" id="zonesList">
+                            <!-- Rempli dynamiquement -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right: Form -->
+                <div class="contact-form-card">
+                    <h2>Demande de devis gratuit</h2>
+                    <p>Remplissez le formulaire ci-dessous, nous vous répondrons dans les plus brefs délais.</p>
+                    
+                    <form id="contactForm" onsubmit="handleContactForm(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nom complet <span class="required">*</span></label>
+                                <input type="text" name="name" required placeholder="Jean Dupont" minlength="2">
+                            </div>
+                            <div class="form-group">
+                                <label>Téléphone <span class="required">*</span></label>
+                                <input type="tel" name="phone" required placeholder="06 12 34 56 78">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input type="email" name="email" required placeholder="votre@email.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Adresse du chantier</label>
+                            <input type="text" name="address" placeholder="Adresse complète du projet">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Type de projet <span class="required">*</span></label>
+                                <select name="projectType" required>
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="renovation">Rénovation complète</option>
+                                    <option value="maconnerie">Maçonnerie traditionnelle</option>
+                                    <option value="extension">Extension de maison</option>
+                                    <option value="terrassement">Terrassement</option>
+                                    <option value="facade">Rénovation façade</option>
+                                    <option value="autre">Autre projet</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Délai souhaité</label>
+                                <select name="deadline">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="urgent">Urgent (< 1 mois)</option>
+                                    <option value="short">Court terme (1-3 mois)</option>
+                                    <option value="medium">Moyen terme (3-6 mois)</option>
+                                    <option value="long">Long terme (> 6 mois)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Description du projet <span class="required">*</span></label>
+                            <textarea name="message" required placeholder="Décrivez votre projet en détail (surface, travaux souhaités, budget approximatif...)" minlength="20"></textarea>
+                            <p class="form-hint">Minimum 20 caractères</p>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="consent" name="consent" required>
+                            <label for="consent">
+                                J'accepte que mes données soient utilisées pour me recontacter au sujet de ma demande. 
+                                <a href="#">En savoir plus sur la protection des données</a>.
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn-submit">
+                            <span>📨 Envoyer ma demande</span>
+                        </button>
+                    </form>
+                    
+                    <div class="form-success" id="formSuccess">
+                        <div class="success-icon">✓</div>
+                        <h3>Message envoyé avec succès !</h3>
+                        <p>Merci pour votre confiance. Notre équipe étudie votre demande et vous contactera sous 24 heures ouvrées.</p>
+                        <a href="index.html" class="btn-secondary-return">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                            Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section - GOOGLE MAPS AVEC PLACE ID -->
+    <section class="map-section">
+        <div class="container">
+            <div class="section-header-center" style="margin-bottom: 32px;">
+                <h2 class="section-title">Où nous trouver</h2>
+                <p class="section-subtitle">Notre siège social à Créteil</p>
+            </div>
+            
+            <!-- GOOGLE MAPS EMBED - Place ID intégré -->
+            <div class="map-container" id="mapContainer">
+                <!-- L'iframe sera injecté ici par JavaScript -->
+                <div class="map-fallback" id="mapFallback">
+                    <div class="map-fallback-icon">🗺️</div>
+                    <p>Chargement de la carte...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta-bg-pattern"></div>
+        <div class="container">
+            <div class="cta-content">
+                <h2>Besoin d'une réponse immédiate ?</h2>
+                <p>Appelez-nous directement, nous sommes disponibles du lundi au samedi.</p>
+                <div class="cta-buttons">
+                    <a href="tel:0612345678" class="btn-white magnetic-btn" id="ctaPhoneBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        <span id="ctaPhoneText">06 12 34 56 78</span>
+                    </a>
+                    <a href="services.html" class="btn-outline-white magnetic-btn">
+                        Nos services
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <div class="logo-box small" id="footerLogoBox">CBR</div>
+                        <div>
+                            <h3 id="footerCompanyName">C.B.R. Île-de-France</h3>
+                            <p id="footerTagline">Maçonnerie & Rénovation</p>
+                        </div>
+                    </div>
+                    <p class="footer-desc" id="footerDesc"></p>
+                    <div class="social-links" id="socialLinks"></div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Liens rapides</h4>
+                    <a href="index.html">Accueil</a>
+                    <a href="services.html">Nos Services</a>
+                    <a href="realisations.html">Réalisations</a>
+                    <a href="temoignages.html">Témoignages</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contact</h4>
+                    <p id="footerAddress"></p>
+                    <p id="footerPhone"></p>
+                    <p id="footerEmail"></p>
+                    <p id="footerHours"></p>
+                </div>
+                
+                <div class="footer-zones">
+                    <h4>Zone d'intervention</h4>
+                    <div class="zones-tags" id="zonesTags"></div>
+                    <div class="guarantee">
+                        <div class="guarantee-icon">🛡️</div>
+                        <div>
+                            <strong>Garantie Décennale</strong>
+                            <p>Tous nos travaux sont couverts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© <span id="currentYear"></span> <span id="copyrightName">C.B.R. Île-de-France</span>. Tous droits réservés.</p>
+                <div class="footer-legal">
+                    <a href="#">Mentions légales</a>
+                    <a href="./admin.html" class="admin-link" title="Accès Administration" aria-label="Admin">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Mise à jour des informations dynamiques
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = getData();
+            
+            // Mise à jour coordonnées
+            document.getElementById('contactAddress').textContent = data.company.address;
+            document.getElementById('contactPhone').textContent = data.company.phone;
+            document.getElementById('contactPhone').href = `tel:${data.company.phone.replace(/\s/g, '')}`;
+            document.getElementById('contactEmail').textContent = data.company.email;
+            document.getElementById('contactEmail').href = `mailto:${data.company.email}`;
+            document.getElementById('contactHours').innerHTML = `Lun-Ven: ${data.company.hours.weekday}<br>Sam: ${data.company.hours.saturday}`;
+            
+            // Zones
+            const zonesList = document.getElementById('zonesList');
+            if (zonesList) {
+                zonesList.innerHTML = data.company.zones.map(z => `<span>${z}</span>`).join('');
+            }
+            
+            // Téléphones CTA
+            document.querySelectorAll('#ctaPhoneText').forEach(el => {
+                el.textContent = data.company.phone;
+            });
+            document.querySelectorAll('#ctaPhoneBtn').forEach(el => {
+                el.href = `tel:${data.company.phone.replace(/\s/g, '')}`;
+            });
+            
+            // === GOOGLE MAPS AVEC PLACE ID ===
+            // Récupère le Place ID depuis les données admin ou utilise celui par défaut
+            const placeId = data.customization?.googleMapsPlaceId || 'ChIJGT2DyuVz5kcRGgeZhDj3Dgg';
+            const mapApiKey = data.customization?.googleMapsApiKey || ''; // Optionnel: pour API payante
+            
+            const mapContainer = document.getElementById('mapContainer');
+            const mapFallback = document.getElementById('mapFallback');
+            
+            // Construit l'URL Google Maps Embed avec Place ID
+            // Format: https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!... (Place ID intégré)
+            // OU format simple avec q=place_id:XXX
+            
+            let mapUrl;
+            if (mapApiKey) {
+                // Avec API Key (recommandé pour production)
+                mapUrl = `https://www.google.com/maps/embed/v1/place?key=${mapApiKey}&q=place_id:${placeId}`;
+            } else {
+                // Sans API Key - utilise le format embed standard avec Place ID
+                // Note: Le Place ID ChIJGT2DyuVz5kcRGgeZhDj3Dgg correspond à Créteil
+                mapUrl = `https://maps.google.com/maps?q=place_id:${placeId}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+            }
+            
+            // Crée l'iframe Google Maps
+            const iframe = document.createElement('iframe');
+            iframe.src = mapUrl;
+            iframe.allowFullscreen = true;
+            iframe.loading = 'lazy';
+            iframe.referrerPolicy = 'no-referrer-when-downgrade';
+            iframe.title = 'Localisation C.B.R. Île-de-France';
+            
+            // Remplace le fallback par l'iframe
+            mapFallback.style.display = 'none';
+            mapContainer.appendChild(iframe);
+        });
+        
+        // Gestion formulaire
+        function handleContactForm(e) {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('.btn-submit');
+            
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading" style="width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Envoi en cours...';
+            
+            const formData = new FormData(form);
+            const result = ContactSystem.submit(formData);
+            
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>📨 Envoyer ma demande</span>';
+                
+                if (result.success) {
+                    form.style.display = 'none';
+                    document.getElementById('formSuccess').classList.add('show');
+                    UI.toast(result.message, 'success');
+                } else {
+                    UI.toast(result.message, 'error');
+                }
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
