@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Nos Services | C.B.R. Île-de-France</title>
-    <meta name="description" content="Découvrez nos services de maçonnerie, rénovation et terrassement à Créteil et en Île-de-France. Devis gratuit sous 24h.">
+    <title>Nos Services | Template Universel</title>
+    <meta name="description" content="Découvrez nos services professionnels.">
     <meta name="theme-color" content="#f97316">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +56,7 @@
         <div class="container">
             <span class="badge">Nos Prestations</span>
             <h1>Nos Services</h1>
-            <p>Des solutions professionnelles pour tous vos projets de construction et rénovation</p>
+            <p>Des solutions professionnelles pour tous vos projets</p>
         </div>
     </section>
 
@@ -69,7 +69,7 @@
             </div>
             
             <div class="services-detailed" id="servicesDetailed">
-                <!-- Rempli dynamiquement par JavaScript -->
+                <!-- Rempli dynamiquement par ServiceSystem.renderDetailed() -->
             </div>
         </div>
     </section>
@@ -82,7 +82,7 @@
                 <h2 class="section-title">Notre Engagement</h2>
             </div>
             
-            <div class="expertises-grid">
+            <div class="expertises-grid" id="whyChooseUs">
                 <div class="expertise-card animate-on-scroll">
                     <div class="expertise-image" style="height: 180px; font-size: 3.5rem;">
                         <span>⚡</span>
@@ -239,15 +239,17 @@
 
     <script src="app.js"></script>
     <script>
-        // Mise à jour du téléphone dynamique
         document.addEventListener('DOMContentLoaded', function() {
+            // Rendu des services dynamiques
+            ServiceSystem.renderDetailed();
+            
+            // Mise à jour du téléphone
             const data = getData();
+            const phone = data.identity?.phone || data.company?.phone || '06 12 34 56 78';
             const ctaPhoneText = document.getElementById('ctaPhoneText');
             const ctaPhoneBtn = document.getElementById('ctaPhoneBtn');
-            if (ctaPhoneText && ctaPhoneBtn) {
-                ctaPhoneText.textContent = data.company.phone;
-                ctaPhoneBtn.href = 'tel:' + data.company.phone.replace(/\s/g, '');
-            }
+            if (ctaPhoneText) ctaPhoneText.textContent = phone;
+            if (ctaPhoneBtn) ctaPhoneBtn.href = 'tel:' + phone.replace(/\s/g, '');
         });
     </script>
 </body>
