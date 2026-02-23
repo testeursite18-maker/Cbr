@@ -11,7 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Styles spécifiques contact */
         .contact-hero {
             background: linear-gradient(135deg, var(--dark-light) 0%, var(--dark) 100%);
             padding: 140px 0 80px;
@@ -86,7 +85,6 @@
             margin: 0;
         }
         
-        /* Section contact principale */
         .contact-main {
             padding: 80px 0;
             background: var(--gray-50);
@@ -99,7 +97,6 @@
             align-items: start;
         }
         
-        /* Info cards */
         .contact-info-card {
             background: white;
             border-radius: var(--radius-xl);
@@ -131,10 +128,6 @@
             padding-bottom: 0;
         }
         
-        .contact-info-item:first-of-type {
-            padding-top: 0;
-        }
-        
         .contact-info-icon {
             width: 48px;
             height: 48px;
@@ -162,14 +155,12 @@
             font-weight: 600;
             font-size: 16px;
             text-decoration: none;
-            transition: color var(--transition-base);
         }
         
         .contact-info-content a:hover {
             color: var(--primary);
         }
         
-        /* Zones card */
         .zones-card {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             border-radius: var(--radius-xl);
@@ -177,16 +168,6 @@
             color: white;
             position: relative;
             overflow: hidden;
-        }
-        
-        .zones-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
         }
         
         .zones-card h3 {
@@ -205,18 +186,11 @@
         .zones-list span {
             padding: 8px 16px;
             background: rgba(255, 255, 255, 0.2);
-            border-radius: var(--radius-full);
+            border-radius: 20px;
             font-size: 14px;
             backdrop-filter: blur(10px);
-            transition: all var(--transition-base);
         }
         
-        .zones-list span:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-        
-        /* Formulaire */
         .contact-form-card {
             background: white;
             border-radius: var(--radius-xl);
@@ -268,15 +242,9 @@
             border: 2px solid var(--gray-200);
             border-radius: var(--radius-md);
             font-size: 15px;
-            transition: all var(--transition-base);
+            transition: all 0.3s;
             font-family: inherit;
             background: white;
-        }
-        
-        .form-group input:hover,
-        .form-group select:hover,
-        .form-group textarea:hover {
-            border-color: var(--gray-300);
         }
         
         .form-group input:focus,
@@ -345,40 +313,12 @@
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            transition: all var(--transition-base);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-submit::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
-            opacity: 0;
-            transition: opacity var(--transition-base);
-        }
-        
-        .btn-submit span {
-            position: relative;
-            z-index: 1;
+            transition: all 0.3s;
         }
         
         .btn-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px -10px rgba(249, 115, 22, 0.5);
-        }
-        
-        .btn-submit:hover::before {
-            opacity: 1;
-        }
-        
-        .btn-submit:active {
-            transform: translateY(0);
         }
         
         .btn-submit:disabled {
@@ -387,7 +327,6 @@
             transform: none;
         }
         
-        /* Success state */
         .form-success {
             display: none;
             text-align: center;
@@ -397,6 +336,11 @@
         .form-success.show {
             display: block;
             animation: scaleIn 0.5s ease;
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         
         .success-icon {
@@ -410,7 +354,6 @@
             margin: 0 auto 32px;
             font-size: 48px;
             color: #059669;
-            box-shadow: 0 10px 30px -10px rgba(5, 150, 105, 0.3);
         }
         
         .form-success h3 {
@@ -432,17 +375,15 @@
             padding: 14px 28px;
             background: var(--gray-100);
             color: var(--dark);
-            border-radius: var(--radius-full);
+            border-radius: 20px;
             font-weight: 600;
-            transition: all var(--transition-base);
+            text-decoration: none;
         }
         
         .btn-secondary-return:hover {
             background: var(--gray-200);
-            transform: translateY(-2px);
         }
         
-        /* Map section - GOOGLE MAPS INTEGRE */
         .map-section {
             padding: 80px 0;
             background: white;
@@ -461,32 +402,8 @@
             width: 100%;
             height: 100%;
             border: none;
-            filter: grayscale(20%);
-            transition: filter 0.3s;
         }
         
-        .map-container iframe:hover {
-            filter: grayscale(0%);
-        }
-        
-        /* Fallback si pas de carte */
-        .map-fallback {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray-500);
-            background: var(--gray-100);
-        }
-        
-        .map-fallback-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-        
-        /* Responsive */
         @media (max-width: 1024px) {
             .contact-wrapper {
                 grid-template-columns: 1fr;
@@ -495,11 +412,6 @@
             .contact-features {
                 grid-template-columns: 1fr;
                 gap: 16px;
-            }
-            
-            .contact-info-card,
-            .zones-card {
-                margin-bottom: 20px;
             }
         }
         
@@ -706,13 +618,12 @@
                         <div class="checkbox-group">
                             <input type="checkbox" id="consent" name="consent" required>
                             <label for="consent">
-                                J'accepte que mes données soient utilisées pour me recontacter au sujet de ma demande. 
-                                <a href="#">En savoir plus sur la protection des données</a>.
+                                J'accepte que mes données soient utilisées pour me recontacter au sujet de ma demande.
                             </label>
                         </div>
                         
                         <button type="submit" class="btn-submit">
-                            <span>📨 Envoyer ma demande</span>
+                            📨 Envoyer ma demande
                         </button>
                     </form>
                     
@@ -721,10 +632,7 @@
                         <h3>Message envoyé avec succès !</h3>
                         <p>Merci pour votre confiance. Notre équipe étudie votre demande et vous contactera sous 24 heures ouvrées.</p>
                         <a href="index.html" class="btn-secondary-return">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M19 12H5M12 19l-7-7 7-7"/>
-                            </svg>
-                            Retour à l'accueil
+                            ← Retour à l'accueil
                         </a>
                     </div>
                 </div>
@@ -732,7 +640,7 @@
         </div>
     </section>
 
-    <!-- Map Section - GOOGLE MAPS AVEC PLACE ID -->
+    <!-- Map Section -->
     <section class="map-section">
         <div class="container">
             <div class="section-header-center" style="margin-bottom: 32px;">
@@ -740,11 +648,8 @@
                 <p class="section-subtitle">Notre siège social à Créteil</p>
             </div>
             
-            <!-- GOOGLE MAPS EMBED - Place ID intégré -->
             <div class="map-container" id="mapContainer">
-                <!-- L'iframe sera injecté ici par JavaScript -->
-                <div class="map-fallback" id="mapFallback">
-                    <div class="map-fallback-icon">🗺️</div>
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--gray-500);">
                     <p>Chargement de la carte...</p>
                 </div>
             </div>
@@ -759,13 +664,13 @@
                 <h2>Besoin d'une réponse immédiate ?</h2>
                 <p>Appelez-nous directement, nous sommes disponibles du lundi au samedi.</p>
                 <div class="cta-buttons">
-                    <a href="tel:0612345678" class="btn-white magnetic-btn" id="ctaPhoneBtn">
+                    <a href="tel:0612345678" class="btn-white" id="ctaPhoneBtn">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                         </svg>
                         <span id="ctaPhoneText">06 12 34 56 78</span>
                     </a>
-                    <a href="services.html" class="btn-outline-white magnetic-btn">
+                    <a href="services.html" class="btn-outline-white">
                         Nos services
                     </a>
                 </div>
@@ -823,7 +728,7 @@
                 <p>© <span id="currentYear"></span> <span id="copyrightName">C.B.R. Île-de-France</span>. Tous droits réservés.</p>
                 <div class="footer-legal">
                     <a href="#">Mentions légales</a>
-                    <a href="./admin.html" class="admin-link" title="Accès Administration" aria-label="Admin">
+                    <a href="admin.html" class="admin-link" title="Accès Administration" aria-label="Admin">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                         </svg>
@@ -839,63 +744,52 @@
     <script src="app.js"></script>
     <script>
         // Mise à jour des informations dynamiques
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function() {
             const data = getData();
             
             // Mise à jour coordonnées
             document.getElementById('contactAddress').textContent = data.company.address;
             document.getElementById('contactPhone').textContent = data.company.phone;
-            document.getElementById('contactPhone').href = `tel:${data.company.phone.replace(/\s/g, '')}`;
+            document.getElementById('contactPhone').href = 'tel:' + data.company.phone.replace(/\s/g, '');
             document.getElementById('contactEmail').textContent = data.company.email;
-            document.getElementById('contactEmail').href = `mailto:${data.company.email}`;
-            document.getElementById('contactHours').innerHTML = `Lun-Ven: ${data.company.hours.weekday}<br>Sam: ${data.company.hours.saturday}`;
+            document.getElementById('contactEmail').href = 'mailto:' + data.company.email;
+            document.getElementById('contactHours').innerHTML = 'Lun-Ven: ' + data.company.hours.weekday + '<br>Sam: ' + data.company.hours.saturday;
             
             // Zones
             const zonesList = document.getElementById('zonesList');
             if (zonesList) {
-                zonesList.innerHTML = data.company.zones.map(z => `<span>${z}</span>`).join('');
+                zonesList.innerHTML = data.company.zones.map(function(z) { 
+                    return '<span>' + z + '</span>'; 
+                }).join('');
             }
             
             // Téléphones CTA
-            document.querySelectorAll('#ctaPhoneText').forEach(el => {
+            document.querySelectorAll('#ctaPhoneText').forEach(function(el) {
                 el.textContent = data.company.phone;
             });
-            document.querySelectorAll('#ctaPhoneBtn').forEach(el => {
-                el.href = `tel:${data.company.phone.replace(/\s/g, '')}`;
+            document.querySelectorAll('#ctaPhoneBtn').forEach(function(el) {
+                el.href = 'tel:' + data.company.phone.replace(/\s/g, '');
             });
             
-            // === GOOGLE MAPS AVEC PLACE ID ===
-            // Récupère le Place ID depuis les données admin ou utilise celui par défaut
+            // Google Maps avec Place ID
             const placeId = data.customization?.googleMapsPlaceId || 'ChIJGT2DyuVz5kcRGgeZhDj3Dgg';
-            const mapApiKey = data.customization?.googleMapsApiKey || ''; // Optionnel: pour API payante
-            
+            const mapApiKey = data.customization?.googleMapsApiKey || '';
             const mapContainer = document.getElementById('mapContainer');
-            const mapFallback = document.getElementById('mapFallback');
-            
-            // Construit l'URL Google Maps Embed avec Place ID
-            // Format: https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!... (Place ID intégré)
-            // OU format simple avec q=place_id:XXX
             
             let mapUrl;
             if (mapApiKey) {
-                // Avec API Key (recommandé pour production)
-                mapUrl = `https://www.google.com/maps/embed/v1/place?key=${mapApiKey}&q=place_id:${placeId}`;
+                mapUrl = 'https://www.google.com/maps/embed/v1/place?key=' + mapApiKey + '&q=place_id:' + placeId;
             } else {
-                // Sans API Key - utilise le format embed standard avec Place ID
-                // Note: Le Place ID ChIJGT2DyuVz5kcRGgeZhDj3Dgg correspond à Créteil
-                mapUrl = `https://maps.google.com/maps?q=place_id:${placeId}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+                mapUrl = 'https://maps.google.com/maps?q=place_id:' + placeId + '&t=&z=15&ie=UTF8&iwloc=&output=embed';
             }
             
-            // Crée l'iframe Google Maps
             const iframe = document.createElement('iframe');
             iframe.src = mapUrl;
             iframe.allowFullscreen = true;
             iframe.loading = 'lazy';
-            iframe.referrerPolicy = 'no-referrer-when-downgrade';
             iframe.title = 'Localisation C.B.R. Île-de-France';
             
-            // Remplace le fallback par l'iframe
-            mapFallback.style.display = 'none';
+            mapContainer.innerHTML = '';
             mapContainer.appendChild(iframe);
         });
         
@@ -907,14 +801,14 @@
             
             // Loading state
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="loading" style="width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block;"></span> Envoi en cours...';
+            submitBtn.innerHTML = 'Envoi en cours...';
             
             const formData = new FormData(form);
             const result = ContactSystem.submit(formData);
             
-            setTimeout(() => {
+            setTimeout(function() {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>📨 Envoyer ma demande</span>';
+                submitBtn.innerHTML = '📨 Envoyer ma demande';
                 
                 if (result.success) {
                     form.style.display = 'none';
