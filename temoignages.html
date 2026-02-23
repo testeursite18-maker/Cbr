@@ -11,7 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Styles spécifiques témoignages */
         .testimonials-hero {
             background: linear-gradient(135deg, var(--dark-light) 0%, var(--dark) 100%);
             padding: 140px 0 80px;
@@ -46,7 +45,6 @@
             margin: 0 auto;
         }
         
-        /* Système d'authentification */
         .auth-section {
             padding: 60px 0;
             background: var(--gray-50);
@@ -63,7 +61,7 @@
             margin-bottom: 24px;
             background: white;
             padding: 8px;
-            border-radius: var(--radius-full);
+            border-radius: 20px;
             box-shadow: var(--shadow);
         }
         
@@ -72,11 +70,11 @@
             padding: 14px 24px;
             background: transparent;
             border: none;
-            border-radius: var(--radius-full);
+            border-radius: 20px;
             font-weight: 600;
             color: var(--gray-500);
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: all 0.3s;
             font-size: 15px;
         }
         
@@ -92,7 +90,6 @@
             padding: 32px;
             border-radius: var(--radius-xl);
             box-shadow: var(--shadow-lg);
-            animation: fadeInUp 0.4s ease;
         }
         
         .auth-form.active {
@@ -103,12 +100,6 @@
             margin-bottom: 24px;
             font-size: 1.5rem;
             color: var(--dark);
-        }
-        
-        .form-hint {
-            font-size: 13px;
-            color: var(--gray-500);
-            margin-top: 6px;
         }
         
         .password-strength {
@@ -127,7 +118,7 @@
         .password-strength-bar {
             height: 100%;
             width: 0;
-            transition: all var(--transition-base);
+            transition: all 0.3s;
             border-radius: 2px;
         }
         
@@ -135,7 +126,6 @@
         .password-strength-bar.medium { width: 66%; background: #f59e0b; }
         .password-strength-bar.strong { width: 100%; background: #10b981; }
         
-        /* Formulaire témoignage */
         .testimonial-form-section {
             display: none;
             padding: 60px 0;
@@ -192,11 +182,11 @@
             padding: 10px 20px;
             background: white;
             border: 1px solid var(--gray-200);
-            border-radius: var(--radius-full);
+            border-radius: 20px;
             color: var(--gray-600);
             font-size: 14px;
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: all 0.3s;
         }
         
         .logout-btn:hover {
@@ -204,7 +194,6 @@
             color: var(--dark);
         }
         
-        /* Rating */
         .rating-group {
             margin-bottom: 24px;
         }
@@ -229,25 +218,15 @@
         .rating-stars label {
             cursor: pointer;
             color: var(--gray-300);
-            transition: all var(--transition-fast);
+            transition: all 0.2s;
             line-height: 1;
         }
         
         .rating-stars label:hover,
-        .rating-stars label:hover ~ label,
         .rating-stars input:checked ~ label {
             color: #fbbf24;
         }
         
-        .rating-stars:hover label {
-            color: #fbbf24;
-        }
-        
-        .rating-stars label:hover ~ label {
-            color: var(--gray-300);
-        }
-        
-        /* Liste témoignages */
         .testimonials-list-section {
             padding: 80px 0;
             background: var(--gray-50);
@@ -264,13 +243,13 @@
             border-radius: var(--radius-xl);
             padding: 32px;
             box-shadow: var(--shadow);
-            transition: all var(--transition-base);
+            transition: all 0.3s;
             border: 1px solid var(--gray-100);
         }
         
         .testimonial-card-full:hover {
             transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
+            box-shadow: var(--shadow-lg);
         }
         
         .testimonial-card-full .stars {
@@ -294,7 +273,7 @@
             padding: 8px 16px;
             background: #ffedd5;
             color: var(--primary);
-            border-radius: var(--radius-full);
+            border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
             margin-bottom: 20px;
@@ -321,18 +300,6 @@
             font-size: 18px;
         }
         
-        .testimonial-card-full .author-info h4 {
-            margin: 0;
-            font-size: 15px;
-            color: var(--dark);
-        }
-        
-        .testimonial-card-full .author-info p {
-            margin: 4px 0 0;
-            font-size: 13px;
-            color: var(--gray-500);
-        }
-        
         .verified-badge {
             display: inline-flex;
             align-items: center;
@@ -341,25 +308,17 @@
             padding: 6px 12px;
             background: #d1fae5;
             color: #065f46;
-            border-radius: var(--radius-full);
+            border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
         }
         
-        /* Empty state */
         .empty-testimonials {
             text-align: center;
             padding: 80px 20px;
             color: var(--gray-500);
         }
         
-        .empty-testimonials .icon {
-            font-size: 64px;
-            margin-bottom: 24px;
-            opacity: 0.5;
-        }
-        
-        /* Responsive */
         @media (max-width: 768px) {
             .testimonials-list {
                 grid-template-columns: 1fr;
@@ -441,7 +400,7 @@
                 
                 <!-- Login Form -->
                 <form id="loginForm" class="auth-form active" onsubmit="handleLoginSubmit(event)">
-                    <h3>🔐 Connexion</h3>
+                    <h3>Connexion</h3>
                     <p style="color: var(--gray-500); margin-bottom: 24px; font-size: 14px;">
                         Connectez-vous pour laisser un avis sur votre projet.
                     </p>
@@ -456,14 +415,14 @@
                         <input type="password" name="password" required placeholder="••••••••">
                     </div>
                     
-                    <button type="submit" class="btn-submit" style="margin-top: 8px;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
                         Se connecter
                     </button>
                 </form>
                 
                 <!-- Register Form -->
                 <form id="registerForm" class="auth-form" onsubmit="handleRegisterSubmit(event)">
-                    <h3>📝 Créer un compte client</h3>
+                    <h3>Créer un compte client</h3>
                     <p style="color: var(--gray-500); margin-bottom: 24px; font-size: 14px;">
                         Créez votre compte pour partager votre expérience.
                     </p>
@@ -487,15 +446,15 @@
                     <div class="form-group">
                         <label>Mot de passe *</label>
                         <input type="password" name="password" id="regPassword" required 
-                               placeholder="Min. 8 caractères" minlength="8"
+                               placeholder="Min. 6 caractères" minlength="6"
                                oninput="checkPasswordStrength(this.value)">
                         <div class="password-strength" id="pwdStrength">
                             <div class="password-strength-bar" id="pwdStrengthBar"></div>
                         </div>
-                        <p class="form-hint">8 caractères minimum avec majuscules, minuscules, chiffres et caractères spéciaux</p>
+                        <p style="font-size: 13px; color: var(--gray-500); margin-top: 6px;">6 caractères minimum</p>
                     </div>
                     
-                    <button type="submit" class="btn-submit" style="margin-top: 8px;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
                         Créer mon compte
                     </button>
                 </form>
@@ -510,7 +469,7 @@
                 <div class="user-welcome">
                     <div class="user-avatar" id="userAvatar">J</div>
                     <div>
-                        <h3>Bonjour <span id="userName">Jean</span> ! 👋</h3>
+                        <h3>Bonjour <span id="userName">Jean</span> !</h3>
                         <p>Vous pouvez maintenant laisser un avis sur votre projet.</p>
                     </div>
                     <button class="logout-btn" onclick="handleLogout()">
@@ -520,7 +479,7 @@
                 
                 <form id="testimonialForm" onsubmit="handleTestimonialSubmit(event)" 
                       style="background: var(--gray-50); padding: 32px; border-radius: var(--radius-xl);">
-                    <h3 style="margin-bottom: 24px; font-size: 1.25rem;">✍️ Votre avis</h3>
+                    <h3 style="margin-bottom: 24px; font-size: 1.25rem;">Votre avis</h3>
                     
                     <div class="form-group">
                         <label>Nom du projet *</label>
@@ -551,15 +510,8 @@
                                   minlength="20"></textarea>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Photos du projet (optionnel)</label>
-                        <input type="file" name="photos" accept="image/*" multiple 
-                               style="padding: 12px; background: white;">
-                        <p class="form-hint">Vous pouvez ajouter jusqu'à 5 photos de votre projet</p>
-                    </div>
-                    
-                    <button type="submit" class="btn-submit">
-                        📤 Soumettre mon avis
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        Soumettre mon avis
                     </button>
                     
                     <p style="text-align: center; margin-top: 16px; font-size: 13px; color: var(--gray-500);">
@@ -583,7 +535,7 @@
             </div>
             
             <div class="empty-testimonials" id="emptyTestimonials" style="display: none;">
-                <div class="icon">💬</div>
+                <div style="font-size: 64px; margin-bottom: 24px;">💬</div>
                 <h3>Aucun témoignage pour le moment</h3>
                 <p>Soyez le premier à partager votre expérience !</p>
             </div>
@@ -598,10 +550,10 @@
                 <h2>Vous avez un projet en tête ?</h2>
                 <p>Contactez-nous pour un devis gratuit et personnalisé.</p>
                 <div class="cta-buttons">
-                    <a href="contact.html" class="btn-white magnetic-btn">
+                    <a href="contact.html" class="btn-white">
                         <span>📋 Demander un devis</span>
                     </a>
-                    <a href="tel:0612345678" class="btn-outline-white magnetic-btn" id="ctaPhoneBtn">
+                    <a href="tel:0612345678" class="btn-outline-white" id="ctaPhoneBtn">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                         </svg>
@@ -662,7 +614,7 @@
                 <p>© <span id="currentYear"></span> <span id="copyrightName">C.B.R. Île-de-France</span>. Tous droits réservés.</p>
                 <div class="footer-legal">
                     <a href="#">Mentions légales</a>
-                    <a href="./admin.html" class="admin-link" title="Accès Administration" aria-label="Admin">
+                    <a href="admin.html" class="admin-link" title="Accès Administration" aria-label="Admin">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                         </svg>
@@ -679,8 +631,8 @@
     <script>
         // Gestion des onglets
         function switchTab(tab) {
-            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.querySelectorAll('.auth-tab').forEach(function(t) { t.classList.remove('active'); });
+            document.querySelectorAll('.auth-form').forEach(function(f) { f.classList.remove('active'); });
             
             event.target.classList.add('active');
             document.getElementById(tab + 'Form').classList.add('active');
@@ -699,17 +651,16 @@
             }
             
             let score = 0;
+            if (password.length >= 6) score++;
             if (password.length >= 8) score++;
             if (/[A-Z]/.test(password)) score++;
-            if (/[a-z]/.test(password)) score++;
             if (/[0-9]/.test(password)) score++;
-            if (/[^A-Za-z0-9]/.test(password)) score++;
             
             strengthBar.className = 'password-strength-bar';
             
             if (score <= 2) {
                 strengthBar.classList.add('weak');
-            } else if (score <= 4) {
+            } else if (score <= 3) {
                 strengthBar.classList.add('medium');
             } else {
                 strengthBar.classList.add('strong');
@@ -802,30 +753,30 @@
             container.style.display = 'grid';
             empty.style.display = 'none';
             
-            container.innerHTML = testimonials.map((t, i) => `
-                <div class="testimonial-card-full animate-on-scroll" style="transition-delay: ${i * 0.1}s">
-                    <div class="stars">${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)}</div>
-                    <span class="project">📁 ${t.projectName}</span>
-                    <p class="content">"${t.content}"</p>
-                    <div class="author">
-                        <div class="author-avatar">${t.userName.charAt(0).toUpperCase()}</div>
-                        <div class="author-info">
-                            <h4>${t.userName}</h4>
-                            <p>${new Date(t.date).toLocaleDateString('fr-FR')}</p>
-                        </div>
-                        <span class="verified-badge">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            Vérifié
-                        </span>
-                    </div>
-                </div>
-            `).join('');
+            container.innerHTML = testimonials.map(function(t, i) {
+                return '<div class="testimonial-card-full animate-on-scroll" style="transition-delay: ' + (i * 0.1) + 's">' +
+                    '<div class="stars">' + '★'.repeat(t.rating) + '☆'.repeat(5-t.rating) + '</div>' +
+                    '<span class="project">📁 ' + t.projectName + '</span>' +
+                    '<p class="content">"' + t.content + '"</p>' +
+                    '<div class="author">' +
+                        '<div class="author-avatar">' + t.userName.charAt(0).toUpperCase() + '</div>' +
+                        '<div class="author-info">' +
+                            '<h4>' + t.userName + '</h4>' +
+                            '<p>' + new Date(t.date).toLocaleDateString('fr-FR') + '</p>' +
+                        '</div>' +
+                        '<span class="verified-badge">' +
+                            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">' +
+                                '<polyline points="20 6 9 17 4 12"></polyline>' +
+                            '</svg>' +
+                            'Vérifié' +
+                        '</span>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
         }
         
         // Initialisation
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function() {
             // Vérifie si utilisateur connecté
             const currentUser = Session.getCurrentUser();
             if (currentUser) {
@@ -841,7 +792,7 @@
             const ctaPhoneBtn = document.getElementById('ctaPhoneBtn');
             if (ctaPhoneText && ctaPhoneBtn) {
                 ctaPhoneText.textContent = data.company.phone;
-                ctaPhoneBtn.href = `tel:${data.company.phone.replace(/\s/g, '')}`;
+                ctaPhoneBtn.href = 'tel:' + data.company.phone.replace(/\s/g, '');
             }
         });
     </script>
