@@ -1,6 +1,6 @@
 // ========================================
 // C.B.R. Île-de-France - JavaScript Complet
-// Version 3.0 - Corrigé et Fonctionnel
+// Version 3.1 - Leaflet + OpenStreetMap
 // ========================================
 
 'use strict';
@@ -16,7 +16,7 @@ const defaultData = {
         slogan: "L'excellence en maçonnerie depuis 15 ans",
         description: "Entreprise familiale spécialisée dans la maçonnerie, la rénovation et la construction à Créteil et en Île-de-France.",
         experienceYears: 15,
-        address: "12 Rue de la Paix, 94000 Créteil",
+        address: "33 Rue des Pivoines, 94140 Alfortville",
         phone: "06 12 34 56 78",
         email: "contact@cbr-iledefrance.fr",
         hours: {
@@ -24,7 +24,19 @@ const defaultData = {
             saturday: "8h00 - 17h00",
             sunday: "Fermé"
         },
-        zones: ["Créteil", "Paris", "Val-de-Marne", "Seine-Saint-Denis", "Essonne", "Hauts-de-Seine"]
+        zones: ["Alfortville", "Créteil", "Paris", "Val-de-Marne", "Seine-Saint-Denis", "Essonne", "Hauts-de-Seine"]
+    },
+    
+    // ========================================
+    // CONFIGURATION CARTE LEAFLET (MODIFIABLE VIA ADMIN)
+    // ========================================
+    map: {
+        latitude: 48.7946,      // Latitude CBR Travaux Alfortville
+        longitude: 2.4172,      // Longitude CBR Travaux Alfortville
+        zoom: 16,               // Niveau de zoom (1-20)
+        markerTitle: "CBR Travaux",
+        markerAddress: "33 Rue des Pivoines, 94140 Alfortville",
+        popupContent: "<h4>CBR Travaux</h4><p>33 Rue des Pivoines<br>94140 Alfortville</p>"
     },
     
     customization: {
@@ -33,9 +45,7 @@ const defaultData = {
         logoImage: null,
         heroImage: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=2000",
         animationsEnabled: true,
-        particlesEnabled: true,
-        googleMapsPlaceId: "ChIJGT2DyuVz5kcRGgeZhDj3Dgg",
-        googleMapsApiKey: ""
+        particlesEnabled: true
     },
     
     social: {
@@ -81,9 +91,9 @@ const defaultData = {
     users: [],
     
     seo: {
-        title: "C.B.R. Île-de-France | Maçonnerie & Rénovation à Créteil",
-        description: "Expert en maçonnerie et rénovation à Créteil depuis 15 ans. Devis gratuit, garantie décennale. Interventions sur Paris et Île-de-France.",
-        keywords: "maçonnerie, rénovation, créteil, construction, bâtiment, île-de-france"
+        title: "C.B.R. Île-de-France | Maçonnerie & Rénovation à Alfortville",
+        description: "Expert en maçonnerie et rénovation à Alfortville depuis 15 ans. Devis gratuit, garantie décennale. Interventions sur Paris et Île-de-France.",
+        keywords: "maçonnerie, rénovation, alfortville, créteil, construction, bâtiment, île-de-france"
     },
     
     leads: [],
@@ -178,7 +188,10 @@ const Storage = {
 function getData() {
     const saved = Storage.load('cbr_data');
     if (saved) {
-        return { ...defaultData, ...saved };
+        // Fusion profonde pour préserver la nouvelle structure map
+        const merged = { ...defaultData, ...saved };
+        if (!merged.map) merged.map = defaultData.map;
+        return merged;
     }
     Storage.save('cbr_data', defaultData);
     return defaultData;
@@ -521,6 +534,145 @@ const ContactSystem = {
         lead.status = status;
         saveData(data);
         return { success: true, message: 'Statut mis à jour' };
+    }
+};
+
+// ========================================
+// SYSTÈME CARTE LEAFLET
+// ========================================
+
+const MapSystem = {
+    mapInstance: null,
+    markerInstance: null,
+    
+    // ========================================
+    // INITIALISATION DE LA CARTE
+    // ========================================
+    init() {
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer) return; // Pas de carte sur cette page
+        
+        // Évite l'initialisation multiple
+        if (this.mapInstance) {
+            this.mapInstance.remove();
+            this.mapInstance = null;
+        }
+        
+        const data = getData();
+        const mapConfig = data.map || defaultData.map;
+        
+        // Création de la carte
+        this.mapInstance = L.map('map', {
+            scrollWheelZoom: false, // Désactive zoom molette pour éviter conflit scroll page
+            zoomControl: true
+        }).setView([mapConfig.latitude, mapConfig.longitude], mapConfig.zoom);
+        
+        // Ajout des tuiles OpenStreetMap (GRATUIT)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(this.mapInstance);
+        
+        // Création du marqueur personnalisé rouge
+        const customIcon = L.divIcon({
+            className: 'custom-leaflet-marker',
+            html: `<div style="
+                background: ${data.customization?.secondaryColor || '#dc2626'};
+                border: 3px solid white;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            "></div>`,
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15]
+        });
+        
+        // Ajout du marqueur
+        this.markerInstance = L.marker([mapConfig.latitude, mapConfig.longitude], {
+            icon: customIcon
+        }).addTo(this.mapInstance);
+        
+        // Ajout du popup
+        const popupContent = mapConfig.popupContent || `<h4>${mapConfig.markerTitle}</h4><p>${mapConfig.markerAddress}</p>`;
+        this.markerInstance.bindPopup(popupContent).openPopup();
+        
+        // Gestion du redimensionnement responsive
+        window.addEventListener('resize', () => {
+            if (this.mapInstance) {
+                this.mapInstance.invalidateSize();
+            }
+        });
+    },
+    
+    // ========================================
+    // MISE À JOUR DES COORDONNÉES (ADMIN)
+    // ========================================
+    updateCoordinates(lat, lng, zoom = 16) {
+        if (!Session.isAdminLoggedIn()) {
+            return { success: false, message: 'Accès non autorisé' };
+        }
+        
+        // Validation des coordonnées
+        const latitude = parseFloat(lat);
+        const longitude = parseFloat(lng);
+        
+        if (isNaN(latitude) || isNaN(longitude)) {
+            return { success: false, message: 'Coordonnées invalides' };
+        }
+        
+        if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+            return { success: false, message: 'Coordonnées hors limites' };
+        }
+        
+        const data = getData();
+        data.map = {
+            ...data.map,
+            latitude: latitude,
+            longitude: longitude,
+            zoom: parseInt(zoom) || 16
+        };
+        
+        saveData(data);
+        
+        // Recharge la carte si elle existe
+        this.init();
+        
+        return { success: true, message: 'Coordonnées mises à jour' };
+    },
+    
+    // ========================================
+    // MISE À JOUR DU CONTENU DU POPUP (ADMIN)
+    // ========================================
+    updatePopupContent(title, address) {
+        if (!Session.isAdminLoggedIn()) {
+            return { success: false, message: 'Accès non autorisé' };
+        }
+        
+        const data = getData();
+        data.map = {
+            ...data.map,
+            markerTitle: Security.sanitizeInput(title),
+            markerAddress: Security.sanitizeInput(address),
+            popupContent: `<h4>${Security.sanitizeInput(title)}</h4><p>${Security.sanitizeInput(address)}</p>`
+        };
+        
+        saveData(data);
+        this.init();
+        
+        return { success: true, message: 'Popup mis à jour' };
+    },
+    
+    // ========================================
+    // RÉCUPÉRATION DES COORDONNÉES ACTUELLES
+    // ========================================
+    getCurrentCoordinates() {
+        const data = getData();
+        return data.map || defaultData.map;
     }
 };
 
@@ -947,6 +1099,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTestimonials();
     renderFooter();
     
+    // ========================================
+    // INITIALISATION LEAFLET MAP
+    // ========================================
+    MapSystem.init();
+    
     const data = getData();
     if (data.seo?.title) {
         document.title = data.seo.title;
@@ -974,6 +1131,7 @@ window.UserSystem = UserSystem;
 window.TestimonialSystem = TestimonialSystem;
 window.ContactSystem = ContactSystem;
 window.Customization = Customization;
+window.MapSystem = MapSystem; // NOUVEAU : Exposé pour l'Admin
 window.getData = getData;
 window.saveData = saveData;
 window.Security = Security;
