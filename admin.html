@@ -6,6 +6,10 @@
     <title>Administration | C.B.R. Île-de-France</title>
     <meta name="robots" content="noindex, nofollow">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- LEAFLET CSS pour l'aperçu dans l'admin -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
     <style>
         :root {
             --primary: #f97316; --primary-dark: #ea580c; --secondary: #dc2626;
@@ -95,11 +99,72 @@
         
         .empty-state { text-align: center; padding: 60px 20px; color: var(--gray-500); }
         
+        /* ========================================
+           STYLES SPÉCIAUX SECTION CARTE (LEAFLET)
+           ======================================== */
+        .map-preview-container {
+            height: 300px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 2px solid var(--gray-200);
+            margin-bottom: 24px;
+        }
+        
+        .map-preview-container #adminMapPreview {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .coordinates-display {
+            background: var(--gray-50);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--gray-700);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .coordinates-display span {
+            background: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--gray-200);
+        }
+        
+        .input-hint {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 6px;
+        }
+        
+        .map-help-text {
+            background: #eff6ff;
+            border-left: 4px solid var(--info);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+        
+        .map-help-text strong {
+            color: var(--info);
+            display: block;
+            margin-bottom: 8px;
+        }
+        
         @media (max-width: 768px) {
             .admin-header { flex-direction: column; align-items: stretch; }
             .admin-nav { overflow-x: auto; }
             .form-row { grid-template-columns: 1fr; }
             .data-item { flex-direction: column; align-items: flex-start; }
+            .coordinates-display { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
@@ -139,6 +204,7 @@
                 <button class="active" onclick="showSection('dashboard')">📊 Dashboard</button>
                 <button onclick="showSection('company')">🏢 Entreprise</button>
                 <button onclick="showSection('customize')">🎨 Personnalisation</button>
+                <button onclick="showSection('map')">🗺️ Carte</button>
                 <button onclick="showSection('services')">🛠️ Services</button>
                 <button onclick="showSection('portfolio')">📸 Portfolio</button>
                 <button onclick="showSection('testimonials')">💬 Avis</button>
@@ -255,13 +321,77 @@
                             </div>
                         </div>
                         
-                        <h3 class="card-title" style="margin-top: 32px;">🗺️ Google Maps</h3>
-                        <div class="form-group">
-                            <label>Place ID Google Maps</label>
-                            <input type="text" id="googleMapsPlaceId" placeholder="ChIJGT2DyuVz5kcRGgeZhDj3Dgg">
+                        <button type="submit" class="btn btn-primary">💾 Appliquer les changements</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ========================================
+                 SECTION CARTE (LEAFLET) - NOUVEAU
+                 ======================================== -->
+            <section class="section" id="map">
+                <div class="section-header">
+                    <h2>🗺️ Gestion de la carte</h2>
+                    <p>Position du marqueur sur la carte Leaflet</p>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">📍 Position actuelle</h3>
+                    
+                    <div class="map-help-text">
+                        <strong>💡 Comment trouver les coordonnées ?</strong>
+                        1. Allez sur <a href="https://www.google.com/maps" target="_blank">Google Maps</a> ou <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a><br>
+                        2. Cliquez droit sur l'emplacement de votre entreprise<br>
+                        3. Copiez la Latitude et Longitude affichées<br>
+                        4. Collez-les ci-dessous et sauvegardez
+                    </div>
+                    
+                    <div class="coordinates-display" id="currentCoords">
+                        <span>📍 Lat: <strong id="displayLat">48.7946</strong></span>
+                        <span>📍 Lng: <strong id="displayLng">2.4172</strong></span>
+                        <span>🔍 Zoom: <strong id="displayZoom">16</strong></span>
+                    </div>
+                    
+                    <div class="map-preview-container">
+                        <div id="adminMapPreview"></div>
+                    </div>
+                    
+                    <h3 class="card-title">✏️ Modifier les coordonnées</h3>
+                    <form id="mapForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Latitude *</label>
+                                <input type="number" id="mapLatitude" step="any" required placeholder="48.7946">
+                                <p class="input-hint">Ex: 48.7946 (Alfortville) | Entre -90 et 90</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Longitude *</label>
+                                <input type="number" id="mapLongitude" step="any" required placeholder="2.4172">
+                                <p class="input-hint">Ex: 2.4172 (Alfortville) | Entre -180 et 180</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Niveau de zoom (1-20)</label>
+                                <input type="number" id="mapZoom" min="1" max="20" value="16" required>
+                                <p class="input-hint">16 = rue | 18 = bâtiment | 20 = détail</p>
+                            </div>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary">💾 Appliquer les changements</button>
+                        <h3 class="card-title" style="margin-top: 24px;">📝 Contenu du popup</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Titre du marqueur</label>
+                                <input type="text" id="mapMarkerTitle" placeholder="CBR Travaux">
+                            </div>
+                            <div class="form-group">
+                                <label>Adresse affichée</label>
+                                <input type="text" id="mapMarkerAddress" placeholder="33 Rue des Pivoines, 94140 Alfortville">
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 12px; margin-top: 8px;">
+                            <button type="submit" class="btn btn-primary">💾 Sauvegarder la position</button>
+                            <button type="button" class="btn btn-secondary" onclick="resetMapToDefault()">🔄 Réinitialiser (Alfortville)</button>
+                        </div>
                     </form>
                 </div>
             </section>
@@ -454,6 +584,9 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- LEAFLET JS pour l'aperçu admin -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
     <script src="app.js"></script>
     <script>
         // ========================================
@@ -462,6 +595,7 @@
         
         let currentTestimonialFilter = 'all';
         let currentLeadFilter = 'all';
+        let adminMapInstance = null; // Instance Leaflet pour l'aperçu admin
 
         // Initialisation au chargement
         document.addEventListener('DOMContentLoaded', function() {
@@ -486,6 +620,14 @@
             document.getElementById('customizeForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 saveCustomization();
+            });
+            
+            // ========================================
+            // FORMULAIRE CARTE (NOUVEAU)
+            // ========================================
+            document.getElementById('mapForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveMapSettings();
             });
             
             // Formulaire service
@@ -517,6 +659,11 @@
             document.getElementById('secondaryColor').addEventListener('input', function() {
                 document.getElementById('secondaryColorValue').textContent = this.value;
             });
+            
+            // Live update coordonnées carte (aperçu temps réel)
+            document.getElementById('mapLatitude').addEventListener('input', updateAdminMapPreview);
+            document.getElementById('mapLongitude').addEventListener('input', updateAdminMapPreview);
+            document.getElementById('mapZoom').addEventListener('input', updateAdminMapPreview);
         });
 
         // ========================================
@@ -569,6 +716,13 @@
             if (id === 'portfolio') loadPortfolio();
             if (id === 'testimonials') loadTestimonials();
             if (id === 'leads') loadLeads();
+            
+            // ========================================
+            // INITIALISATION CARTE ADMIN (NOUVEAU)
+            // ========================================
+            if (id === 'map') {
+                setTimeout(initAdminMapPreview, 100); // Petit délai pour le DOM
+            }
         }
 
         // ========================================
@@ -597,7 +751,21 @@
             document.getElementById('primaryColorValue').textContent = cust.primaryColor || '#f97316';
             document.getElementById('secondaryColor').value = cust.secondaryColor || '#dc2626';
             document.getElementById('secondaryColorValue').textContent = cust.secondaryColor || '#dc2626';
-            document.getElementById('googleMapsPlaceId').value = cust.googleMapsPlaceId || '';
+            
+            // ========================================
+            // FORMULAIRE CARTE (NOUVEAU)
+            // ========================================
+            const map = data.map || {};
+            document.getElementById('mapLatitude').value = map.latitude || 48.7946;
+            document.getElementById('mapLongitude').value = map.longitude || 2.4172;
+            document.getElementById('mapZoom').value = map.zoom || 16;
+            document.getElementById('mapMarkerTitle').value = map.markerTitle || 'CBR Travaux';
+            document.getElementById('mapMarkerAddress').value = map.markerAddress || '33 Rue des Pivoines, 94140 Alfortville';
+            
+            // Mise à jour affichage coordonnées
+            document.getElementById('displayLat').textContent = map.latitude || 48.7946;
+            document.getElementById('displayLng').textContent = map.longitude || 2.4172;
+            document.getElementById('displayZoom').textContent = map.zoom || 16;
             
             // Formulaire SEO
             document.getElementById('seoTitle').value = data.seo?.title || '';
@@ -686,8 +854,7 @@
             data.customization = {
                 ...data.customization,
                 primaryColor: document.getElementById('primaryColor').value,
-                secondaryColor: document.getElementById('secondaryColor').value,
-                googleMapsPlaceId: document.getElementById('googleMapsPlaceId').value
+                secondaryColor: document.getElementById('secondaryColor').value
             };
             
             saveData(data);
@@ -697,6 +864,124 @@
             document.documentElement.style.setProperty('--secondary', data.customization.secondaryColor);
             
             showToast('Personnalisation appliquée', 'success');
+        }
+        
+        // ========================================
+        // SAUVEGARDE CARTE (NOUVEAU)
+        // ========================================
+        function saveMapSettings() {
+            const lat = parseFloat(document.getElementById('mapLatitude').value);
+            const lng = parseFloat(document.getElementById('mapLongitude').value);
+            const zoom = parseInt(document.getElementById('mapZoom').value);
+            const title = document.getElementById('mapMarkerTitle').value;
+            const address = document.getElementById('mapMarkerAddress').value;
+            
+            // Validation
+            if (isNaN(lat) || isNaN(lng)) {
+                showToast('Veuillez entrer des coordonnées valides', 'error');
+                return;
+            }
+            
+            if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+                showToast('Coordonnées hors limites', 'error');
+                return;
+            }
+            
+            const result = MapSystem.updateCoordinates(lat, lng, zoom);
+            
+            if (result.success) {
+                // Met à jour aussi le contenu du popup
+                MapSystem.updatePopupContent(title, address);
+                
+                // Met à jour l'affichage
+                document.getElementById('displayLat').textContent = lat.toFixed(4);
+                document.getElementById('displayLng').textContent = lng.toFixed(4);
+                document.getElementById('displayZoom').textContent = zoom;
+                
+                // Met à jour l'aperçu
+                updateAdminMapPreview();
+                
+                showToast('Position de la carte sauvegardée !', 'success');
+            } else {
+                showToast(result.message, 'error');
+            }
+        }
+        
+        // ========================================
+        // APERÇU CARTE ADMIN (NOUVEAU)
+        // ========================================
+        function initAdminMapPreview() {
+            const container = document.getElementById('adminMapPreview');
+            if (!container) return;
+            
+            // Nettoie l'ancienne carte si existe
+            if (adminMapInstance) {
+                adminMapInstance.remove();
+                adminMapInstance = null;
+            }
+            
+            const lat = parseFloat(document.getElementById('mapLatitude').value) || 48.7946;
+            const lng = parseFloat(document.getElementById('mapLongitude').value) || 2.4172;
+            const zoom = parseInt(document.getElementById('mapZoom').value) || 16;
+            
+            // Création de la carte
+            adminMapInstance = L.map('adminMapPreview', {
+                scrollWheelZoom: false
+            }).setView([lat, lng], zoom);
+            
+            // Tuiles OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(adminMapInstance);
+            
+            // Marqueur rouge
+            const customIcon = L.divIcon({
+                className: 'custom-admin-marker',
+                html: `<div style="
+                    background: #dc2626;
+                    border: 3px solid white;
+                    border-radius: 50%;
+                    width: 30px;
+                    height: 30px;
+                    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+                "></div>`,
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            });
+            
+            L.marker([lat, lng], { icon: customIcon })
+                .addTo(adminMapInstance)
+                .bindPopup('Position actuelle')
+                .openPopup();
+        }
+        
+        function updateAdminMapPreview() {
+            if (!adminMapInstance) return;
+            
+            const lat = parseFloat(document.getElementById('mapLatitude').value) || 48.7946;
+            const lng = parseFloat(document.getElementById('mapLongitude').value) || 2.4172;
+            const zoom = parseInt(document.getElementById('mapZoom').value) || 16;
+            
+            adminMapInstance.setView([lat, lng], zoom);
+            
+            // Met à jour le marqueur
+            adminMapInstance.eachLayer(function(layer) {
+                if (layer instanceof L.Marker) {
+                    layer.setLatLng([lat, lng]);
+                }
+            });
+        }
+        
+        function resetMapToDefault() {
+            document.getElementById('mapLatitude').value = 48.7946;
+            document.getElementById('mapLongitude').value = 2.4172;
+            document.getElementById('mapZoom').value = 16;
+            document.getElementById('mapMarkerTitle').value = 'CBR Travaux';
+            document.getElementById('mapMarkerAddress').value = '33 Rue des Pivoines, 94140 Alfortville';
+            
+            updateAdminMapPreview();
+            showToast('Valeurs par défaut restaurées (Alfortville)', 'info');
         }
         
         function saveSEO() {
