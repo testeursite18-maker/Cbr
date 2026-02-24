@@ -1,23 +1,77 @@
 // ========================================
-// CBR TRAVAUX - JavaScript Complet
-// Version 4.0 - Leaflet + OpenStreetMap
+// TEMPLATE UNIVERSEL WHITE-LABEL v5.0
+// Connexion Admin: cbr / 1098
 // ========================================
 
 'use strict';
 
 // ========================================
-// CONFIGURATION ET DONNÉES PAR DÉFAUT
+// CONFIGURATION PAR DÉFAUT - MODIFIABLE VIA ADMIN
 // ========================================
 
-const defaultData = {
-    company: {
-        name: "CBR Travaux",
-        tagline: "Maçonnerie & Rénovation",
-        slogan: "L'excellence en maçonnerie depuis 15 ans",
+const DEFAULT_CONFIG = {
+    // Identifiants Admin (NE PAS MODIFIER - utilisés pour la connexion)
+    admin: {
+        username: "cbr",
+        password: "1098"
+    },
+    
+    // HEADER
+    header: {
+        logoText: "CBR",                    // Texte dans le carré logo
+        companyName: "C.B.R. Île-de-France", // Nom principal
+        companyTagline: "Maçonnerie & Rénovation", // Sous-titre
+        phone: "06 12 34 56 78"             // Numéro affiché dans le bouton
+    },
+    
+    // NAVIGATION
+    navigation: {
+        items: [
+            { label: "Accueil", url: "index.html", active: true },
+            { label: "Services", url: "services.html", active: false },
+            { label: "Réalisations", url: "realisations.html", active: false },
+            { label: "Témoignages", url: "temoignages.html", active: false },
+            { label: "Contact", url: "contact.html", active: false }
+        ]
+    },
+    
+    // SECTION HERO
+    hero: {
+        badge: "L'excellence en maçonnerie depuis 15 ans",
+        title: "Votre Projet de Construction",
+        titleHighlight: "Entre des Mains Expertes",
         description: "Entreprise familiale spécialisée dans la maçonnerie, la rénovation et la construction à Alfortville et en Île-de-France.",
-        experienceYears: 15,
+        backgroundImage: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=2000",
+        button1: {
+            text: "📞 Demander un Devis Gratuit",
+            url: "contact.html",
+            style: "primary"
+        },
+        button2: {
+            text: "Voir nos Réalisations",
+            url: "realisations.html",
+            style: "secondary"
+        }
+    },
+    
+    // CARTE
+    map: {
+        latitude: 48.7946,
+        longitude: 2.4172,
+        zoom: 16,
+        markerTitle: "CBR Travaux",
+        markerAddress: "33 Rue des Pivoines, 94140 Alfortville"
+    },
+    
+    // COULEURS
+    colors: {
+        primary: "#f97316",
+        secondary: "#dc2626"
+    },
+    
+    // ENTREPRISE
+    company: {
         address: "33 Rue des Pivoines, 94140 Alfortville",
-        phone: "06 12 34 56 78",
         email: "contact@cbr-travaux.fr",
         hours: {
             weekday: "7h00 - 19h00",
@@ -27,193 +81,86 @@ const defaultData = {
         zones: ["Alfortville", "Paris", "Val-de-Marne", "Seine-Saint-Denis", "Essonne", "Hauts-de-Seine"]
     },
     
-    // ========================================
-    // COORDONNÉES GPS - MODIFIABLES DEPUIS ADMIN
-    // ========================================
-    map: {
-        latitude: 48.7946,      // Latitude CBR Travaux Alfortville
-        longitude: 2.4172,      // Longitude CBR Travaux Alfortville
-        zoom: 16,               // Niveau de zoom
-        markerTitle: "CBR Travaux",
-        markerAddress: "33 Rue des Pivoines, 94140 Alfortville"
-    },
-    
-    customization: {
-        primaryColor: "#f97316",    // Orange par défaut
-        secondaryColor: "#dc2626",  // Rouge par défaut
-        logoImage: null,
-        heroImage: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=2000",
-        animationsEnabled: true,
-        particlesEnabled: true
-    },
-    
-    social: {
-        instagram: { url: "https://instagram.com/cbr.travaux", active: true },
-        facebook: { url: "https://facebook.com/cbr.travaux", active: true },
-        linkedin: { url: "https://linkedin.com/company/cbr-travaux", active: false },
-        whatsapp: { url: "https://wa.me/33612345678", active: true }
-    },
-    
+    // STATS
     stats: {
-        projectsPro: 127,
-        projectsParticulier: 243,
+        experience: 15,
+        projects: 370,
         satisfaction: 98,
-        projectsThisYear: 45
+        thisYear: 45
     },
     
-    expertises: [
+    // SERVICES
+    services: [
         {
             id: 1,
             title: "Maçonnerie Traditionnelle",
-            description: "Construction et rénovation de murs, façades et structures en pierre, brique ou parpaing. Travaux de qualité garantis.",
-            icon: "🏗️",
-            image: ""
+            description: "Construction et rénovation de murs, façades et structures en pierre, brique ou parpaing.",
+            icon: "🏗️"
         },
         {
             id: 2,
             title: "Rénovation Complète",
-            description: "Transformation intégrale de vos espaces avec respect des normes et délais. De la conception à la réalisation.",
-            icon: "🔨",
-            image: ""
+            description: "Transformation intégrale de vos espaces avec respect des normes et délais.",
+            icon: "🔨"
         },
         {
             id: 3,
             title: "Terrassement",
-            description: "Préparation des sols, fondations et aménagements extérieurs. Équipements professionnels pour tous terrains.",
-            icon: "🚜",
-            image: ""
+            description: "Préparation des sols, fondations et aménagements extérieurs.",
+            icon: "🚜"
         }
     ],
     
-    portfolio: [],
+    // TÉMOIGNAGES
     testimonials: [],
-    users: [],
     
-    seo: {
-        title: "CBR Travaux | Maçonnerie & Rénovation à Alfortville",
-        description: "Expert en maçonnerie et rénovation à Alfortville depuis 15 ans. Devis gratuit, garantie décennale. Interventions sur Paris et Île-de-France.",
-        keywords: "maçonnerie, rénovation, alfortville, construction, bâtiment, île-de-france"
-    },
+    // PORTFOLIO
+    portfolio: [],
     
-    leads: [],
-    
-    // ========================================
-    // IDENTIFIANTS ADMIN - À MODIFIER APRÈS PREMIÈRE CONNEXION
-    // ========================================
-    admin: {
-        username: "cbr",
-        password: "1098"
-    }
+    // LEADS
+    leads: []
 };
 
 // ========================================
-// SÉCURITÉ
+// CLÉ LOCALSTORAGE
+// ========================================
+const STORAGE_KEY = 'whitelabel_config_v5';
+const ADMIN_SESSION_KEY = 'whitelabel_admin_session';
+
+// ========================================
+// FONCTIONS DE STOCKAGE
 // ========================================
 
-const Security = {
-    hashPassword(password) {
-        let hash = 0;
-        for (let i = 0; i < password.length; i++) {
-            const char = password.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash;
+function getConfig() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            // Fusion avec les valeurs par défaut pour les nouvelles propriétés
+            return mergeDeep(DEFAULT_CONFIG, parsed);
         }
-        return hash.toString(16);
-    },
-    
-    generateToken() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
-    },
-    
-    checkPasswordStrength(password) {
-        const checks = {
-            length: password.length >= 8,
-            uppercase: /[A-Z]/.test(password),
-            lowercase: /[a-z]/.test(password),
-            number: /[0-9]/.test(password),
-            special: /[!@#$%^&*]/.test(password)
-        };
-        const score = Object.values(checks).filter(Boolean).length;
-        return { checks, score, strong: score >= 4 };
-    },
-    
-    sanitizeInput(input) {
-        if (!input) return '';
-        const div = document.createElement('div');
-        div.textContent = input;
-        return div.innerHTML;
-    },
-    
-    isValidEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    },
-    
-    isValidPhone(phone) {
-        return /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/.test(phone.replace(/\s/g, ''));
+    } catch (e) {
+        console.error('Erreur lecture config:', e);
     }
-};
-
-// ========================================
-// STOCKAGE
-// ========================================
-
-const Storage = {
-    save(key, data) {
-        try {
-            localStorage.setItem(key, JSON.stringify(data));
-            return true;
-        } catch (e) {
-            console.error('Storage save error:', e);
-            return false;
-        }
-    },
-    
-    load(key) {
-        try {
-            const value = localStorage.getItem(key);
-            return value ? JSON.parse(value) : null;
-        } catch (e) {
-            console.error('Storage load error:', e);
-            return null;
-        }
-    },
-    
-    remove(key) {
-        localStorage.removeItem(key);
-    }
-};
-
-// ========================================
-// DONNÉES
-// ========================================
-
-function getData() {
-    const saved = Storage.load('cbr_data');
-    if (saved) {
-        // Fusion profonde pour conserver les nouvelles propriétés
-        return deepMerge(defaultData, saved);
-    }
-    Storage.save('cbr_data', defaultData);
-    return defaultData;
+    return DEFAULT_CONFIG;
 }
 
-function saveData(data) {
-    Storage.save('cbr_data', data);
-}
-
-function initData() {
-    if (!Storage.load('cbr_data')) {
-        saveData(defaultData);
+function saveConfig(config) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+        return true;
+    } catch (e) {
+        console.error('Erreur sauvegarde config:', e);
+        return false;
     }
 }
 
-// Fusion profonde des objets
-function deepMerge(defaults, saved) {
-    const result = { ...defaults };
+function mergeDeep(defaults, saved) {
+    const result = JSON.parse(JSON.stringify(defaults));
     for (const key in saved) {
         if (saved.hasOwnProperty(key)) {
             if (typeof saved[key] === 'object' && saved[key] !== null && !Array.isArray(saved[key])) {
-                result[key] = deepMerge(defaults[key] || {}, saved[key]);
+                result[key] = mergeDeep(defaults[key] || {}, saved[key]);
             } else {
                 result[key] = saved[key];
             }
@@ -223,57 +170,40 @@ function deepMerge(defaults, saved) {
 }
 
 // ========================================
-// SESSION
+// SYSTÈME DE CONNEXION ADMIN
 // ========================================
 
-const Session = {
-    CURRENT_USER_KEY: 'cbr_current_user',
-    ADMIN_KEY: 'cbr_admin_session',
-    
-    startUserSession(user) {
-        const sessionData = {
-            id: user.id,
-            name: Security.sanitizeInput(user.name),
-            email: user.email,
-            token: Security.generateToken(),
-            timestamp: Date.now()
-        };
-        sessionStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(sessionData));
-        return sessionData;
-    },
-    
-    startAdminSession() {
-        const sessionData = {
-            token: Security.generateToken(),
-            timestamp: Date.now(),
-            expires: Date.now() + (2 * 60 * 60 * 1000) // 2 heures
-        };
-        sessionStorage.setItem(this.ADMIN_KEY, JSON.stringify(sessionData));
-        return sessionData;
-    },
-    
-    getCurrentUser() {
-        try {
-            const userJson = sessionStorage.getItem(this.CURRENT_USER_KEY);
-            if (!userJson) return null;
-            const user = JSON.parse(userJson);
-            if (Date.now() - user.timestamp > 24 * 60 * 60 * 1000) {
-                this.clearUserSession();
-                return null;
-            }
-            return user;
-        } catch (e) {
-            return null;
+const AdminAuth = {
+    // Vérifie les identifiants
+    login(username, password) {
+        const config = getConfig();
+        console.log('Tentative connexion:', username, '| Attendu:', config.admin.username);
+        console.log('MDP fourni:', password, '| Attendu:', config.admin.password);
+        
+        if (username === config.admin.username && password === config.admin.password) {
+            // Crée une session
+            const session = {
+                loggedIn: true,
+                timestamp: Date.now(),
+                expires: Date.now() + (4 * 60 * 60 * 1000) // 4 heures
+            };
+            sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(session));
+            console.log('✅ Connexion réussie!');
+            return { success: true, message: 'Connexion réussie' };
         }
+        console.log('❌ Identifiants incorrects');
+        return { success: false, message: 'Identifiants incorrects' };
     },
     
-    isAdminLoggedIn() {
+    // Vérifie si connecté
+    isLoggedIn() {
         try {
-            const adminJson = sessionStorage.getItem(this.ADMIN_KEY);
-            if (!adminJson) return false;
-            const admin = JSON.parse(adminJson);
-            if (Date.now() > admin.expires) {
-                this.clearAdminSession();
+            const sessionJson = sessionStorage.getItem(ADMIN_SESSION_KEY);
+            if (!sessionJson) return false;
+            
+            const session = JSON.parse(sessionJson);
+            if (Date.now() > session.expires) {
+                this.logout();
                 return false;
             }
             return true;
@@ -282,250 +212,241 @@ const Session = {
         }
     },
     
-    clearUserSession() {
-        sessionStorage.removeItem(this.CURRENT_USER_KEY);
-    },
-    
-    clearAdminSession() {
-        sessionStorage.removeItem(this.ADMIN_KEY);
-    }
-};
-
-// ========================================
-// SYSTÈME UTILISATEURS
-// ========================================
-
-const UserSystem = {
-    register(name, email, password, phone = '') {
-        const data = getData();
-        
-        name = Security.sanitizeInput(name.trim());
-        email = email.trim().toLowerCase();
-        
-        if (!name || name.length < 2) {
-            return { success: false, message: 'Le nom doit contenir au moins 2 caractères' };
-        }
-        
-        if (!Security.isValidEmail(email)) {
-            return { success: false, message: 'Email invalide' };
-        }
-        
-        if (password.length < 6) {
-            return { success: false, message: 'Le mot de passe doit contenir au moins 6 caractères' };
-        }
-        
-        if (data.users.find(u => u.email === email)) {
-            return { success: false, message: 'Cet email est déjà utilisé' };
-        }
-        
-        const newUser = {
-            id: Date.now().toString(),
-            name: name,
-            email: email,
-            passwordHash: Security.hashPassword(password),
-            phone: phone,
-            createdAt: new Date().toISOString(),
-            isVerified: false
-        };
-        
-        data.users.push(newUser);
-        saveData(data);
-        
-        const session = Session.startUserSession(newUser);
-        
-        return { 
-            success: true, 
-            message: 'Compte créé avec succès !',
-            user: session
-        };
-    },
-    
-    login(email, password) {
-        const data = getData();
-        email = email.trim().toLowerCase();
-        
-        const user = data.users.find(u => 
-            u.email === email && 
-            u.passwordHash === Security.hashPassword(password)
-        );
-        
-        if (!user) {
-            return { success: false, message: 'Email ou mot de passe incorrect' };
-        }
-        
-        const session = Session.startUserSession(user);
-        
-        return { 
-            success: true, 
-            message: `Bonjour ${user.name} !`,
-            user: session
-        };
-    },
-    
+    // Déconnexion
     logout() {
-        Session.clearUserSession();
-        return { success: true, message: 'Déconnexion réussie' };
+        sessionStorage.removeItem(ADMIN_SESSION_KEY);
     }
 };
 
 // ========================================
-// SYSTÈME TÉMOIGNAGES
+// RENDU DU SITE
 // ========================================
 
-const TestimonialSystem = {
-    submit(projectName, rating, content) {
-        const currentUser = Session.getCurrentUser();
+const SiteRenderer = {
+    // Applique toutes les personnalisations
+    render() {
+        const config = getConfig();
         
-        if (!currentUser) {
-            return { success: false, message: 'Vous devez être connecté pour laisser un avis' };
-        }
-        
-        projectName = Security.sanitizeInput(projectName.trim());
-        content = Security.sanitizeInput(content.trim());
-        rating = parseInt(rating);
-        
-        if (!projectName || projectName.length < 3) {
-            return { success: false, message: 'Veuillez préciser le nom du projet' };
-        }
-        
-        if (!rating || rating < 1 || rating > 5) {
-            return { success: false, message: 'Veuillez sélectionner une note' };
-        }
-        
-        if (!content || content.length < 20) {
-            return { success: false, message: 'Votre avis doit contenir au moins 20 caractères' };
-        }
-        
-        const data = getData();
-        
-        const testimonialData = {
-            id: Date.now().toString(),
-            userId: currentUser.id,
-            userName: currentUser.name,
-            userEmail: currentUser.email,
-            projectName: projectName,
-            rating: rating,
-            content: content,
-            date: new Date().toISOString(),
-            visible: false,
-            featured: false
-        };
-        
-        data.testimonials.push(testimonialData);
-        saveData(data);
-        
-        return { 
-            success: true, 
-            message: 'Votre avis a été soumis et est en attente de validation'
-        };
+        this.renderHeader(config);
+        this.renderNavigation(config);
+        this.renderHero(config);
+        this.renderColors(config);
+        this.renderFooter(config);
+        this.renderStats(config);
+        this.renderServices(config);
+        this.initMap(config);
     },
     
-    getVisible(featuredOnly = false) {
-        const data = getData();
-        let testimonials = data.testimonials.filter(t => t.visible === true);
+    // HEADER
+    renderHeader(config) {
+        const logoBox = document.getElementById('logoBox');
+        const companyName = document.getElementById('companyName');
+        const companyTagline = document.getElementById('companyTagline');
+        const headerPhone = document.getElementById('headerPhone');
+        const footerCompanyName = document.getElementById('footerCompanyName');
+        const footerTagline = document.getElementById('footerTagline');
+        const footerLogoBox = document.getElementById('footerLogoBox');
         
-        if (featuredOnly) {
-            testimonials = testimonials.filter(t => t.featured === true);
+        if (logoBox) logoBox.textContent = config.header.logoText;
+        if (footerLogoBox) footerLogoBox.textContent = config.header.logoText;
+        if (companyName) companyName.textContent = config.header.companyName;
+        if (footerCompanyName) footerCompanyName.textContent = config.header.companyName;
+        if (companyTagline) companyTagline.textContent = config.header.companyTagline;
+        if (footerTagline) footerTagline.textContent = config.header.companyTagline;
+        if (headerPhone) {
+            headerPhone.textContent = config.header.phone;
+            headerPhone.href = `tel:${config.header.phone.replace(/\s/g, '')}`;
         }
-        
-        return testimonials.sort((a, b) => new Date(b.date) - new Date(a.date));
     },
     
-    getAll(filter = 'all') {
-        if (!Session.isAdminLoggedIn()) return [];
+    // NAVIGATION
+    renderNavigation(config) {
+        const navContainer = document.getElementById('mainNav');
+        const mobileNavContainer = document.getElementById('mobileNav');
         
-        const data = getData();
-        let testimonials = data.testimonials;
+        const navHTML = config.navigation.items.map(item => {
+            const activeClass = item.active ? 'active' : '';
+            return `<a href="${item.url}" class="${activeClass}">${item.label}</a>`;
+        }).join('');
         
-        if (filter === 'pending') {
-            testimonials = testimonials.filter(t => !t.visible);
-        } else if (filter === 'visible') {
-            testimonials = testimonials.filter(t => t.visible);
-        } else if (filter === 'featured') {
-            testimonials = testimonials.filter(t => t.featured);
+        if (navContainer) navContainer.innerHTML = navHTML;
+        if (mobileNavContainer) {
+            mobileNavContainer.innerHTML = navHTML + `
+                <div class="mobile-menu-footer">
+                    <a href="tel:${config.header.phone.replace(/\s/g, '')}" class="btn-primary">📞 Appeler maintenant</a>
+                </div>
+            `;
         }
-        
-        return testimonials.sort((a, b) => new Date(b.date) - new Date(a.date));
     },
     
-    moderate(id, updates) {
-        if (!Session.isAdminLoggedIn()) {
-            return { success: false, message: 'Accès non autorisé' };
-        }
+    // HERO
+    renderHero(config) {
+        const heroBadge = document.getElementById('heroBadge');
+        const heroTitle = document.getElementById('heroTitle');
+        const heroTitleHighlight = document.getElementById('heroTitleHighlight');
+        const heroDescription = document.getElementById('heroDescription');
+        const heroBg = document.getElementById('heroBg');
+        const heroBtn1 = document.getElementById('heroBtn1');
+        const heroBtn2 = document.getElementById('heroBtn2');
         
-        const data = getData();
-        const index = data.testimonials.findIndex(t => t.id === id);
+        if (heroBadge) heroBadge.textContent = config.hero.badge;
+        if (heroTitle) heroTitle.textContent = config.hero.title;
+        if (heroTitleHighlight) heroTitleHighlight.textContent = config.hero.titleHighlight;
+        if (heroDescription) heroDescription.textContent = config.hero.description;
+        if (heroBg) heroBg.style.backgroundImage = `url('${config.hero.backgroundImage}')`;
         
-        if (index === -1) {
-            return { success: false, message: 'Témoignage non trouvé' };
+        if (heroBtn1) {
+            heroBtn1.textContent = config.hero.button1.text;
+            heroBtn1.href = config.hero.button1.url;
         }
-        
-        if (updates.visible !== undefined) {
-            data.testimonials[index].visible = updates.visible;
+        if (heroBtn2) {
+            heroBtn2.textContent = config.hero.button2.text;
+            heroBtn2.href = config.hero.button2.url;
         }
-        if (updates.featured !== undefined) {
-            data.testimonials[index].featured = updates.featured;
-        }
-        
-        saveData(data);
-        return { success: true, message: 'Témoignage mis à jour' };
     },
     
-    delete(id) {
-        if (!Session.isAdminLoggedIn()) {
-            return { success: false, message: 'Accès non autorisé' };
-        }
+    // COULEURS
+    renderColors(config) {
+        const root = document.documentElement;
+        root.style.setProperty('--primary', config.colors.primary);
+        root.style.setProperty('--secondary', config.colors.secondary);
         
-        const data = getData();
-        data.testimonials = data.testimonials.filter(t => t.id !== id);
-        saveData(data);
-        return { success: true, message: 'Témoignage supprimé' };
+        // Met à jour la meta theme-color
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.content = config.colors.primary;
+    },
+    
+    // STATS
+    renderStats(config) {
+        const statsGrid = document.getElementById('statsGrid');
+        if (!statsGrid) return;
+        
+        const stats = [
+            { value: config.stats.experience, suffix: "+", label: "Années d'expérience", icon: "🏆" },
+            { value: config.stats.projects, suffix: "+", label: "Projets Réalisés", icon: "🛠️" },
+            { value: config.stats.satisfaction, suffix: "%", label: "Clients Satisfaits", icon: "⭐" },
+            { value: config.stats.thisYear, suffix: "", label: "Projets cette année", icon: "📈" }
+        ];
+        
+        statsGrid.innerHTML = stats.map((stat, i) => `
+            <div class="stat-box" style="animation-delay: ${i * 0.1}s">
+                <div class="stat-icon">${stat.icon}</div>
+                <div class="stat-number">${stat.value}${stat.suffix}</div>
+                <div class="stat-label">${stat.label}</div>
+            </div>
+        `).join('');
+    },
+    
+    // SERVICES
+    renderServices(config) {
+        const servicesGrid = document.getElementById('servicesGrid');
+        if (!servicesGrid) return;
+        
+        servicesGrid.innerHTML = config.services.map((service, i) => `
+            <div class="service-card" style="animation-delay: ${i * 0.15}s">
+                <div class="service-icon">${service.icon}</div>
+                <h3>${service.title}</h3>
+                <p>${service.description}</p>
+                <a href="services.html" class="service-link">En savoir plus →</a>
+            </div>
+        `).join('');
+    },
+    
+    // FOOTER
+    renderFooter(config) {
+        const footerAddress = document.getElementById('footerAddress');
+        const footerPhone = document.getElementById('footerPhone');
+        const footerEmail = document.getElementById('footerEmail');
+        const footerHours = document.getElementById('footerHours');
+        const zonesTags = document.getElementById('zonesTags');
+        const currentYear = document.getElementById('currentYear');
+        const copyrightName = document.getElementById('copyrightName');
+        
+        if (footerAddress) footerAddress.innerHTML = `📍 ${config.company.address}`;
+        if (footerPhone) footerPhone.innerHTML = `📞 <a href="tel:${config.header.phone.replace(/\s/g, '')}">${config.header.phone}</a>`;
+        if (footerEmail) footerEmail.innerHTML = `✉️ <a href="mailto:${config.company.email}">${config.company.email}</a>`;
+        if (footerHours) footerHours.innerHTML = `🕐 Lun-Ven: ${config.company.hours.weekday}`;
+        if (zonesTags) zonesTags.innerHTML = config.company.zones.map(z => `<span>${z}</span>`).join('');
+        if (currentYear) currentYear.textContent = new Date().getFullYear();
+        if (copyrightName) copyrightName.textContent = config.header.companyName;
+    },
+    
+    // CARTE LEAFLET
+    initMap(config) {
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer || typeof L === 'undefined') return;
+        
+        // Évite les initialisations multiples
+        if (mapContainer._leaflet_id) return;
+        
+        const map = L.map('map', {
+            scrollWheelZoom: false
+        }).setView([config.map.latitude, config.map.longitude], config.map.zoom);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(map);
+        
+        // Icône personnalisée
+        const customIcon = L.divIcon({
+            className: 'custom-marker',
+            html: `<div style="background: ${config.colors.secondary}; border: 3px solid white; border-radius: 50%; width: 36px; height: 36px; box-shadow: 0 4px 12px rgba(220,38,38,0.4); display: flex; align-items: center; justify-content: center;">📍</div>`,
+            iconSize: [36, 36],
+            iconAnchor: [18, 36],
+            popupAnchor: [0, -36]
+        });
+        
+        L.marker([config.map.latitude, config.map.longitude], { icon: customIcon })
+            .addTo(map)
+            .bindPopup(`<b>${config.map.markerTitle}</b><br>${config.map.markerAddress}`)
+            .openPopup();
     }
 };
 
 // ========================================
-// SYSTÈME CONTACT
+// MENU MOBILE
 // ========================================
 
-const ContactSystem = {
-    submit(formData) {
-        const data = getData();
-        
-        const lead = {
-            id: Date.now().toString(),
-            name: Security.sanitizeInput(formData.get('name') || ''),
-            email: (formData.get('email') || '').trim().toLowerCase(),
-            phone: (formData.get('phone') || '').trim(),
-            projectType: formData.get('projectType') || '',
-            address: Security.sanitizeInput(formData.get('address') || ''),
-            message: Security.sanitizeInput(formData.get('message') || ''),
-            date: new Date().toISOString(),
-            status: 'new'
-        };
-        
-        if (!lead.name || lead.name.length < 2) {
-            return { success: false, message: 'Veuillez entrer votre nom' };
-        }
-        
-        if (!Security.isValidEmail(lead.email)) {
-            return { success: false, message: 'Veuillez entrer un email valide' };
-        }
-        
-        if (!lead.message || lead.message.length < 10) {
-            return { success: false, message: 'Veuillez décrire votre projet (min 10 caractères)' };
-        }
-        
-        data.leads.push(lead);
-        saveData(data);
-        
-        return { success: true, message: 'Votre demande a été envoyée ! Nous vous répondrons sous 24h.' };
-    },
+function toggleMenu() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuToggle = document.querySelector('.menu-toggle');
     
-    getLeads(filter = 'all') {
-        if (!Session.isAdminLoggedIn()) return [];
-        
-        const data = getData();
-        let leads = data.leads;
+    if (mobileMenu && menuToggle) {
+        mobileMenu.classList.toggle('show');
+        menuToggle.classList.toggle('active');
+        document.body.style.overflow = mobileMenu.classList.contains('show') ? 'hidden' : '';
+    }
+}
+
+// ========================================
+// INITIALISATION
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialise le site avec la config
+    SiteRenderer.render();
+    
+    // Animation au scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+});
+
+// ========================================
+// EXPOSITION GLOBALE
+// ========================================
+window.toggleMenu = toggleMenu;
+window.AdminAuth = AdminAuth;
+window.getConfig = getConfig;
+window.saveConfig = saveConfig;
+a.leads;
         
         if (filter !== 'all') {
             leads = leads.filter(l => l.status === filter);
