@@ -370,16 +370,16 @@
             <div class="login-logo">🎨</div>
             <h2>Administration</h2>
             <p>Template Universel White-Label</p>
-            <form id="loginForm">
+            <form id="loginForm" onsubmit="return false;">
                 <div class="form-group">
                     <label>Identifiant</label>
-                    <input type="text" id="loginUsername" placeholder="cbr" required autocomplete="username">
+                    <input type="text" id="loginUsername" placeholder="Votre identifiant" required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>Mot de passe</label>
-                    <input type="password" id="loginPassword" placeholder="1098" required autocomplete="current-password">
+                    <input type="password" id="loginPassword" placeholder="••••••" required autocomplete="off">
                 </div>
-                <button type="submit" class="btn-login">Connexion</button>
+                <button type="submit" class="btn-login" id="loginBtn">Connexion</button>
                 <div class="login-error" id="loginError">❌ Identifiants incorrects</div>
             </form>
         </div>
@@ -742,12 +742,55 @@
         // ========================================
         document.addEventListener('DOMContentLoaded', function() {
             // Vérifie si déjà connecté
-            if (AdminAuth.isLoggedIn()) {
-                showAdminPanel();
+            const sessionJson = sessionStorage.getItem('whitelabel_admin_session');
+            let isLoggedIn = false;
+            
+            if (sessionJson) {
+                try {
+                    const session = JSON.parse(sessionJson);
+                    if (session.loggedIn && Date.now() < session.expires) {
+                        isLoggedIn = true;
+                    }
+                } catch (e) {}
             }
             
-            // Formulaire de login
-            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            if (isLoggedIn) {
+                console.log('Session existante trouvée, affichage du panel admin');
+                showAdminPanel();
+            } else {
+                console.log('Pas de session, affichage du login');
+            }
+            
+            // Formulaire de login - attaché de plusieurs façons pour être sûr
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleLogin(e);
+                return false;
+            });
+            
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleLogin(e);
+                return false;
+            });
+            
+            // Enter key sur les inputs
+            document.getElementById('loginUsername').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('loginPassword').focus();
+                }
+            });
+            
+            document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleLogin(e);
+                }
+            });
             
             // Formulaires
             document.getElementById('headerForm').addEventListener('submit', saveHeader);
@@ -781,21 +824,39 @@
         // CONNEXION
         // ========================================
         function handleLogin(e) {
-            e.preventDefault();
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
+            if (e) e.preventDefault();
             
-            console.log('Login attempt:', username, password);
+            const usernameInput = document.getElementById('loginUsername');
+            const passwordInput = document.getElementById('loginPassword');
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
             
-            const result = AdminAuth.login(username, password);
+            console.log('=== LOGIN ATTEMPT ===');
+            console.log('Username:', username);
+            console.log('Password:', password);
             
-            if (result.success) {
+            // Vérification directe sans dépendre de app.js
+            if (username === 'cbr' && password === '1098') {
+                console.log('✅ Login successful!');
+                
+                // Créer la session
+                const session = {
+                    loggedIn: true,
+                    timestamp: Date.now(),
+                    expires: Date.now() + (4 * 60 * 60 * 1000)
+                };
+                sessionStorage.setItem('whitelabel_admin_session', JSON.stringify(session));
+                
                 showAdminPanel();
                 showToast('Connexion réussie !', 'success');
             } else {
+                console.log('❌ Login failed!');
                 document.getElementById('loginError').classList.add('show');
-                document.getElementById('loginPassword').value = '';
+                passwordInput.value = '';
+                passwordInput.focus();
             }
+            
+            return false;
         }
         
         function showAdminPanel() {
@@ -805,7 +866,7 @@
         }
         
         function logout() {
-            AdminAuth.logout();
+            sessionStorage.removeItem('whitelabel_admin_session');
             location.reload();
         }
         
