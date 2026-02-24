@@ -3,179 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration | Template Universel</title>
+    <title>Administration | CBR Travaux</title>
     <meta name="robots" content="noindex, nofollow">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- LEAFLET CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- Leaflet CSS pour la prévisualisation de la carte -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
     
     <style>
         :root {
-            --main-color: #f97316;
-            --accent-color: #dc2626;
-            --dark: #111827;
-            --light: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --info: #3b82f6;
+            --primary: #f97316; --primary-dark: #ea580c; --secondary: #dc2626;
+            --dark: #111827; --dark-light: #1f2937; --gray-900: #111827;
+            --gray-800: #1f2937; --gray-700: #374151; --gray-600: #4b5563;
+            --gray-500: #6b7280; --gray-400: #9ca3af; --gray-300: #d1d5db;
+            --gray-200: #e5e7eb; --gray-100: #f3f4f6; --gray-50: #f9fafb;
+            --white: #ffffff; --success: #10b981; --warning: #f59e0b;
+            --error: #ef4444; --info: #3b82f6;
             --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
-            --radius-md: 10px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
+            --radius-md: 10px; --radius-lg: 16px; --radius-xl: 20px;
         }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--gray-900); line-height: 1.6; }
         
-        /* ========================================
-           LOGIN SCREEN
-           ======================================== */
-        .login-screen { 
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%); 
-        }
-        .login-box { 
-            background: white; 
-            padding: 48px; 
-            border-radius: var(--radius-xl); 
-            width: 90%; 
-            max-width: 420px; 
-            box-shadow: var(--shadow-lg); 
-        }
-        .login-logo { 
-            width: 72px; 
-            height: 72px; 
-            background: linear-gradient(135deg, var(--main-color) 0%, var(--accent-color) 100%); 
-            border-radius: var(--radius-lg); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            font-size: 28px; 
-            font-weight: 800; 
-            margin: 0 auto 24px; 
-        }
+        .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--dark-light) 0%, var(--dark) 100%); }
+        .login-box { background: white; padding: 48px; border-radius: var(--radius-xl); width: 90%; max-width: 420px; box-shadow: var(--shadow-lg); }
+        .login-logo { width: 72px; height: 72px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; font-weight: 800; margin: 0 auto 24px; }
         .login-box h2 { text-align: center; margin-bottom: 8px; color: var(--dark); }
         .login-box > p { text-align: center; color: var(--gray-500); margin-bottom: 32px; font-size: 15px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--gray-700); font-size: 14px; }
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; 
-            padding: 14px 16px; 
-            border: 2px solid var(--gray-200); 
-            border-radius: var(--radius-md); 
-            font-size: 15px; 
-            transition: all 0.3s; 
-            font-family: inherit; 
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
-            outline: none; 
-            border-color: var(--main-color); 
-            box-shadow: 0 0 0 4px rgba(249,115,22,0.1); 
-        }
-        .btn-login { 
-            width: 100%; 
-            padding: 16px; 
-            background: linear-gradient(135deg, var(--main-color) 0%, var(--accent-color) 100%); 
-            color: white; 
-            border: none; 
-            border-radius: var(--radius-md); 
-            font-size: 16px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-        }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px 16px; border: 2px solid var(--gray-200); border-radius: var(--radius-md); font-size: 15px; transition: all 0.3s; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(249,115,22,0.1); }
+        .btn-login { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -10px rgba(249,115,22,0.5); }
-        .login-error { 
-            color: var(--error); 
-            text-align: center; 
-            margin-top: 16px; 
-            font-size: 14px; 
-            padding: 12px; 
-            background: #fef2f2; 
-            border-radius: var(--radius-md); 
-            display: none; 
-        }
+        .login-error { color: var(--error); text-align: center; margin-top: 16px; font-size: 14px; padding: 12px; background: #fef2f2; border-radius: var(--radius-md); display: none; }
         .login-error.show { display: block; }
         
-        /* ========================================
-           ADMIN PANEL
-           ======================================== */
         .admin-panel { display: none; min-height: 100vh; }
-        .admin-header { 
-            background: white; 
-            padding: 16px 24px; 
-            box-shadow: var(--shadow); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            flex-wrap: wrap; 
-            gap: 16px; 
-        }
+        .admin-header { background: white; padding: 16px 24px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 16px; }
         .admin-brand { display: flex; align-items: center; gap: 12px; }
-        .admin-brand-logo { 
-            width: 40px; 
-            height: 40px; 
-            background: linear-gradient(135deg, var(--main-color) 0%, var(--accent-color) 100%); 
-            border-radius: var(--radius-md); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            font-weight: 700; 
-            font-size: 14px; 
-        }
-        .admin-nav { 
-            display: flex; 
-            gap: 8px; 
-            flex-wrap: wrap; 
-            overflow-x: auto; 
-            padding-bottom: 4px;
-        }
-        .admin-nav button { 
-            padding: 10px 18px; 
-            border: none; 
-            background: var(--gray-100); 
-            border-radius: var(--radius-md); 
-            cursor: pointer; 
-            font-weight: 600; 
-            font-size: 13px; 
-            color: var(--gray-600); 
-            transition: all 0.3s; 
-            white-space: nowrap;
-        }
+        .admin-brand-logo { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+        .admin-nav { display: flex; gap: 8px; flex-wrap: wrap; }
+        .admin-nav button { padding: 10px 18px; border: none; background: var(--gray-100); border-radius: var(--radius-md); cursor: pointer; font-weight: 600; font-size: 13px; color: var(--gray-600); transition: all 0.3s; }
         .admin-nav button:hover { background: var(--gray-200); color: var(--dark); }
-        .admin-nav button.active { 
-            background: linear-gradient(135deg, var(--main-color) 0%, var(--accent-color) 100%); 
-            color: white; 
-        }
-        .btn-logout { 
-            padding: 10px 20px; 
-            background: #fef2f2; 
-            color: var(--error); 
-            border: none; 
-            border-radius: var(--radius-md); 
-            font-weight: 600; 
-            cursor: pointer; 
-        }
+        .admin-nav button.active { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; }
+        .btn-logout { padding: 10px 20px; background: #fef2f2; color: var(--error); border: none; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; }
         .btn-logout:hover { background: #fee2e2; }
         
         .admin-content { padding: 24px; max-width: 1400px; margin: 0 auto; }
@@ -183,145 +58,50 @@
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .section-header { margin-bottom: 24px; }
-        .section-header h2 { font-size: 1.5rem; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
-        .section-header p { color: var(--gray-500); font-size: 14px; }
-        
-        /* ========================================
-           CARDS & COMPONENTS
-           ======================================== */
-        .card { 
-            background: white; 
-            border-radius: var(--radius-lg); 
-            padding: 24px; 
-            margin-bottom: 24px; 
-            box-shadow: var(--shadow); 
-            border: 1px solid var(--gray-200); 
-        }
-        .card-title { 
-            font-size: 1.125rem; 
-            font-weight: 700; 
-            margin-bottom: 20px; 
-            color: var(--dark); 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-        }
-        .card-subtitle {
-            font-size: 0.875rem;
-            color: var(--gray-500);
-            margin-bottom: 16px;
-            margin-top: -12px;
-        }
+        .card { background: white; border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow); border: 1px solid var(--gray-100); }
+        .card-title { font-size: 1.125rem; font-weight: 700; margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px; }
         
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 24px; }
-        .stat-card { 
-            background: white; 
-            border-radius: var(--radius-lg); 
-            padding: 24px; 
-            box-shadow: var(--shadow); 
-            border-left: 4px solid var(--main-color); 
-        }
+        .stat-card { background: white; border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); border-left: 4px solid var(--primary); }
         .stat-card h4 { font-size: 13px; color: var(--gray-500); margin-bottom: 12px; text-transform: uppercase; }
         .stat-card .number { font-size: 2.5rem; font-weight: 800; color: var(--dark); line-height: 1; }
         
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .form-row-2 { grid-template-columns: repeat(2, 1fr); }
-        .form-row-3 { grid-template-columns: repeat(3, 1fr); }
-        .form-row-4 { grid-template-columns: repeat(4, 1fr); }
-        
-        .btn { 
-            padding: 12px 24px; 
-            border-radius: var(--radius-md); 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-            border: none; 
-            font-size: 14px; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 8px; 
-        }
-        .btn-primary { 
-            background: linear-gradient(135deg, var(--main-color) 0%, var(--accent-color) 100%); 
-            color: white; 
-        }
+        .btn { padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.3s; border: none; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; }
         .btn-secondary { background: var(--gray-100); color: var(--gray-700); }
-        .btn-secondary:hover { background: var(--gray-200); }
         .btn-danger { background: #fef2f2; color: var(--error); }
-        .btn-danger:hover { background: #fee2e2; }
-        .btn-success { background: #d1fae5; color: #065f46; }
         
         .data-list { display: flex; flex-direction: column; gap: 12px; }
-        .data-item { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 16px; 
-            background: var(--gray-50); 
-            border-radius: var(--radius-md); 
-            border: 1px solid var(--gray-200);
-        }
+        .data-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--gray-50); border-radius: var(--radius-md); }
         .data-item-content { display: flex; align-items: center; gap: 16px; flex: 1; }
-        .data-item-avatar { 
-            width: 44px; 
-            height: 44px; 
-            background: linear-gradient(135deg, var(--main-color), var(--accent-color)); 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: white; 
-            font-weight: 700; 
-            font-size: 16px; 
-            flex-shrink: 0;
-        }
-        .data-item-info { flex: 1; }
-        .data-item-info h4 { font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 2px; }
-        .data-item-info p { font-size: 13px; color: var(--gray-500); }
+        .data-item-avatar { width: 44px; height: 44px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px; }
         .data-item-actions { display: flex; gap: 8px; }
         
         .filter-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .filter-tab { 
-            padding: 8px 16px; 
-            background: var(--gray-100); 
-            border: none; 
-            border-radius: 20px; 
-            cursor: pointer; 
-            font-size: 13px; 
-            font-weight: 600; 
-            color: var(--gray-600); 
-        }
+        .filter-tab { padding: 8px 16px; background: var(--gray-100); border: none; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--gray-600); }
         .filter-tab.active { background: var(--dark); color: white; }
         
-        .toggle-switch { 
-            position: relative; 
-            width: 52px; 
-            height: 28px; 
-            background: var(--gray-300); 
-            border-radius: 14px; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-        }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; border-radius: var(--radius-xl); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid var(--gray-100); }
+        .modal-close { width: 36px; height: 36px; border: none; background: var(--gray-100); border-radius: 50%; cursor: pointer; font-size: 20px; }
+        .modal-body { padding: 24px; }
+        
+        .toast-container { position: fixed; top: 100px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 12px; }
+        .toast { background: white; padding: 16px 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px; min-width: 300px; border-left: 4px solid var(--primary); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--error); }
+        
+        .toggle-switch { position: relative; width: 52px; height: 28px; background: var(--gray-300); border-radius: 14px; cursor: pointer; transition: all 0.3s; }
         .toggle-switch.active { background: var(--success); }
-        .toggle-switch::after { 
-            content: ''; 
-            position: absolute; 
-            width: 24px; 
-            height: 24px; 
-            background: white; 
-            border-radius: 50%; 
-            top: 2px; 
-            left: 2px; 
-            transition: all 0.3s; 
-        }
+        .toggle-switch::after { content: ''; position: absolute; width: 24px; height: 24px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: all 0.3s; }
         .toggle-switch.active::after { left: 26px; }
         
         .empty-state { text-align: center; padding: 60px 20px; color: var(--gray-500); }
         
-        /* ========================================
-           COLOR PICKER STYLES
-           ======================================== */
+        /* Styles pour le sélecteur de couleur */
         .color-picker-wrapper {
             display: flex;
             align-items: center;
@@ -344,277 +124,68 @@
             color: var(--gray-600);
         }
         
-        /* ========================================
-           MAP SECTION - CORRIGÉ & ENCADRÉ
-           ======================================== */
-        .map-section-container {
-            border: 2px solid var(--gray-200);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            background: white;
-        }
-        .map-preview-box {
-            height: 300px;
-            width: 100%;
-            position: relative;
-            background: var(--gray-100);
-        }
+        /* Styles pour la carte de prévisualisation */
         #adminMapPreview {
-            height: 100%;
+            height: 350px;
             width: 100%;
-            z-index: 1;
-        }
-        .map-coordinates-bar {
-            display: flex;
-            gap: 16px;
-            padding: 12px 16px;
-            background: var(--gray-50);
-            border-bottom: 1px solid var(--gray-200);
-            font-size: 13px;
-            flex-wrap: wrap;
-        }
-        .coord-badge {
-            background: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--gray-200);
-            font-family: monospace;
-        }
-        .coord-badge strong {
-            color: var(--main-color);
-        }
-        .map-form-section {
-            padding: 20px;
-            background: white;
-        }
-        .map-help-box {
-            background: #eff6ff;
-            border-left: 4px solid var(--info);
-            padding: 16px;
             border-radius: var(--radius-md);
-            margin-bottom: 20px;
-            font-size: 13px;
-            color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+            margin-top: 16px;
         }
-        .map-help-box strong {
-            color: var(--info);
-            display: block;
+        
+        .map-instructions {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .map-instructions h4 {
+            color: #1e40af;
             margin-bottom: 8px;
             font-size: 14px;
         }
-        .map-help-box a {
-            color: var(--main-color);
-            text-decoration: none;
-        }
-        .map-help-box a:hover {
-            text-decoration: underline;
+        .map-instructions p {
+            color: #3b82f6;
+            font-size: 13px;
+            margin: 0;
         }
         
-        /* ========================================
-           PREVIEW BOXES
-           ======================================== */
-        .preview-box {
-            border: 2px dashed var(--gray-300);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            text-align: center;
-            background: var(--gray-50);
-            margin-bottom: 16px;
-        }
-        .preview-logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--main-color), var(--accent-color));
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 32px;
-            font-weight: 800;
-            margin: 0 auto 16px;
-        }
-        .preview-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: var(--radius-lg);
-        }
-        
-        /* ========================================
-           SERVICE EDITOR
-           ======================================== */
-        .service-editor {
+        .coordinates-display {
             background: var(--gray-50);
             border-radius: var(--radius-md);
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid var(--gray-200);
-        }
-        .service-editor-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .service-editor-header h4 {
-            font-size: 16px;
-            font-weight: 600;
-        }
-        .service-features-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .service-feature-tag {
-            background: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            border: 1px solid var(--gray-200);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .service-feature-tag button {
-            background: none;
-            border: none;
-            color: var(--error);
-            cursor: pointer;
-            font-size: 14px;
-            padding: 0;
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 12px 16px;
+            margin-top: 16px;
+            font-family: monospace;
+            font-size: 13px;
+            color: var(--gray-600);
         }
         
-        /* ========================================
-           MODALS
-           ======================================== */
-        .modal { 
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.8); 
-            z-index: 1000; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px; 
-        }
-        .modal.show { display: flex; }
-        .modal-content { 
-            background: white; 
-            border-radius: var(--radius-xl); 
-            max-width: 700px; 
-            width: 100%; 
-            max-height: 90vh; 
-            overflow-y: auto; 
-        }
-        .modal-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 24px; 
-            border-bottom: 1px solid var(--gray-200); 
-        }
-        .modal-close { 
-            width: 36px; 
-            height: 36px; 
-            border: none; 
-            background: var(--gray-100); 
-            border-radius: 50%; 
-            cursor: pointer; 
-            font-size: 20px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-body { padding: 24px; }
-        
-        /* ========================================
-           TOASTS
-           ======================================== */
-        .toast-container { 
-            position: fixed; 
-            top: 100px; 
-            right: 24px; 
-            z-index: 2000; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-        }
-        .toast { 
-            background: white; 
-            padding: 16px 20px; 
-            border-radius: var(--radius-lg); 
-            box-shadow: var(--shadow-lg); 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            min-width: 300px; 
-            border-left: 4px solid var(--main-color); 
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        .toast.success { border-left-color: var(--success); }
-        .toast.error { border-left-color: var(--error); }
-        .toast.warning { border-left-color: var(--warning); }
-        .toast.info { border-left-color: var(--info); }
-        
-        /* ========================================
-           RESPONSIVE
-           ======================================== */
         @media (max-width: 768px) {
             .admin-header { flex-direction: column; align-items: stretch; }
-            .admin-nav { 
-                order: 3; 
-                width: 100%;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            .form-row, .form-row-2, .form-row-3, .form-row-4 { grid-template-columns: 1fr; }
-            .data-item { flex-direction: column; align-items: flex-start; gap: 12px; }
-            .data-item-actions { width: 100%; justify-content: flex-end; }
-            .map-coordinates-bar { flex-direction: column; gap: 8px; }
-            .login-box { padding: 32px 24px; }
+            .admin-nav { overflow-x: auto; }
+            .form-row { grid-template-columns: 1fr; }
+            .data-item { flex-direction: column; align-items: flex-start; }
+            #adminMapPreview { height: 250px; }
         }
-        
-        /* ========================================
-           UTILITAIRES
-           ======================================== */
-        .text-muted { color: var(--gray-500); font-size: 13px; }
-        .text-small { font-size: 12px; }
-        .mb-0 { margin-bottom: 0 !important; }
-        .mt-2 { margin-top: 16px; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .gap-2 { gap: 16px; }
-        .w-full { width: 100%; }
     </style>
+<base target="_blank">
 </head>
 <body>
-    <!-- ========================================
-         LOGIN SCREEN
-         ======================================== -->
+    <!-- LOGIN SCREEN -->
     <div class="login-screen" id="loginScreen">
         <div class="login-box">
-            <div class="login-logo" id="loginLogoBox">CBR</div>
+            <div class="login-logo">CBR</div>
             <h2>Administration</h2>
-            <p id="loginSubtitle">Template Universel</p>
-            <form id="adminLoginForm">
+            <p>Espace réservé - CBR Travaux</p>
+            <form class="login-form" id="adminLoginForm">
                 <div class="form-group">
                     <label>Identifiant</label>
-                    <input type="text" id="adminUsername" placeholder="admin" required>
+                    <input type="text" id="adminUsername" placeholder="cbr" required>
                 </div>
                 <div class="form-group">
                     <label>Mot de passe</label>
-                    <input type="password" id="adminPassword" placeholder="••••••••" required>
+                    <input type="password" id="adminPassword" placeholder="••••" required>
                 </div>
                 <button type="submit" class="btn-login">Connexion</button>
                 <div class="login-error" id="loginError">❌ Identifiants incorrects</div>
@@ -622,578 +193,334 @@
         </div>
     </div>
 
-    <!-- ========================================
-         ADMIN PANEL
-         ======================================== -->
+    <!-- ADMIN PANEL -->
     <div class="admin-panel" id="adminPanel">
         <header class="admin-header">
             <div class="admin-brand">
-                <div class="admin-brand-logo" id="adminLogoBox">CBR</div>
+                <div class="admin-brand-logo">CBR</div>
                 <div>
                     <h1>Tableau de bord</h1>
-                    <p id="adminCompanyName">Template Universel</p>
+                    <p id="adminCompanyName">CBR Travaux</p>
                 </div>
             </div>
             <nav class="admin-nav">
                 <button class="active" onclick="showSection('dashboard')">📊 Dashboard</button>
-                <button onclick="showSection('identity')">🏢 Identité</button>
-                <button onclick="showSection('design')">🎨 Design</button>
-                <button onclick="showSection('content')">📝 Contenu</button>
-                <button onclick="showSection('services')">🛠️ Services</button>
+                <button onclick="showSection('company')">🏢 Entreprise</button>
+                <button onclick="showSection('customize')">🎨 Personnalisation</button>
                 <button onclick="showSection('map')">🗺️ Carte</button>
+                <button onclick="showSection('services')">🛠️ Services</button>
                 <button onclick="showSection('portfolio')">📸 Portfolio</button>
-                <button onclick="showSection('leads')">📨 Leads</button>
                 <button onclick="showSection('testimonials')">💬 Avis</button>
-                <button onclick="showSection('security')">🔒 Sécurité</button>
+                <button onclick="showSection('leads')">📨 Leads</button>
+                <button onclick="showSection('seo')">🔍 SEO</button>
             </nav>
             <button class="btn-logout" onclick="adminLogout()">🚪 Déconnexion</button>
         </header>
 
         <main class="admin-content">
-            
-            <!-- ========================================
-                 DASHBOARD
-                 ======================================== -->
+            <!-- DASHBOARD -->
             <section class="section active" id="dashboard">
                 <div class="section-header">
                     <h2>📊 Tableau de bord</h2>
                     <p>Vue d'ensemble de votre activité</p>
                 </div>
                 <div class="stats-grid" id="dashboardStats"></div>
-                
                 <div class="card">
                     <h3 class="card-title">⚡ Activité récente</h3>
                     <div id="recentActivity"><p class="empty-state">Chargement...</p></div>
                 </div>
-                
-                <div class="card">
-                    <h3 class="card-title">💾 Gestion des données</h3>
-                    <div class="form-row" style="margin-bottom: 0;">
-                        <button class="btn btn-secondary" onclick="exportConfig()">
-                            📥 Exporter la configuration
-                        </button>
-                        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
-                            📤 Importer une configuration
-                        </button>
-                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importConfig(this)">
-                        <button class="btn btn-danger" onclick="resetAllData()">
-                            🗑️ Réinitialiser tout
-                        </button>
-                    </div>
-                </div>
             </section>
 
-            <!-- ========================================
-                 IDENTITÉ ENTREPRISE
-                 ======================================== -->
-            <section class="section" id="identity">
+            <!-- COMPANY -->
+            <section class="section" id="company">
                 <div class="section-header">
-                    <h2>🏢 Identité de l'entreprise</h2>
-                    <p>Nom, slogan, coordonnées et logo</p>
+                    <h2>🏢 Informations entreprise</h2>
+                    <p>Modifiez le nom, l'adresse et les coordonnées de votre entreprise</p>
                 </div>
-                
                 <div class="card">
                     <h3 class="card-title">📝 Informations générales</h3>
-                    <form id="identityForm">
+                    <form id="companyForm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Nom complet de l'entreprise *</label>
-                                <input type="text" id="idCompanyName" required placeholder="C.B.R. Île-de-France">
+                                <label>Nom de l'entreprise *</label>
+                                <input type="text" id="compName" required placeholder="CBR Travaux">
                             </div>
                             <div class="form-group">
-                                <label>Nom court (pour logo) *</label>
-                                <input type="text" id="idShortName" required placeholder="CBR" maxlength="10">
+                                <label>Slogan / Tagline</label>
+                                <input type="text" id="compSlogan" placeholder="Maçonnerie & Rénovation">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Slogan / Tagline</label>
-                                <input type="text" id="idTagline" placeholder="Maçonnerie & Rénovation">
+                                <label>Années d'expérience</label>
+                                <input type="number" id="compYears" min="0" placeholder="15">
                             </div>
                             <div class="form-group">
-                                <label>Slogan Hero (accueil)</label>
-                                <input type="text" id="idSlogan" placeholder="L'excellence depuis 15 ans">
+                                <label>Téléphone *</label>
+                                <input type="tel" id="compPhone" required placeholder="06 12 34 56 78">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Description courte</label>
-                            <textarea id="idDescription" rows="3" placeholder="Description de l'entreprise..."></textarea>
-                        </div>
-                        
-                        <h3 class="card-title" style="margin-top: 32px;">📞 Coordonnées</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Téléphone *</label>
-                                <input type="tel" id="idPhone" required placeholder="06 12 34 56 78">
-                            </div>
-                            <div class="form-group">
-                                <label>Email *</label>
-                                <input type="email" id="idEmail" required placeholder="contact@entreprise.fr">
-                            </div>
+                            <label>Email *</label>
+                            <input type="email" id="compEmail" required placeholder="contact@cbr-travaux.fr">
                         </div>
                         <div class="form-group">
                             <label>Adresse complète *</label>
-                            <input type="text" id="idAddress" required placeholder="33 Rue des Pivoines, 94140 Alfortville">
-                        </div>
-                        <div class="form-row form-row-4">
-                            <div class="form-group">
-                                <label>Années d'expérience</label>
-                                <input type="number" id="idExperience" min="0" value="15">
-                            </div>
-                            <div class="form-group">
-                                <label>Horaires Semaine</label>
-                                <input type="text" id="idHoursWeek" placeholder="7h00 - 19h00">
-                            </div>
-                            <div class="form-group">
-                                <label>Horaires Samedi</label>
-                                <input type="text" id="idHoursSat" placeholder="8h00 - 17h00">
-                            </div>
-                            <div class="form-group">
-                                <label>Horaires Dimanche</label>
-                                <input type="text" id="idHoursSun" placeholder="Fermé">
-                            </div>
-                        </div>
-                        
-                        <h3 class="card-title" style="margin-top: 32px;">🎨 Logo & Médias</h3>
-                        <div class="preview-box" id="logoPreview">
-                            <div class="preview-logo" id="logoPreviewBox">CBR</div>
-                            <p class="text-muted">Aperçu du logo actuel</p>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>URL du Logo (laissez vide pour texte)</label>
-                                <input type="url" id="idLogoUrl" placeholder="https://...">
-                                <p class="text-muted">Format recommandé: PNG transparent, 200x200px</p>
-                            </div>
-                            <div class="form-group">
-                                <label>URL Favicon</label>
-                                <input type="url" id="idFaviconUrl" placeholder="https://.../favicon.ico">
-                                <p class="text-muted">Format: .ico ou .png 32x32px</p>
-                            </div>
+                            <input type="text" id="compAddress" required placeholder="33 Rue des Pivoines, 94140 Alfortville">
                         </div>
                         <div class="form-group">
-                            <label>Image de fond Hero (accueil)</label>
-                            <input type="url" id="idHeroImage" placeholder="https://images.unsplash.com/...">
+                            <label>Description courte</label>
+                            <textarea id="compDesc" rows="3" placeholder="Description de votre entreprise..."></textarea>
+                        </div>
+                        
+                        <h3 class="card-title" style="margin-top: 32px;">🕐 Horaires d'ouverture</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Lundi - Vendredi</label>
+                                <input type="text" id="hoursWeekday" placeholder="7h00 - 19h00">
+                            </div>
+                            <div class="form-group">
+                                <label>Samedi</label>
+                                <input type="text" id="hoursSaturday" placeholder="8h00 - 17h00">
+                            </div>
+                            <div class="form-group">
+                                <label>Dimanche</label>
+                                <input type="text" id="hoursSunday" placeholder="Fermé">
+                            </div>
                         </div>
                         
                         <h3 class="card-title" style="margin-top: 32px;">🗺️ Zones d'intervention</h3>
                         <div class="form-group">
-                            <label>Villes desservies (séparées par des virgules)</label>
-                            <input type="text" id="idZones" placeholder="Alfortville, Créteil, Paris, Val-de-Marne...">
+                            <input type="text" id="compZones" placeholder="Alfortville, Paris, Val-de-Marne...">
+                            <p style="font-size: 13px; color: var(--gray-500); margin-top: 6px;">Séparées par des virgules</p>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary" style="margin-top: 8px;">
-                            💾 Sauvegarder l'identité
-                        </button>
+                        <button type="submit" class="btn btn-primary">💾 Sauvegarder les modifications</button>
                     </form>
                 </div>
             </section>
 
-            <!-- ========================================
-                 DESIGN SYSTEM
-                 ======================================== -->
-            <section class="section" id="design">
+            <!-- CUSTOMIZE -->
+            <section class="section" id="customize">
                 <div class="section-header">
-                    <h2>🎨 Personnalisation du design</h2>
-                    <p>Couleurs, typographie et apparence</p>
+                    <h2>🎨 Personnalisation</h2>
+                    <p>Changez les couleurs de votre site en temps réel</p>
                 </div>
-                
                 <div class="card">
-                    <h3 class="card-title">🎨 Couleurs principales</h3>
-                    <p class="card-subtitle">Ces couleurs s'appliquent instantanément à tout le site</p>
-                    
-                    <form id="designForm">
-                        <div class="form-row form-row-2">
-                            <div class="form-group">
-                                <label>Couleur Principale (boutons, titres)</label>
-                                <div class="color-picker-wrapper">
-                                    <input type="color" id="designPrimary" value="#f97316">
-                                    <span class="color-value" id="designPrimaryValue">#f97316</span>
-                                </div>
-                                <p class="text-muted">Orange par défaut - Utilisée pour les CTA et accents</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Couleur Secondaire (hover, accents)</label>
-                                <div class="color-picker-wrapper">
-                                    <input type="color" id="designSecondary" value="#dc2626">
-                                    <span class="color-value" id="designSecondaryValue">#dc2626</span>
-                                </div>
-                                <p class="text-muted">Rouge par défaut - Utilisée pour les hover et marqueurs</p>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row form-row-2">
-                            <div class="form-group">
-                                <label>Couleur Texte (sombre)</label>
-                                <div class="color-picker-wrapper">
-                                    <input type="color" id="designDark" value="#111827">
-                                    <span class="color-value" id="designDarkValue">#111827</span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Couleur Fond (clair)</label>
-                                <div class="color-picker-wrapper">
-                                    <input type="color" id="designLight" value="#f9fafb">
-                                    <span class="color-value" id="designLightValue">#f9fafb</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <h3 class="card-title" style="margin-top: 32px;">✍️ Typographie</h3>
+                    <h3 class="card-title">🎨 Couleurs du site</h3>
+                    <form id="customizeForm">
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Police des titres</label>
-                                <select id="designHeadingFont">
-                                    <option value="'Inter', sans-serif">Inter (moderne)</option>
-                                    <option value="'Poppins', sans-serif">Poppins (arrondie)</option>
-                                    <option value="'Roboto', sans-serif">Roboto (standard)</option>
-                                    <option value="'Playfair Display', serif">Playfair (élégante)</option>
-                                    <option value="'Montserrat', sans-serif">Montserrat (geometric)</option>
-                                </select>
+                                <label>Couleur principale</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="primaryColor" value="#f97316">
+                                    <span class="color-value" id="primaryColorValue">#f97316</span>
+                                </div>
+                                <p style="font-size: 13px; color: var(--gray-500); margin-top: 6px;">Utilisée pour les boutons principaux et les accents</p>
                             </div>
                             <div class="form-group">
-                                <label>Police du texte</label>
-                                <select id="designTextFont">
-                                    <option value="'Inter', sans-serif">Inter (moderne)</option>
-                                    <option value="'Roboto', sans-serif">Roboto (standard)</option>
-                                    <option value="'Open Sans', sans-serif">Open Sans (lisible)</option>
-                                    <option value="'Lato', sans-serif">Lato (professionnel)</option>
-                                </select>
+                                <label>Couleur secondaire</label>
+                                <div class="color-picker-wrapper">
+                                    <input type="color" id="secondaryColor" value="#dc2626">
+                                    <span class="color-value" id="secondaryColorValue">#dc2626</span>
+                                </div>
+                                <p style="font-size: 13px; color: var(--gray-500); margin-top: 6px;">Utilisée pour les marqueurs et les alertes</p>
                             </div>
                         </div>
                         
-                        <div class="preview-box" style="margin-top: 24px;">
-                            <h4 style="color: var(--main-color); margin-bottom: 8px;">Aperçu des couleurs</h4>
-                            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                                <div style="width: 60px; height: 60px; border-radius: 12px; background: var(--main-color);"></div>
-                                <div style="width: 60px; height: 60px; border-radius: 12px; background: var(--accent-color);"></div>
-                                <div style="width: 60px; height: 60px; border-radius: 12px; background: var(--dark);"></div>
-                                <div style="width: 60px; height: 60px; border-radius: 12px; background: var(--light); border: 1px solid var(--gray-200);"></div>
-                            </div>
-                            <p class="text-muted mt-2">Les changements s'appliquent après sauvegarde</p>
+                        <h3 class="card-title" style="margin-top: 32px;">🖼️ Image d'en-tête</h3>
+                        <div class="form-group">
+                            <label>URL de l'image Hero (bannière principale)</label>
+                            <input type="url" id="heroImageUrl" placeholder="https://...">
+                            <p style="font-size: 13px; color: var(--gray-500); margin-top: 6px;">Laissez vide pour utiliser l'image par défaut</p>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary" style="margin-top: 16px;">
-                            💾 Appliquer le design
-                        </button>
+                        <button type="submit" class="btn btn-primary">💾 Appliquer les changements</button>
                     </form>
                 </div>
             </section>
 
-            <!-- ========================================
-                 CONTENU ÉDITABLE
-                 ======================================== -->
-            <section class="section" id="content">
-                <div class="section-header">
-                    <h2>📝 Contenu du site</h2>
-                    <p>Textes de la page d'accueil et sections</p>
-                </div>
-                
-                <div class="card">
-                    <h3 class="card-title">🏠 Section Hero (Accueil)</h3>
-                    <form id="contentForm">
-                        <div class="form-group">
-                            <label>Titre principal (ligne 1)</label>
-                            <input type="text" id="contentHeroTitle" placeholder="Votre Projet de Construction">
-                        </div>
-                        <div class="form-group">
-                            <label>Sous-titre stylisé (ligne 2)</label>
-                            <input type="text" id="contentHeroSubtitle" placeholder="Entre des Mains Expertes">
-                            <p class="text-muted">Ce texte aura la couleur dégradée</p>
-                        </div>
-                        <div class="form-group">
-                            <label>Description sous le titre</label>
-                            <textarea id="contentHeroText" rows="2" placeholder="Description de l'entreprise..."></textarea>
-                        </div>
-                        <div class="form-row form-row-2">
-                            <div class="form-group">
-                                <label>Texte bouton principal</label>
-                                <input type="text" id="contentCtaPrimary" placeholder="📞 Demander un Devis Gratuit">
-                            </div>
-                            <div class="form-group">
-                                <label>Texte bouton secondaire</label>
-                                <input type="text" id="contentCtaSecondary" placeholder="Voir nos Réalisations">
-                            </div>
-                        </div>
-                        
-                        <h3 class="card-title" style="margin-top: 32px;">📊 Section Statistiques</h3>
-                        <div id="statsEditor">
-                            <!-- Généré dynamiquement -->
-                        </div>
-                        
-                        <h3 class="card-title" style="margin-top: 32px;">📖 Section À propos</h3>
-                        <div class="form-group">
-                            <label>Titre "Qui sommes-nous ?"</label>
-                            <input type="text" id="contentAboutTitle" placeholder="Qui sommes-nous ?">
-                        </div>
-                        <div class="form-group">
-                            <label>Texte de présentation</label>
-                            <textarea id="contentAboutText" rows="4" placeholder="Texte de présentation de l'entreprise..."></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary" style="margin-top: 8px;">
-                            💾 Sauvegarder le contenu
-                        </button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- ========================================
-                 SERVICES (3-4 BLOCS ÉDITABLES)
-                 ======================================== -->
-            <section class="section" id="services">
-                <div class="section-header">
-                    <h2>🛠️ Services proposés</h2>
-                    <p>Modifiez vos 3 à 4 blocs de services</p>
-                </div>
-                
-                <div class="card">
-                    <div class="flex-between" style="margin-bottom: 20px;">
-                        <h3 class="card-title mb-0">Liste des services</h3>
-                        <button class="btn btn-primary" onclick="addNewService()">+ Ajouter un service</button>
-                    </div>
-                    <div id="servicesEditor">
-                        <!-- Généré dynamiquement -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- ========================================
-                 CARTE LEAFLET - CORRIGÉ & ENCADRÉ
-                 ======================================== -->
+            <!-- MAP SECTION -->
             <section class="section" id="map">
                 <div class="section-header">
                     <h2>🗺️ Configuration de la carte</h2>
-                    <p>Position GPS et apparence du marqueur</p>
-                </div>
-                
-                <div class="card" style="padding: 0; overflow: hidden;">
-                    <!-- Barre de coordonnées -->
-                    <div class="map-coordinates-bar">
-                        <span>📍 Position actuelle :</span>
-                        <span class="coord-badge">Lat: <strong id="mapDisplayLat">48.7946</strong></span>
-                        <span class="coord-badge">Lng: <strong id="mapDisplayLng">2.4172</strong></span>
-                        <span class="coord-badge">Zoom: <strong id="mapDisplayZoom">16</strong></span>
-                    </div>
-                    
-                    <!-- CONTAINER CARTE ENCADRÉ -->
-                    <div class="map-section-container">
-                        <div class="map-preview-box">
-                            <div id="adminMapPreview"></div>
-                        </div>
-                        
-                        <div class="map-form-section">
-                            <div class="map-help-box">
-                                <strong>💡 Comment trouver les coordonnées GPS ?</strong>
-                                1. Allez sur <a href="https://www.google.com/maps" target="_blank">Google Maps</a> ou <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a><br>
-                                2. Faites un clic droit sur l'emplacement de votre entreprise<br>
-                                3. Copiez les coordonnées affichées (ex: 48.7946, 2.4172)<br>
-                                4. Collez-les ci-dessous et sauvegardez
-                            </div>
-                            
-                            <form id="mapForm">
-                                <div class="form-row form-row-3">
-                                    <div class="form-group">
-                                        <label>Latitude *</label>
-                                        <input type="number" id="mapLatitude" step="any" required placeholder="48.7946">
-                                        <p class="text-muted">Ex: 48.7946 (Alfortville)</p>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Longitude *</label>
-                                        <input type="number" id="mapLongitude" step="any" required placeholder="2.4172">
-                                        <p class="text-muted">Ex: 2.4172 (Alfortville)</p>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Zoom (1-20) *</label>
-                                        <input type="number" id="mapZoom" min="1" max="20" required value="16">
-                                        <p class="text-muted">16 = rue | 18 = bâtiment</p>
-                                    </div>
-                                </div>
-                                
-                                <h4 style="margin: 24px 0 16px; font-size: 16px;">📝 Contenu du popup</h4>
-                                <div class="form-row form-row-2">
-                                    <div class="form-group">
-                                        <label>Titre du marqueur</label>
-                                        <input type="text" id="mapMarkerTitle" placeholder="CBR Travaux">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Adresse affichée</label>
-                                        <input type="text" id="mapMarkerAddress" placeholder="33 Rue des Pivoines, 94140 Alfortville">
-                                    </div>
-                                </div>
-                                
-                                <div style="display: flex; gap: 12px; margin-top: 8px;">
-                                    <button type="submit" class="btn btn-primary">
-                                        💾 Sauvegarder la position
-                                    </button>
-                                    <button type="button" class="btn btn-secondary" onclick="resetMapToDefault()">
-                                        🔄 Réinitialiser
-                                    </button>
-                                    <button type="button" class="btn btn-success" onclick="previewMapOnSite()">
-                                        👁️ Voir sur le site
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ========================================
-                 PORTFOLIO
-                 ======================================== -->
-            <section class="section" id="portfolio">
-                <div class="section-header">
-                    <h2>📸 Portfolio & Réalisations</h2>
-                    <p>Gérez vos projets et photos</p>
+                    <p>Modifiez l'emplacement du marqueur sur la carte</p>
                 </div>
                 
                 <div class="card">
-                    <div class="flex-between" style="margin-bottom: 20px;">
-                        <h3 class="card-title mb-0">Projets enregistrés</h3>
+                    <div class="map-instructions">
+                        <h4>ℹ️ Comment modifier l'emplacement</h4>
+                        <p>1. Entrez les nouvelles coordonnées GPS ci-dessous<br>
+                           2. Cliquez sur "Aperçu" pour voir le résultat<br>
+                           3. Sauvegardez pour appliquer les changements</p>
+                    </div>
+                    
+                    <form id="mapForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Latitude *</label>
+                                <input type="number" id="mapLatitude" step="0.0001" required placeholder="48.7946">
+                            </div>
+                            <div class="form-group">
+                                <label>Longitude *</label>
+                                <input type="number" id="mapLongitude" step="0.0001" required placeholder="2.4172">
+                            </div>
+                            <div class="form-group">
+                                <label>Niveau de zoom (1-19)</label>
+                                <input type="number" id="mapZoom" min="1" max="19" value="16">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Titre du marqueur</label>
+                                <input type="text" id="mapMarkerTitle" placeholder="CBR Travaux">
+                            </div>
+                            <div class="form-group">
+                                <label>Adresse affichée</label>
+                                <input type="text" id="mapMarkerAddress" placeholder="33 Rue des Pivoines, 94140 Alfortville">
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 12px;">
+                            <button type="button" class="btn btn-secondary" onclick="previewMap()">👁️ Aperçu</button>
+                            <button type="submit" class="btn btn-primary">💾 Sauvegarder</button>
+                        </div>
+                    </form>
+                    
+                    <div id="adminMapPreview"></div>
+                    
+                    <div class="coordinates-display" id="coordinatesDisplay">
+                        Coordonnées actuelles : Latitude 48.7946, Longitude 2.4172
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">📍 Trouver vos coordonnées</h3>
+                    <p style="color: var(--gray-600); margin-bottom: 16px;">
+                        Pour trouver les coordonnées GPS de votre adresse :
+                    </p>
+                    <ol style="color: var(--gray-600); padding-left: 20px; line-height: 1.8;">
+                        <li>Allez sur <a href="https://www.google.com/maps" target="_blank" style="color: var(--primary);">Google Maps</a></li>
+                        <li>Recherchez votre adresse</li>
+                        <li>Faites un clic droit sur l'emplacement exact</li>
+                        <li>Les coordonnées s'affichent en haut (ex: 48.7946, 2.4172)</li>
+                        <li>Copiez la première valeur (latitude) et la deuxième (longitude)</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- SERVICES -->
+            <section class="section" id="services">
+                <div class="section-header">
+                    <h2>🛠️ Services</h2>
+                </div>
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <h3 class="card-title" style="margin:0;">Liste des services</h3>
+                        <button class="btn btn-primary" onclick="openServiceModal()">+ Ajouter un service</button>
+                    </div>
+                    <div id="servicesList" class="data-list"></div>
+                </div>
+            </section>
+
+            <!-- PORTFOLIO -->
+            <section class="section" id="portfolio">
+                <div class="section-header">
+                    <h2>📸 Portfolio</h2>
+                </div>
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <h3 class="card-title" style="margin:0;">Projets</h3>
                         <button class="btn btn-primary" onclick="openPortfolioModal()">+ Ajouter un projet</button>
                     </div>
                     <div id="portfolioList" class="data-list"></div>
                 </div>
             </section>
 
-            <!-- ========================================
-                 LEADS / DEMANDES DE DEVIS - CORRIGÉ
-                 ======================================== -->
-            <section class="section" id="leads">
-                <div class="section-header">
-                    <h2>📨 Demandes de devis</h2>
-                    <p>Suivez vos leads et contacts entrants</p>
-                </div>
-                
-                <div class="card">
-                    <div class="filter-tabs">
-                        <button class="filter-tab active" onclick="filterLeads('all')">Tous</button>
-                        <button class="filter-tab" onclick="filterLeads('new')">🔴 Nouveaux</button>
-                        <button class="filter-tab" onclick="filterLeads('contacted')">📞 Contactés</button>
-                        <button class="filter-tab" onclick="filterLeads('converted')">✅ Convertis</button>
-                        <button class="filter-tab" onclick="filterLeads('lost')">❌ Perdus</button>
-                    </div>
-                    <div id="leadsList" class="data-list">
-                        <p class="empty-state">Chargement des demandes...</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ========================================
-                 TÉMOIGNAGES
-                 ======================================== -->
+            <!-- TESTIMONIALS -->
             <section class="section" id="testimonials">
                 <div class="section-header">
-                    <h2>💬 Avis clients</h2>
-                    <p>Modération des témoignages</p>
+                    <h2>💬 Témoignages clients</h2>
                 </div>
-                
                 <div class="card">
                     <div class="filter-tabs">
                         <button class="filter-tab active" onclick="filterTestimonials('all')">Tous</button>
-                        <button class="filter-tab" onclick="filterTestimonials('pending')">⏳ En attente</button>
-                        <button class="filter-tab" onclick="filterTestimonials('visible')">✅ Visibles</button>
-                        <button class="filter-tab" onclick="filterTestimonials('featured')">⭐ Mis en avant</button>
+                        <button class="filter-tab" onclick="filterTestimonials('pending')">En attente</button>
+                        <button class="filter-tab" onclick="filterTestimonials('visible')">Visibles</button>
                     </div>
                     <div id="testimonialsList" class="data-list"></div>
                 </div>
             </section>
 
-            <!-- ========================================
-                 SÉCURITÉ & ACCÈS ADMIN
-                 ======================================== -->
-            <section class="section" id="security">
+            <!-- LEADS -->
+            <section class="section" id="leads">
                 <div class="section-header">
-                    <h2>🔒 Sécurité & Accès</h2>
-                    <p>Modifiez vos identifiants de connexion</p>
+                    <h2>📨 Demandes de devis</h2>
                 </div>
-                
-                <div class="card" style="border-left: 4px solid var(--warning);">
-                    <h3 class="card-title">⚠️ Changer les identifiants Admin</h3>
-                    <p class="card-subtitle">Attention : Notez bien vos nouveaux identifiants !</p>
-                    
-                    <form id="securityForm">
-                        <div class="form-group">
-                            <label>Mot de passe actuel *</label>
-                            <input type="password" id="secCurrentPassword" required placeholder="••••••••">
-                        </div>
-                        
-                        <div style="height: 1px; background: var(--gray-200); margin: 24px 0;"></div>
-                        
-                        <div class="form-row form-row-2">
-                            <div class="form-group">
-                                <label>Nouvel identifiant</label>
-                                <input type="text" id="secNewUsername" placeholder="admin">
-                                <p class="text-muted">Laissez vide pour garder l'actuel</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Nouveau mot de passe</label>
-                                <input type="password" id="secNewPassword" placeholder="Min. 6 caractères">
-                                <p class="text-muted">Laissez vide pour garder l'actuel</p>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Email de récupération</label>
-                            <input type="email" id="secEmail" placeholder="admin@entreprise.fr">
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">
-                            🔐 Mettre à jour les accès
-                        </button>
-                    </form>
-                </div>
-                
-                <div class="card" style="margin-top: 24px;">
-                    <h3 class="card-title">ℹ️ Informations de connexion actuelles</h3>
-                    <div style="background: var(--gray-50); padding: 16px; border-radius: var(--radius-md);">
-                        <p style="margin-bottom: 8px;"><strong>Identifiant :</strong> <span id="currentUsername">admin</span></p>
-                        <p style="margin-bottom: 8px;"><strong>Email :</strong> <span id="currentAdminEmail">Non configuré</span></p>
-                        <p class="text-muted text-small">Mot de passe : •••••••• (masqué)</p>
+                <div class="card">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" onclick="filterLeads('all')">Tous</button>
+                        <button class="filter-tab" onclick="filterLeads('new')">Nouveaux</button>
+                        <button class="filter-tab" onclick="filterLeads('contacted')">Contactés</button>
+                        <button class="filter-tab" onclick="filterLeads('converted')">Convertis</button>
                     </div>
+                    <div id="leadsList" class="data-list"></div>
                 </div>
             </section>
 
+            <!-- SEO -->
+            <section class="section" id="seo">
+                <div class="section-header">
+                    <h2>🔍 Référencement (SEO)</h2>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Méta-données</h3>
+                    <form id="seoForm">
+                        <div class="form-group">
+                            <label>Titre de la page (max 60 caractères)</label>
+                            <input type="text" id="seoTitle" maxlength="60">
+                            <p style="font-size: 13px; color: var(--gray-500); margin-top: 6px;"><span id="titleCount">0</span>/60 caractères</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Description (max 160 caractères)</label>
+                            <textarea id="seoDesc" rows="3" maxlength="160"></textarea>
+                            <p style="font-size: 13px; color: var(--gray-500); margin-top: 6px;"><span id="descCount">0</span>/160 caractères</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Mots-clés (séparés par des virgules)</label>
+                            <input type="text" id="seoKeywords" placeholder="maçonnerie, rénovation, alfortville...">
+                        </div>
+                        <button type="submit" class="btn btn-primary">💾 Sauvegarder</button>
+                    </form>
+                </div>
+            </section>
         </main>
     </div>
 
-    <!-- ========================================
-         MODALS
-         ======================================== -->
-    
-    <!-- Modal Service -->
+    <!-- SERVICE MODAL -->
     <div class="modal" id="serviceModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="serviceModalTitle">Modifier le service</h3>
+                <h3 id="serviceModalTitle">Nouveau service</h3>
                 <button class="modal-close" onclick="closeModal('serviceModal')">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="serviceModalForm">
-                    <input type="hidden" id="modalServiceId">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Titre du service *</label>
-                            <input type="text" id="modalServiceTitle" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Icône (emoji) *</label>
-                            <input type="text" id="modalServiceIcon" maxlength="2" required placeholder="🏗️">
-                        </div>
+                <form id="serviceForm">
+                    <input type="hidden" id="serviceId">
+                    <div class="form-group">
+                        <label>Titre du service</label>
+                        <input type="text" id="serviceTitle" required>
                     </div>
                     <div class="form-group">
-                        <label>Description *</label>
-                        <textarea id="modalServiceDesc" rows="3" required></textarea>
+                        <label>Description</label>
+                        <textarea id="serviceDesc" rows="3" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label>URL de l'image (optionnel)</label>
-                        <input type="url" id="modalServiceImage" placeholder="https://...">
+                        <label>Icône (emoji)</label>
+                        <input type="text" id="serviceIcon" placeholder="🏗️" maxlength="2">
                     </div>
-                    <div class="form-group">
-                        <label>Points forts (un par ligne)</label>
-                        <textarea id="modalServiceFeatures" rows="4" placeholder="Devis gratuit&#10;Garantie décennale&#10;Expertise reconnue"></textarea>
-                    </div>
-                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <div style="display:flex;gap:12px;justify-content:flex-end;">
                         <button type="button" class="btn btn-secondary" onclick="closeModal('serviceModal')">Annuler</button>
                         <button type="submit" class="btn btn-primary">Sauvegarder</button>
                     </div>
@@ -1202,24 +529,24 @@
         </div>
     </div>
 
-    <!-- Modal Portfolio -->
+    <!-- PORTFOLIO MODAL -->
     <div class="modal" id="portfolioModal">
-        <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-content" style="max-width:700px;">
             <div class="modal-header">
                 <h3 id="portfolioModalTitle">Nouveau projet</h3>
                 <button class="modal-close" onclick="closeModal('portfolioModal')">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="portfolioModalForm">
-                    <input type="hidden" id="modalPortfolioId">
-                    <div class="form-row form-row-2">
+                <form id="portfolioForm">
+                    <input type="hidden" id="portfolioId">
+                    <div class="form-row">
                         <div class="form-group">
-                            <label>Titre du projet *</label>
-                            <input type="text" id="modalPortTitle" required>
+                            <label>Titre du projet</label>
+                            <input type="text" id="portTitle" required>
                         </div>
                         <div class="form-group">
-                            <label>Catégorie *</label>
-                            <select id="modalPortCategory" required>
+                            <label>Catégorie</label>
+                            <select id="portCategory" required>
                                 <option value="">Sélectionner...</option>
                                 <option value="Rénovation">Rénovation</option>
                                 <option value="Maçonnerie">Maçonnerie</option>
@@ -1231,38 +558,36 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Description *</label>
-                        <textarea id="modalPortDesc" rows="4" required></textarea>
+                        <label>Description</label>
+                        <textarea id="portDesc" rows="4" required></textarea>
                     </div>
-                    <div class="form-row form-row-3">
+                    <div class="form-row">
                         <div class="form-group">
                             <label>Client</label>
-                            <input type="text" id="modalPortClient" placeholder="Nom du client">
+                            <input type="text" id="portClient" placeholder="Nom du client">
                         </div>
                         <div class="form-group">
                             <label>Surface</label>
-                            <input type="text" id="modalPortSurface" placeholder="120m²">
+                            <input type="text" id="portSurface" placeholder="120m²">
                         </div>
                         <div class="form-group">
                             <label>Durée</label>
-                            <input type="text" id="modalPortDuration" placeholder="3 mois">
+                            <input type="text" id="portDuration" placeholder="3 mois">
                         </div>
                     </div>
-                    <div class="form-row form-row-2">
+                    <div class="form-row">
                         <div class="form-group">
                             <label>Date</label>
-                            <input type="date" id="modalPortDate">
+                            <input type="date" id="portDate">
                         </div>
-                        <div class="form-group">
-                            <label>Image URL</label>
-                            <input type="url" id="modalPortImage" placeholder="https://...">
+                        <div class="form-group" style="display:flex;align-items:center;padding-top:30px;">
+                            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+                                <input type="checkbox" id="portFeatured" style="width:20px;height:20px;">
+                                <span>Mettre en avant sur l'accueil</span>
+                            </label>
                         </div>
                     </div>
-                    <div class="form-group" style="display: flex; align-items: center; gap: 12px;">
-                        <input type="checkbox" id="modalPortFeatured" style="width: 20px; height: 20px;">
-                        <label for="modalPortFeatured" style="margin: 0; cursor: pointer;">Mettre en avant sur l'accueil</label>
-                    </div>
-                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 16px;">
+                    <div style="display:flex;gap:12px;justify-content:flex-end;">
                         <button type="button" class="btn btn-secondary" onclick="closeModal('portfolioModal')">Annuler</button>
                         <button type="submit" class="btn btn-primary">Sauvegarder</button>
                     </div>
@@ -1271,82 +596,97 @@
         </div>
     </div>
 
-    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ========================================
-         SCRIPTS
-         ======================================== -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="app.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
     
+    <script src="app.js"></script>
     <script>
         // ========================================
-        // VARIABLES GLOBALES
+        // ADMIN JAVASCRIPT
         // ========================================
+        
         let currentTestimonialFilter = 'all';
         let currentLeadFilter = 'all';
-        let adminMapPreview = null;
-        let currentServiceEditId = null;
+        let adminMap = null;
+        let adminMarker = null;
 
-        // ========================================
-        // INITIALISATION
-        // ========================================
+        // Initialisation au chargement
         document.addEventListener('DOMContentLoaded', function() {
-            // Vérifie connexion
+            // Vérifie si déjà connecté
             if (Session.isAdminLoggedIn()) {
                 showAdminPanel();
             }
             
-            // Formulaires
-            document.getElementById('adminLoginForm').addEventListener('submit', handleLogin);
-            document.getElementById('identityForm').addEventListener('submit', saveIdentity);
-            document.getElementById('designForm').addEventListener('submit', saveDesign);
-            document.getElementById('contentForm').addEventListener('submit', saveContent);
-            document.getElementById('mapForm').addEventListener('submit', saveMapSettings);
-            document.getElementById('securityForm').addEventListener('submit', saveSecurity);
-            document.getElementById('serviceModalForm').addEventListener('submit', saveServiceFromModal);
-            document.getElementById('portfolioModalForm').addEventListener('submit', savePortfolioFromModal);
-            
-            // Live updates color pickers
-            document.getElementById('designPrimary').addEventListener('input', function() {
-                document.getElementById('designPrimaryValue').textContent = this.value;
-                document.documentElement.style.setProperty('--main-color', this.value);
-            });
-            document.getElementById('designSecondary').addEventListener('input', function() {
-                document.getElementById('designSecondaryValue').textContent = this.value;
-                document.documentElement.style.setProperty('--accent-color', this.value);
-            });
-            document.getElementById('designDark').addEventListener('input', function() {
-                document.getElementById('designDarkValue').textContent = this.value;
-            });
-            document.getElementById('designLight').addEventListener('input', function() {
-                document.getElementById('designLightValue').textContent = this.value;
+            // Formulaire de login
+            document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleAdminLogin();
             });
             
-            // Live update logo preview
-            document.getElementById('idLogoUrl').addEventListener('input', updateLogoPreview);
+            // Formulaire entreprise
+            document.getElementById('companyForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveCompany();
+            });
             
-            // Live update map
-            document.getElementById('mapLatitude').addEventListener('input', updateMapPreview);
-            document.getElementById('mapLongitude').addEventListener('input', updateMapPreview);
-            document.getElementById('mapZoom').addEventListener('input', updateMapPreview);
+            // Formulaire personnalisation
+            document.getElementById('customizeForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveCustomization();
+            });
+            
+            // Formulaire carte
+            document.getElementById('mapForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveMapSettings();
+            });
+            
+            // Formulaire service
+            document.getElementById('serviceForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveService();
+            });
+            
+            // Formulaire portfolio
+            document.getElementById('portfolioForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                savePortfolio();
+            });
+            
+            // Formulaire SEO
+            document.getElementById('seoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveSEO();
+            });
+            
+            // Compteurs SEO
+            document.getElementById('seoTitle').addEventListener('input', updateSEOPreview);
+            document.getElementById('seoDesc').addEventListener('input', updateSEOPreview);
+            
+            // Couleurs live update
+            document.getElementById('primaryColor').addEventListener('input', function() {
+                document.getElementById('primaryColorValue').textContent = this.value;
+            });
+            document.getElementById('secondaryColor').addEventListener('input', function() {
+                document.getElementById('secondaryColorValue').textContent = this.value;
+            });
         });
 
         // ========================================
         // AUTHENTIFICATION
         // ========================================
-        function handleLogin(e) {
-            e.preventDefault();
+        
+        function handleAdminLogin() {
             const username = document.getElementById('adminUsername').value.trim();
             const password = document.getElementById('adminPassword').value;
             const data = getData();
             
-            // Hash et compare
-            const hashedInput = hashPassword(password);
-            
-            if (username === data.admin.username && hashedInput === data.admin.password) {
-                Session.startAdmin();
+            if (username === data.admin.username && password === data.admin.password) {
+                Session.startAdminSession();
                 showAdminPanel();
                 showToast('Connexion réussie !', 'success');
             } else {
@@ -1358,129 +698,85 @@
         function showAdminPanel() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
-            
-            const data = getData();
-            
-            // Met à jour le logo/texte dans l'admin
-            const shortName = data.identity?.companyShortName || 'CBR';
-            document.getElementById('loginLogoBox').textContent = shortName;
-            document.getElementById('adminLogoBox').textContent = shortName;
-            document.getElementById('loginSubtitle').textContent = data.identity?.companyName || 'Template Universel';
-            document.getElementById('adminCompanyName').textContent = data.identity?.companyName || 'Template Universel';
-            
-            // Applique les couleurs du design
-            if (data.design) {
-                document.documentElement.style.setProperty('--main-color', data.design.primaryColor);
-                document.documentElement.style.setProperty('--accent-color', data.design.secondaryColor);
-            }
-            
             loadAllData();
         }
         
         function adminLogout() {
-            Session.clearAdmin();
+            Session.clearAdminSession();
             location.reload();
         }
 
         // ========================================
         // NAVIGATION
         // ========================================
+        
         function showSection(id) {
             // Cache toutes les sections
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            // Affiche la section demandée
             document.getElementById(id).classList.add('active');
             
-            // Met à jour les boutons
+            // Met à jour les boutons de nav
             document.querySelectorAll('.admin-nav button').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
             
             // Charge les données spécifiques
-            switch(id) {
-                case 'dashboard': loadDashboard(); break;
-                case 'services': loadServicesEditor(); break;
-                case 'portfolio': loadPortfolioList(); break;
-                case 'leads': loadLeadsList(); break;
-                case 'testimonials': loadTestimonialsList(); break;
-                case 'map': 
-                    setTimeout(initAdminMap, 100); 
-                    break;
-            }
+            if (id === 'dashboard') loadDashboard();
+            if (id === 'services') loadServices();
+            if (id === 'portfolio') loadPortfolio();
+            if (id === 'testimonials') loadTestimonials();
+            if (id === 'leads') loadLeads();
+            if (id === 'map') initAdminMap();
         }
 
         // ========================================
         // CHARGEMENT DES DONNÉES
         // ========================================
+        
         function loadAllData() {
             const data = getData();
             
-            // IDENTITY
-            if (data.identity) {
-                document.getElementById('idCompanyName').value = data.identity.companyName || '';
-                document.getElementById('idShortName').value = data.identity.companyShortName || '';
-                document.getElementById('idTagline').value = data.identity.tagline || '';
-                document.getElementById('idSlogan').value = data.identity.slogan || '';
-                document.getElementById('idDescription').value = data.identity.description || '';
-                document.getElementById('idPhone').value = data.identity.phone || '';
-                document.getElementById('idEmail').value = data.identity.email || '';
-                document.getElementById('idAddress').value = data.identity.address || '';
-                document.getElementById('idExperience').value = data.identity.experienceYears || 15;
-                document.getElementById('idHoursWeek').value = data.identity.hours?.weekday || '';
-                document.getElementById('idHoursSat').value = data.identity.hours?.saturday || '';
-                document.getElementById('idHoursSun').value = data.identity.hours?.sunday || '';
-                document.getElementById('idZones').value = (data.identity.zones || []).join(', ');
-                
-                // Médias
-                document.getElementById('idLogoUrl').value = data.media?.logoUrl || '';
-                document.getElementById('idFaviconUrl').value = data.media?.faviconUrl || '';
-                document.getElementById('idHeroImage').value = data.media?.heroImage || '';
-                
-                updateLogoPreview();
-            }
+            // Met à jour le nom dans le header admin
+            document.getElementById('adminCompanyName').textContent = data.company.name;
             
-            // DESIGN
-            if (data.design) {
-                document.getElementById('designPrimary').value = data.design.primaryColor;
-                document.getElementById('designPrimaryValue').textContent = data.design.primaryColor;
-                document.getElementById('designSecondary').value = data.design.secondaryColor;
-                document.getElementById('designSecondaryValue').textContent = data.design.secondaryColor;
-                document.getElementById('designDark').value = data.design.darkColor;
-                document.getElementById('designDarkValue').textContent = data.design.darkColor;
-                document.getElementById('designLight').value = data.design.lightColor;
-                document.getElementById('designLightValue').textContent = data.design.lightColor;
-                document.getElementById('designHeadingFont').value = data.design.headingFont;
-                document.getElementById('designTextFont').value = data.design.textFont;
-            }
+            // Formulaire entreprise
+            document.getElementById('compName').value = data.company.name || '';
+            document.getElementById('compSlogan').value = data.company.slogan || '';
+            document.getElementById('compYears').value = data.company.experienceYears || '';
+            document.getElementById('compPhone').value = data.company.phone || '';
+            document.getElementById('compEmail').value = data.company.email || '';
+            document.getElementById('compAddress').value = data.company.address || '';
+            document.getElementById('compDesc').value = data.company.description || '';
+            document.getElementById('hoursWeekday').value = data.company.hours?.weekday || '';
+            document.getElementById('hoursSaturday').value = data.company.hours?.saturday || '';
+            document.getElementById('hoursSunday').value = data.company.hours?.sunday || '';
+            document.getElementById('compZones').value = (data.company.zones || []).join(', ');
             
-            // CONTENT
-            if (data.content) {
-                document.getElementById('contentHeroTitle').value = data.content.heroTitle || '';
-                document.getElementById('contentHeroSubtitle').value = data.content.heroSubtitle || '';
-                document.getElementById('contentHeroText').value = data.content.heroText || '';
-                document.getElementById('contentCtaPrimary').value = data.content.ctaPrimary || '';
-                document.getElementById('contentCtaSecondary').value = data.content.ctaSecondary || '';
-                document.getElementById('contentAboutTitle').value = data.content.aboutTitle || '';
-                document.getElementById('contentAboutText').value = data.content.aboutText || '';
-                
-                // Stats editor
-                loadStatsEditor(data.content.stats);
-            }
+            // Formulaire personnalisation
+            const cust = data.customization || {};
+            document.getElementById('primaryColor').value = cust.primaryColor || '#f97316';
+            document.getElementById('primaryColorValue').textContent = cust.primaryColor || '#f97316';
+            document.getElementById('secondaryColor').value = cust.secondaryColor || '#dc2626';
+            document.getElementById('secondaryColorValue').textContent = cust.secondaryColor || '#dc2626';
+            document.getElementById('heroImageUrl').value = cust.heroImage || '';
             
-            // MAP
-            if (data.map) {
-                document.getElementById('mapLatitude').value = data.map.latitude;
-                document.getElementById('mapLongitude').value = data.map.longitude;
-                document.getElementById('mapZoom').value = data.map.zoom;
-                document.getElementById('mapMarkerTitle').value = data.map.markerTitle || '';
-                document.getElementById('mapMarkerAddress').value = data.map.markerAddress || '';
-                
-                document.getElementById('mapDisplayLat').textContent = data.map.latitude;
-                document.getElementById('mapDisplayLng').textContent = data.map.longitude;
-                document.getElementById('mapDisplayZoom').textContent = data.map.zoom;
-            }
+            // Formulaire carte
+            const mapConfig = data.map || {};
+            document.getElementById('mapLatitude').value = mapConfig.latitude || 48.7946;
+            document.getElementById('mapLongitude').value = mapConfig.longitude || 2.4172;
+            document.getElementById('mapZoom').value = mapConfig.zoom || 16;
+            document.getElementById('mapMarkerTitle').value = mapConfig.markerTitle || 'CBR Travaux';
+            document.getElementById('mapMarkerAddress').value = mapConfig.markerAddress || '33 Rue des Pivoines, 94140 Alfortville';
             
-            // SECURITY
-            document.getElementById('currentUsername').textContent = data.admin?.username || 'admin';
-            document.getElementById('currentAdminEmail').textContent = data.admin?.email || 'Non configuré';
+            // Affichage des coordonnées
+            document.getElementById('coordinatesDisplay').textContent = 
+                `Coordonnées actuelles : Latitude ${mapConfig.latitude || 48.7946}, Longitude ${mapConfig.longitude || 2.4172}`;
+            
+            // Formulaire SEO
+            document.getElementById('seoTitle').value = data.seo?.title || '';
+            document.getElementById('seoDesc').value = data.seo?.description || '';
+            document.getElementById('seoKeywords').value = data.seo?.keywords || '';
+            updateSEOPreview();
             
             loadDashboard();
         }
@@ -1497,624 +793,483 @@
                 </div>
                 <div class="stat-card" style="border-left-color: var(--info);">
                     <h4>Projets portfolio</h4>
-                    <div class="number">${data.portfolio?.length || 0}</div>
+                    <div class="number">${data.portfolio.length}</div>
                 </div>
                 <div class="stat-card" style="border-left-color: var(--warning);">
                     <h4>Avis en attente</h4>
-                    <div class="number">${data.testimonials?.filter(t => !t.visible).length || 0}</div>
+                    <div class="number">${data.testimonials.filter(t => !t.visible).length}</div>
                 </div>
                 <div class="stat-card" style="border-left-color: var(--success);">
                     <h4>Services</h4>
-                    <div class="number">${data.services?.length || 0}</div>
+                    <div class="number">${data.expertises.length}</div>
                 </div>
             `;
             
             // Activité récente
-            const recent = [
-                ...(data.leads || []).slice(0, 3).map(l => ({...l, type: 'lead'})),
-                ...(data.testimonials || []).slice(0, 2).map(t => ({...t, type: 'testimonial'}))
-            ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+            const recent = [...data.leads.slice(0, 3), ...data.testimonials.slice(0, 2)]
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
             
             if (recent.length === 0) {
                 document.getElementById('recentActivity').innerHTML = '<p class="empty-state">Aucune activité récente</p>';
             } else {
-                document.getElementById('recentActivity').innerHTML = recent.map(item => {
-                    const isLead = item.type === 'lead';
-                    return `
-                        <div class="data-item">
-                            <div class="data-item-content">
-                                <div class="data-item-avatar">${(item.name || item.userName || '?').charAt(0)}</div>
-                                <div class="data-item-info">
-                                    <h4>${item.name || item.userName || 'Nouveau'}</h4>
-                                    <p>${isLead ? (item.projectType || 'Demande de devis') : (item.projectName || 'Avis client')} • ${new Date(item.date).toLocaleDateString('fr-FR')}</p>
-                                </div>
+                document.getElementById('recentActivity').innerHTML = recent.map(item => `
+                    <div class="data-item">
+                        <div class="data-item-content">
+                            <div class="data-item-avatar">${(item.name || item.userName || '?').charAt(0)}</div>
+                            <div class="data-item-info">
+                                <h4>${item.name || item.userName || 'Nouveau'}</h4>
+                                <p>${item.projectType || item.projectName || 'Contact'} • ${new Date(item.date).toLocaleDateString('fr-FR')}</p>
                             </div>
-                            <span style="padding: 6px 12px; background: ${isLead ? '#dbeafe' : '#d1fae5'}; color: ${isLead ? '#1e40af' : '#065f46'}; border-radius: 20px; font-size: 12px; font-weight: 600;">
-                                ${isLead ? (item.status || 'Nouveau') : (item.visible ? 'Visible' : 'En attente')}
-                            </span>
                         </div>
-                    `;
-                }).join('');
+                        <span style="padding: 6px 12px; background: #dbeafe; color: #1e40af; border-radius: 20px; font-size: 12px; font-weight: 600;">${item.status || 'Nouveau'}</span>
+                    </div>
+                `).join('');
             }
         }
 
         // ========================================
         // SAUVEGARDES
         // ========================================
-        function saveIdentity(e) {
-            e.preventDefault();
+        
+        function saveCompany() {
             const data = getData();
             
-            data.identity = {
-                companyName: document.getElementById('idCompanyName').value,
-                companyShortName: document.getElementById('idShortName').value,
-                tagline: document.getElementById('idTagline').value,
-                slogan: document.getElementById('idSlogan').value,
-                description: document.getElementById('idDescription').value,
-                phone: document.getElementById('idPhone').value,
-                email: document.getElementById('idEmail').value,
-                address: document.getElementById('idAddress').value,
-                experienceYears: parseInt(document.getElementById('idExperience').value) || 15,
-                hours: {
-                    weekday: document.getElementById('idHoursWeek').value,
-                    saturday: document.getElementById('idHoursSat').value,
-                    sunday: document.getElementById('idHoursSun').value
-                },
-                zones: document.getElementById('idZones').value.split(',').map(z => z.trim()).filter(z => z)
+            data.company.name = document.getElementById('compName').value;
+            data.company.slogan = document.getElementById('compSlogan').value;
+            data.company.experienceYears = parseInt(document.getElementById('compYears').value) || 0;
+            data.company.phone = document.getElementById('compPhone').value;
+            data.company.email = document.getElementById('compEmail').value;
+            data.company.address = document.getElementById('compAddress').value;
+            data.company.description = document.getElementById('compDesc').value;
+            data.company.hours = {
+                weekday: document.getElementById('hoursWeekday').value,
+                saturday: document.getElementById('hoursSaturday').value,
+                sunday: document.getElementById('hoursSunday').value
             };
+            data.company.zones = document.getElementById('compZones').value.split(',').map(z => z.trim()).filter(z => z);
             
-            data.media = {
-                ...data.media,
-                logoUrl: document.getElementById('idLogoUrl').value,
-                faviconUrl: document.getElementById('idFaviconUrl').value,
-                heroImage: document.getElementById('idHeroImage').value
+            saveData(data);
+            
+            // Met à jour le nom dans le header admin
+            document.getElementById('adminCompanyName').textContent = data.company.name;
+            
+            showToast('Informations entreprise sauvegardées', 'success');
+        }
+        
+        function saveCustomization() {
+            const data = getData();
+            
+            data.customization = {
+                ...data.customization,
+                primaryColor: document.getElementById('primaryColor').value,
+                secondaryColor: document.getElementById('secondaryColor').value,
+                heroImage: document.getElementById('heroImageUrl').value
             };
             
             saveData(data);
-            showToast('Identité sauvegardée !', 'success');
             
-            // Met à jour l'affichage admin
-            document.getElementById('adminLogoBox').textContent = data.identity.companyShortName;
-            document.getElementById('adminCompanyName').textContent = data.identity.companyName;
+            // Applique immédiatement
+            document.documentElement.style.setProperty('--primary', data.customization.primaryColor);
+            document.documentElement.style.setProperty('--secondary', data.customization.secondaryColor);
+            
+            showToast('Personnalisation appliquée', 'success');
         }
         
-        function saveDesign(e) {
-            e.preventDefault();
+        // ========================================
+        // CARTE - ADMIN
+        // ========================================
+        
+        function initAdminMap() {
+            // Charge les données actuelles
             const data = getData();
+            const mapConfig = data.map || {};
             
-            data.design = {
-                primaryColor: document.getElementById('designPrimary').value,
-                secondaryColor: document.getElementById('designSecondary').value,
-                darkColor: document.getElementById('designDark').value,
-                lightColor: document.getElementById('designLight').value,
-                headingFont: document.getElementById('designHeadingFont').value,
-                textFont: document.getElementById('designTextFont').value
-            };
-            
-            saveData(data);
-            showToast('Design appliqué ! Rafraîchissez le site pour voir les changements.', 'success');
+            // Initialise la carte de prévisualisation si pas déjà fait
+            if (!adminMap) {
+                adminMap = L.map('adminMapPreview', {
+                    scrollWheelZoom: false
+                }).setView([mapConfig.latitude || 48.7946, mapConfig.longitude || 2.4172], mapConfig.zoom || 16);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors',
+                    maxZoom: 19
+                }).addTo(adminMap);
+                
+                // Marqueur déplaçable
+                const customIcon = L.divIcon({
+                    className: 'custom-marker-wrapper',
+                    html: `<div style="background: #dc2626; border: 3px solid white; border-radius: 50%; width: 30px; height: 30px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);"></div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                adminMarker = L.marker([mapConfig.latitude || 48.7946, mapConfig.longitude || 2.4172], { 
+                    icon: customIcon,
+                    draggable: true 
+                }).addTo(adminMap);
+                
+                // Met à jour les champs quand le marqueur est déplacé
+                adminMarker.on('dragend', function(e) {
+                    const pos = e.target.getLatLng();
+                    document.getElementById('mapLatitude').value = pos.lat.toFixed(4);
+                    document.getElementById('mapLongitude').value = pos.lng.toFixed(4);
+                });
+            }
         }
         
-        function saveContent(e) {
-            e.preventDefault();
-            const data = getData();
-            
-            data.content = {
-                ...data.content,
-                heroTitle: document.getElementById('contentHeroTitle').value,
-                heroSubtitle: document.getElementById('contentHeroSubtitle').value,
-                heroText: document.getElementById('contentHeroText').value,
-                ctaPrimary: document.getElementById('contentCtaPrimary').value,
-                ctaSecondary: document.getElementById('contentCtaSecondary').value,
-                aboutTitle: document.getElementById('contentAboutTitle').value,
-                aboutText: document.getElementById('contentAboutText').value
-            };
-            
-            // Sauvegarde aussi les stats modifiées
-            const statValues = document.querySelectorAll('.stat-edit-value');
-            const statLabels = document.querySelectorAll('.stat-edit-label');
-            const statIcons = document.querySelectorAll('.stat-edit-icon');
-            
-            data.content.stats = Array.from(statValues).map((input, i) => ({
-                value: parseInt(input.value) || 0,
-                suffix: input.dataset.suffix || '',
-                label: statLabels[i]?.value || '',
-                icon: statIcons[i]?.value || '📊'
-            }));
-            
-            saveData(data);
-            showToast('Contenu sauvegardé !', 'success');
-        }
-        
-        function saveMapSettings(e) {
-            e.preventDefault();
-            
+        function previewMap() {
             const lat = parseFloat(document.getElementById('mapLatitude').value);
             const lng = parseFloat(document.getElementById('mapLongitude').value);
-            const zoom = parseInt(document.getElementById('mapZoom').value);
-            const title = document.getElementById('mapMarkerTitle').value;
-            const address = document.getElementById('mapMarkerAddress').value;
+            const zoom = parseInt(document.getElementById('mapZoom').value) || 16;
             
-            const result = MapSystem.updateCoordinates(lat, lng, zoom);
-            
-            if (result.success) {
-                MapSystem.updatePopup(title, address);
-                
-                document.getElementById('mapDisplayLat').textContent = lat.toFixed(4);
-                document.getElementById('mapDisplayLng').textContent = lng.toFixed(4);
-                document.getElementById('mapDisplayZoom').textContent = zoom;
-                
-                showToast('Position sauvegardée !', 'success');
-            } else {
-                showToast(result.message, 'error');
+            if (isNaN(lat) || isNaN(lng)) {
+                showToast('Veuillez entrer des coordonnées valides', 'error');
+                return;
             }
+            
+            if (adminMap && adminMarker) {
+                adminMap.setView([lat, lng], zoom);
+                adminMarker.setLatLng([lat, lng]);
+            }
+            
+            showToast('Aperçu mis à jour', 'success');
         }
         
-        function saveSecurity(e) {
-            e.preventDefault();
+        function saveMapSettings() {
+            const lat = parseFloat(document.getElementById('mapLatitude').value);
+            const lng = parseFloat(document.getElementById('mapLongitude').value);
+            const zoom = parseInt(document.getElementById('mapZoom').value) || 16;
+            const markerTitle = document.getElementById('mapMarkerTitle').value;
+            const markerAddress = document.getElementById('mapMarkerAddress').value;
             
-            const currentPass = document.getElementById('secCurrentPassword').value;
-            const newUser = document.getElementById('secNewUsername').value;
-            const newPass = document.getElementById('secNewPassword').value;
-            const newEmail = document.getElementById('secEmail').value;
-            
-            const result = AdminSystem.updateCredentials(currentPass, newUser, newPass, newEmail);
-            
-            if (result.success) {
-                showToast(result.message + ' Vous allez être déconnecté.', 'success');
-                setTimeout(() => adminLogout(), 2000);
-            } else {
-                showToast(result.message, 'error');
+            if (isNaN(lat) || isNaN(lng)) {
+                showToast('Veuillez entrer des coordonnées valides', 'error');
+                return;
             }
-        }
-
-        // ========================================
-        // LOGO PREVIEW
-        // ========================================
-        function updateLogoPreview() {
-            const url = document.getElementById('idLogoUrl').value;
-            const previewBox = document.getElementById('logoPreviewBox');
             
-            if (url) {
-                previewBox.innerHTML = `<img src="${url}" alt="Logo" onerror="this.parentElement.textContent='Erreur'">`;
-            } else {
-                const shortName = document.getElementById('idShortName').value || 'CBR';
-                previewBox.innerHTML = shortName;
-            }
-        }
-
-        // ========================================
-        // STATS EDITOR
-        // ========================================
-        function loadStatsEditor(stats) {
-            const container = document.getElementById('statsEditor');
-            if (!stats || !container) return;
-            
-            container.innerHTML = stats.map((stat, i) => `
-                <div class="form-row form-row-4" style="margin-bottom: 12px;">
-                    <div class="form-group">
-                        <label>Valeur ${i + 1}</label>
-                        <input type="number" class="stat-edit-value" value="${stat.value}" data-suffix="${stat.suffix}">
-                    </div>
-                    <div class="form-group">
-                        <label>Suffixe</label>
-                        <input type="text" class="stat-edit-suffix" value="${stat.suffix}" maxlength="2" onchange="this.previousElementSibling.dataset.suffix=this.value">
-                    </div>
-                    <div class="form-group">
-                        <label>Label</label>
-                        <input type="text" class="stat-edit-label" value="${stat.label}">
-                    </div>
-                    <div class="form-group">
-                        <label>Icône</label>
-                        <input type="text" class="stat-edit-icon" value="${stat.icon}" maxlength="2">
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // ========================================
-        // SERVICES EDITOR
-        // ========================================
-        function loadServicesEditor() {
             const data = getData();
-            const container = document.getElementById('servicesEditor');
+            data.map = {
+                latitude: lat,
+                longitude: lng,
+                zoom: zoom,
+                markerTitle: markerTitle || 'CBR Travaux',
+                markerAddress: markerAddress || '33 Rue des Pivoines, 94140 Alfortville'
+            };
             
-            if (!data.services || data.services.length === 0) {
+            saveData(data);
+            
+            // Met à jour l'affichage des coordonnées
+            document.getElementById('coordinatesDisplay').textContent = 
+                `Coordonnées actuelles : Latitude ${lat}, Longitude ${lng}`;
+            
+            showToast('Configuration de la carte sauvegardée', 'success');
+        }
+        
+        function saveSEO() {
+            const data = getData();
+            
+            data.seo = {
+                title: document.getElementById('seoTitle').value,
+                description: document.getElementById('seoDesc').value,
+                keywords: document.getElementById('seoKeywords').value
+            };
+            
+            saveData(data);
+            showToast('SEO sauvegardé', 'success');
+        }
+
+        // ========================================
+        // SERVICES
+        // ========================================
+        
+        function loadServices() {
+            const data = getData();
+            const container = document.getElementById('servicesList');
+            
+            if (data.expertises.length === 0) {
                 container.innerHTML = '<p class="empty-state">Aucun service configuré</p>';
                 return;
             }
             
-            container.innerHTML = data.services.map((s, i) => `
-                <div class="service-editor">
-                    <div class="service-editor-header">
-                        <h4><span style="font-size: 24px; margin-right: 8px;">${s.icon}</span> ${s.title}</h4>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="btn btn-secondary" onclick="editService(${s.id})">✏️ Modifier</button>
-                            <button class="btn btn-danger" onclick="deleteService(${s.id})" ${data.services.length <= 1 ? 'disabled title="Minimum 1 service requis"' : ''}>🗑️</button>
+            container.innerHTML = data.expertises.map(s => `
+                <div class="data-item">
+                    <div class="data-item-content">
+                        <div class="data-item-avatar" style="font-size: 24px;">${s.icon || '🛠️'}</div>
+                        <div class="data-item-info">
+                            <h4>${s.title}</h4>
+                            <p>${s.description.substring(0, 80)}...</p>
                         </div>
                     </div>
-                    <p style="color: var(--gray-600); font-size: 14px; margin-bottom: 12px;">${s.description}</p>
-                    <div class="service-features-list">
-                        ${(s.features || []).map(f => `<span class="service-feature-tag">${f}</span>`).join('')}
+                    <div class="data-item-actions">
+                        <button class="btn btn-secondary" onclick="editService(${s.id})">✏️ Modifier</button>
+                        <button class="btn btn-danger" onclick="deleteService(${s.id})">🗑️</button>
                     </div>
                 </div>
             `).join('');
         }
         
-        function addNewService() {
-            currentServiceEditId = null;
-            document.getElementById('serviceModalTitle').textContent = 'Nouveau service';
-            document.getElementById('serviceModalForm').reset();
-            document.getElementById('modalServiceId').value = '';
+        function openServiceModal(id = null) {
+            document.getElementById('serviceModalTitle').textContent = id ? 'Modifier le service' : 'Nouveau service';
+            document.getElementById('serviceId').value = id || '';
+            
+            if (id) {
+                const data = getData();
+                const s = data.expertises.find(x => x.id === id);
+                if (s) {
+                    document.getElementById('serviceTitle').value = s.title;
+                    document.getElementById('serviceDesc').value = s.description;
+                    document.getElementById('serviceIcon').value = s.icon || '';
+                }
+            } else {
+                document.getElementById('serviceForm').reset();
+            }
+            
             document.getElementById('serviceModal').classList.add('show');
+        }
+        
+        function saveService() {
+            const data = getData();
+            const id = document.getElementById('serviceId').value;
+            
+            const service = {
+                id: id ? parseInt(id) : Date.now(),
+                title: document.getElementById('serviceTitle').value,
+                description: document.getElementById('serviceDesc').value,
+                icon: document.getElementById('serviceIcon').value,
+                image: ''
+            };
+            
+            if (id) {
+                const idx = data.expertises.findIndex(x => x.id === parseInt(id));
+                if (idx >= 0) data.expertises[idx] = service;
+            } else {
+                data.expertises.push(service);
+            }
+            
+            saveData(data);
+            closeModal('serviceModal');
+            loadServices();
+            showToast('Service sauvegardé', 'success');
         }
         
         function editService(id) {
-            const data = getData();
-            const s = data.services.find(x => x.id === id);
-            if (!s) return;
-            
-            currentServiceEditId = id;
-            document.getElementById('serviceModalTitle').textContent = 'Modifier le service';
-            document.getElementById('modalServiceId').value = id;
-            document.getElementById('modalServiceTitle').value = s.title;
-            document.getElementById('modalServiceIcon').value = s.icon;
-            document.getElementById('modalServiceDesc').value = s.description;
-            document.getElementById('modalServiceImage').value = s.image || '';
-            document.getElementById('modalServiceFeatures').value = (s.features || []).join('\n');
-            
-            document.getElementById('serviceModal').classList.add('show');
-        }
-        
-        function saveServiceFromModal(e) {
-            e.preventDefault();
-            
-            const serviceData = {
-                title: document.getElementById('modalServiceTitle').value,
-                icon: document.getElementById('modalServiceIcon').value,
-                description: document.getElementById('modalServiceDesc').value,
-                image: document.getElementById('modalServiceImage').value,
-                features: document.getElementById('modalServiceFeatures').value.split('\n').filter(f => f.trim())
-            };
-            
-            let result;
-            if (currentServiceEditId) {
-                result = AdminSystem.updateService(currentServiceEditId, serviceData);
-            } else {
-                result = AdminSystem.addService(serviceData);
-            }
-            
-            if (result.success) {
-                closeModal('serviceModal');
-                loadServicesEditor();
-                showToast(result.message, 'success');
-            } else {
-                showToast(result.message, 'error');
-            }
+            openServiceModal(id);
         }
         
         function deleteService(id) {
             if (!confirm('Supprimer ce service ?')) return;
-            const result = AdminSystem.deleteService(id);
-            if (result.success) {
-                loadServicesEditor();
-                showToast(result.message, 'success');
-            }
-        }
-
-        // ========================================
-        // MAP ADMIN - CORRIGÉ
-        // ========================================
-        function initAdminMap() {
-            // Nettoie l'ancienne instance
-            if (adminMapPreview) {
-                adminMapPreview.remove();
-                adminMapPreview = null;
-            }
-            
-            const container = document.getElementById('adminMapPreview');
-            if (!container) return;
-            
-            // Force nettoyage DOM
-            container.innerHTML = '';
-            
             const data = getData();
-            const m = data.map;
-            
-            adminMapPreview = L.map('adminMapPreview', {
-                scrollWheelZoom: false,
-                zoomControl: true
-            }).setView([m.latitude, m.longitude], m.zoom);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-                maxZoom: 19
-            }).addTo(adminMapPreview);
-            
-            const iconHtml = `
-                <div style="
-                    background: ${data.design?.secondaryColor || '#dc2626'};
-                    border: 3px solid white;
-                    border-radius: 50%;
-                    width: 36px;
-                    height: 36px;
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-size: 16px;
-                ">📍</div>
-            `;
-            
-            const customIcon = L.divIcon({
-                html: iconHtml,
-                className: 'admin-marker',
-                iconSize: [36, 36],
-                iconAnchor: [18, 18]
-            });
-            
-            L.marker([m.latitude, m.longitude], { icon: customIcon })
-                .addTo(adminMapPreview)
-                .bindPopup(`<strong>${m.markerTitle}</strong><br>${m.markerAddress}`)
-                .openPopup();
-        }
-        
-        function updateMapPreview() {
-            if (!adminMapPreview) return;
-            
-            const lat = parseFloat(document.getElementById('mapLatitude').value) || 48.7946;
-            const lng = parseFloat(document.getElementById('mapLongitude').value) || 2.4172;
-            const zoom = parseInt(document.getElementById('mapZoom').value) || 16;
-            
-            adminMapPreview.setView([lat, lng], zoom);
-            
-            // Met à jour le marqueur
-            adminMapPreview.eachLayer(layer => {
-                if (layer instanceof L.Marker) {
-                    layer.setLatLng([lat, lng]);
-                }
-            });
-        }
-        
-        function resetMapToDefault() {
-            document.getElementById('mapLatitude').value = 48.7946;
-            document.getElementById('mapLongitude').value = 2.4172;
-            document.getElementById('mapZoom').value = 16;
-            document.getElementById('mapMarkerTitle').value = 'CBR Travaux';
-            document.getElementById('mapMarkerAddress').value = '33 Rue des Pivoines, 94140 Alfortville';
-            updateMapPreview();
-            showToast('Valeurs par défaut restaurées', 'info');
-        }
-        
-        function previewMapOnSite() {
-            window.open('index.html#map', '_blank');
+            data.expertises = data.expertises.filter(s => s.id !== id);
+            saveData(data);
+            loadServices();
+            showToast('Service supprimé', 'success');
         }
 
         // ========================================
         // PORTFOLIO
         // ========================================
-        function loadPortfolioList() {
+        
+        function loadPortfolio() {
             const data = getData();
             const container = document.getElementById('portfolioList');
             
-            if (!data.portfolio || data.portfolio.length === 0) {
-                container.innerHTML = '<p class="empty-state">Aucun projet. Ajoutez-en un !</p>';
+            if (data.portfolio.length === 0) {
+                container.innerHTML = '<p class="empty-state">Aucun projet dans le portfolio</p>';
                 return;
             }
             
             container.innerHTML = data.portfolio.map(p => `
                 <div class="data-item">
                     <div class="data-item-content">
-                        <div class="data-item-avatar" style="background: var(--gray-200); color: var(--gray-600);">
-                            ${p.image ? '📷' : '📁'}
-                        </div>
                         <div class="data-item-info">
                             <h4>${p.title} ${p.featured ? '⭐' : ''}</h4>
-                            <p>${p.category} • ${p.date ? new Date(p.date).toLocaleDateString('fr-FR') : 'Date non définie'}</p>
+                            <p>${p.category} • ${p.date ? new Date(p.date).toLocaleDateString('fr-FR') : 'Date non spécifiée'}</p>
                         </div>
                     </div>
                     <div class="data-item-actions">
-                        <button class="btn btn-secondary" onclick="editPortfolio(${p.id})">✏️</button>
+                        <button class="btn btn-secondary" onclick="editPortfolio(${p.id})">✏️ Modifier</button>
                         <button class="btn btn-danger" onclick="deletePortfolio(${p.id})">🗑️</button>
                     </div>
                 </div>
             `).join('');
         }
         
-        function openPortfolioModal() {
-            document.getElementById('portfolioModalTitle').textContent = 'Nouveau projet';
-            document.getElementById('portfolioModalForm').reset();
-            document.getElementById('modalPortfolioId').value = '';
+        function openPortfolioModal(id = null) {
+            document.getElementById('portfolioModalTitle').textContent = id ? 'Modifier le projet' : 'Nouveau projet';
+            document.getElementById('portfolioId').value = id || '';
+            
+            if (id) {
+                const data = getData();
+                const p = data.portfolio.find(x => x.id === id);
+                if (p) {
+                    document.getElementById('portTitle').value = p.title;
+                    document.getElementById('portCategory').value = p.category;
+                    document.getElementById('portDesc').value = p.description;
+                    document.getElementById('portClient').value = p.client || '';
+                    document.getElementById('portSurface').value = p.surface || '';
+                    document.getElementById('portDuration').value = p.duration || '';
+                    document.getElementById('portDate').value = p.date || '';
+                    document.getElementById('portFeatured').checked = p.featured || false;
+                }
+            } else {
+                document.getElementById('portfolioForm').reset();
+                document.getElementById('portDate').value = new Date().toISOString().split('T')[0];
+            }
+            
             document.getElementById('portfolioModal').classList.add('show');
+        }
+        
+        function savePortfolio() {
+            const data = getData();
+            const id = document.getElementById('portfolioId').value;
+            
+            const project = {
+                id: id ? parseInt(id) : Date.now(),
+                title: document.getElementById('portTitle').value,
+                category: document.getElementById('portCategory').value,
+                description: document.getElementById('portDesc').value,
+                client: document.getElementById('portClient').value,
+                surface: document.getElementById('portSurface').value,
+                duration: document.getElementById('portDuration').value,
+                date: document.getElementById('portDate').value,
+                featured: document.getElementById('portFeatured').checked,
+                image: ''
+            };
+            
+            if (id) {
+                const idx = data.portfolio.findIndex(x => x.id === parseInt(id));
+                if (idx >= 0) data.portfolio[idx] = project;
+            } else {
+                data.portfolio.push(project);
+            }
+            
+            saveData(data);
+            closeModal('portfolioModal');
+            loadPortfolio();
+            showToast('Projet sauvegardé', 'success');
         }
         
         function editPortfolio(id) {
-            const data = getData();
-            const p = data.portfolio.find(x => x.id === id);
-            if (!p) return;
-            
-            document.getElementById('portfolioModalTitle').textContent = 'Modifier le projet';
-            document.getElementById('modalPortfolioId').value = id;
-            document.getElementById('modalPortTitle').value = p.title;
-            document.getElementById('modalPortCategory').value = p.category;
-            document.getElementById('modalPortDesc').value = p.description;
-            document.getElementById('modalPortClient').value = p.client || '';
-            document.getElementById('modalPortSurface').value = p.surface || '';
-            document.getElementById('modalPortDuration').value = p.duration || '';
-            document.getElementById('modalPortDate').value = p.date || '';
-            document.getElementById('modalPortImage').value = p.image || '';
-            document.getElementById('modalPortFeatured').checked = p.featured || false;
-            
-            document.getElementById('portfolioModal').classList.add('show');
-        }
-        
-        function savePortfolioFromModal(e) {
-            e.preventDefault();
-            
-            const projectData = {
-                title: document.getElementById('modalPortTitle').value,
-                category: document.getElementById('modalPortCategory').value,
-                description: document.getElementById('modalPortDesc').value,
-                client: document.getElementById('modalPortClient').value,
-                surface: document.getElementById('modalPortSurface').value,
-                duration: document.getElementById('modalPortDuration').value,
-                date: document.getElementById('modalPortDate').value,
-                image: document.getElementById('modalPortImage').value,
-                featured: document.getElementById('modalPortFeatured').checked
-            };
-            
-            const id = document.getElementById('modalPortfolioId').value;
-            const result = id ? 
-                PortfolioSystem.update(parseInt(id), projectData) : 
-                PortfolioSystem.add(projectData);
-            
-            if (result.success) {
-                closeModal('portfolioModal');
-                loadPortfolioList();
-                showToast(result.message, 'success');
-            } else {
-                showToast(result.message, 'error');
-            }
+            openPortfolioModal(id);
         }
         
         function deletePortfolio(id) {
             if (!confirm('Supprimer ce projet ?')) return;
-            const result = PortfolioSystem.delete(id);
-            if (result.success) {
-                loadPortfolioList();
-                showToast(result.message, 'success');
-            }
-        }
-
-        // ========================================
-        // LEADS - CORRIGÉ
-        // ========================================
-        function filterLeads(filter) {
-            currentLeadFilter = filter;
-            document.querySelectorAll('#leads .filter-tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            loadLeadsList();
-        }
-        
-        function loadLeadsList() {
-            const leads = LeadSystem.getAll(currentLeadFilter);
-            const container = document.getElementById('leadsList');
-            
-            if (leads.length === 0) {
-                container.innerHTML = `<p class="empty-state">Aucune demande ${currentLeadFilter !== 'all' ? 'dans cette catégorie' : ''}</p>`;
-                return;
-            }
-            
-            container.innerHTML = leads.map(l => {
-                const statusColors = {
-                    new: { bg: '#fef2f2', text: '#991b1b', label: '🔴 Nouveau' },
-                    contacted: { bg: '#eff6ff', text: '#1e40af', label: '📞 Contacté' },
-                    converted: { bg: '#d1fae5', text: '#065f46', label: '✅ Converti' },
-                    lost: { bg: '#f3f4f6', text: '#374151', label: '❌ Perdu' }
-                };
-                const status = statusColors[l.status] || statusColors.new;
-                
-                return `
-                    <div class="data-item" style="flex-wrap: wrap;">
-                        <div class="data-item-content" style="min-width: 200px;">
-                            <div class="data-item-avatar">${l.name.charAt(0)}</div>
-                            <div class="data-item-info">
-                                <h4>${l.name}</h4>
-                                <p>${l.projectType || 'Projet non spécifié'} • ${new Date(l.date).toLocaleDateString('fr-FR')}</p>
-                                ${l.message ? `<p style="font-size: 12px; color: var(--gray-400); margin-top: 4px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">"${l.message}"</p>` : ''}
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                            <span style="padding: 6px 12px; background: ${status.bg}; color: ${status.text}; border-radius: 20px; font-size: 12px; font-weight: 600;">
-                                ${status.label}
-                            </span>
-                            <select onchange="updateLeadStatus(${l.id}, this.value)" style="padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--gray-200); font-size: 13px;">
-                                <option value="new" ${l.status === 'new' ? 'selected' : ''}>Nouveau</option>
-                                <option value="contacted" ${l.status === 'contacted' ? 'selected' : ''}>Contacté</option>
-                                <option value="converted" ${l.status === 'converted' ? 'selected' : ''}>Converti</option>
-                                <option value="lost" ${l.status === 'lost' ? 'selected' : ''}>Perdu</option>
-                            </select>
-                            <button class="btn btn-danger" onclick="deleteLead(${l.id})" style="padding: 8px 12px;">🗑️</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        function updateLeadStatus(id, status) {
-            const result = LeadSystem.updateStatus(id, status);
-            if (result.success) {
-                loadLeadsList();
-                showToast(result.message, 'success');
-            }
-        }
-        
-        function deleteLead(id) {
-            if (!confirm('Supprimer définitivement cette demande ?')) return;
-            const result = LeadSystem.delete(id);
-            if (result.success) {
-                loadLeadsList();
-                showToast(result.message, 'success');
-            }
+            const data = getData();
+            data.portfolio = data.portfolio.filter(p => p.id !== id);
+            saveData(data);
+            loadPortfolio();
+            showToast('Projet supprimé', 'success');
         }
 
         // ========================================
         // TÉMOIGNAGES
         // ========================================
+        
         function filterTestimonials(filter) {
             currentTestimonialFilter = filter;
             document.querySelectorAll('#testimonials .filter-tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
-            loadTestimonialsList();
+            loadTestimonials();
         }
         
-        function loadTestimonialsList() {
-            const t = TestimonialSystem.getAll(currentTestimonialFilter);
+        function loadTestimonials() {
+            const testimonials = TestimonialSystem.getAll(currentTestimonialFilter);
             const container = document.getElementById('testimonialsList');
             
-            if (t.length === 0) {
-                container.innerHTML = `<p class="empty-state">Aucun témoignage ${currentTestimonialFilter !== 'all' ? 'dans cette catégorie' : ''}</p>`;
+            if (testimonials.length === 0) {
+                container.innerHTML = '<p class="empty-state">Aucun témoignage</p>';
                 return;
             }
             
-            container.innerHTML = t.map(item => `
-                <div class="data-item" style="align-items: flex-start;">
+            container.innerHTML = testimonials.map(t => `
+                <div class="data-item">
                     <div class="data-item-content">
-                        <div class="data-item-avatar">${item.userName.charAt(0)}</div>
+                        <div class="data-item-avatar">${t.userName.charAt(0)}</div>
                         <div class="data-item-info">
-                            <h4>${item.userName} <span style="color: #fbbf24;">${'★'.repeat(item.rating)}${'☆'.repeat(5-item.rating)}</span></h4>
-                            <p style="font-size: 13px; color: var(--gray-600); margin-bottom: 4px;">${item.projectName} • ${new Date(item.date).toLocaleDateString('fr-FR')}</p>
-                            <p style="font-size: 13px; color: var(--gray-500); font-style: italic;">"${item.content.substring(0, 100)}${item.content.length > 100 ? '...' : ''}"</p>
+                            <h4>${t.userName} ${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)}</h4>
+                            <p>${t.projectName} • ${new Date(t.date).toLocaleDateString('fr-FR')}</p>
                         </div>
                     </div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <label style="font-size: 12px; color: var(--gray-500);">Visible</label>
-                            <div class="toggle-switch ${item.visible ? 'active' : ''}" onclick="toggleTestimonial(${item.id}, 'visible')"></div>
+                    <div class="data-item-actions" style="align-items: center; gap: 16px;">
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                            <div class="toggle-switch ${t.visible ? 'active' : ''}" onclick="toggleTestimonial(${t.id}, 'visible')"></div>
+                            <span style="font-size: 11px; color: var(--gray-500);">${t.visible ? 'Visible' : 'Masqué'}</span>
                         </div>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <label style="font-size: 12px; color: var(--gray-500);">⭐ En avant</label>
-                            <div class="toggle-switch ${item.featured ? 'active' : ''}" onclick="toggleTestimonial(${item.id}, 'featured')"></div>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                            <div class="toggle-switch ${t.featured ? 'active' : ''}" onclick="toggleTestimonial(${t.id}, 'featured')"></div>
+                            <span style="font-size: 11px; color: var(--gray-500);">${t.featured ? '⭐' : '☆'}</span>
                         </div>
-                        <button class="btn btn-danger" onclick="deleteTestimonial(${item.id})" style="padding: 6px 12px; margin-top: 8px;">Supprimer</button>
+                        <button class="btn btn-danger" onclick="deleteTestimonial(${t.id})" style="padding: 8px 12px;">🗑️</button>
                     </div>
                 </div>
             `).join('');
         }
         
         function toggleTestimonial(id, field) {
-            const result = TestimonialSystem.moderate(id, { [field]: true });
-            if (result.success) {
-                loadTestimonialsList();
+            const data = getData();
+            const t = data.testimonials.find(x => x.id === id);
+            if (t) {
+                t[field] = !t[field];
+                saveData(data);
+                loadTestimonials();
             }
         }
         
         function deleteTestimonial(id) {
-            if (!confirm('Supprimer cet avis ?')) return;
-            const result = TestimonialSystem.delete(id);
+            if (!confirm('Supprimer ce témoignage ?')) return;
+            const data = getData();
+            data.testimonials = data.testimonials.filter(t => t.id !== id);
+            saveData(data);
+            loadTestimonials();
+            showToast('Témoignage supprimé', 'success');
+        }
+
+        // ========================================
+        // LEADS
+        // ========================================
+        
+        function filterLeads(filter) {
+            currentLeadFilter = filter;
+            document.querySelectorAll('#leads .filter-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            loadLeads();
+        }
+        
+        function loadLeads() {
+            const leads = ContactSystem.getLeads(currentLeadFilter);
+            const container = document.getElementById('leadsList');
+            
+            if (leads.length === 0) {
+                container.innerHTML = '<p class="empty-state">Aucune demande</p>';
+                return;
+            }
+            
+            container.innerHTML = leads.map(l => `
+                <div class="data-item">
+                    <div class="data-item-content">
+                        <div class="data-item-avatar">${l.name.charAt(0)}</div>
+                        <div class="data-item-info">
+                            <h4>${l.name}</h4>
+                            <p>${l.projectType || 'Projet non spécifié'} • ${new Date(l.date).toLocaleDateString('fr-FR')}</p>
+                        </div>
+                    </div>
+                    <div class="data-item-actions" style="gap: 8px;">
+                        <select onchange="updateLeadStatus(${l.id}, this.value)" style="padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--gray-200); font-size: 13px;">
+                            <option value="new" ${l.status === 'new' ? 'selected' : ''}>Nouveau</option>
+                            <option value="contacted" ${l.status === 'contacted' ? 'selected' : ''}>Contacté</option>
+                            <option value="converted" ${l.status === 'converted' ? 'selected' : ''}>Converti</option>
+                            <option value="lost" ${l.status === 'lost' ? 'selected' : ''}>Perdu</option>
+                        </select>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function updateLeadStatus(id, status) {
+            const result = ContactSystem.updateStatus(id, status);
             if (result.success) {
-                loadTestimonialsList();
                 showToast(result.message, 'success');
             }
         }
@@ -2122,8 +1277,14 @@
         // ========================================
         // UTILITAIRES
         // ========================================
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('show');
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+        
+        function updateSEOPreview() {
+            document.getElementById('titleCount').textContent = document.getElementById('seoTitle').value.length;
+            document.getElementById('descCount').textContent = document.getElementById('seoDesc').value.length;
         }
         
         function showToast(message, type = 'info') {
@@ -2131,8 +1292,17 @@
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             
-            const icons = { success: '✓', error: '✕', info: 'ℹ', warning: '⚠' };
-            toast.innerHTML = `<span style="font-size: 20px;">${icons[type]}</span><span>${message}</span>`;
+            const icons = {
+                success: '✓',
+                error: '✕',
+                info: 'ℹ',
+                warning: '⚠'
+            };
+            
+            toast.innerHTML = `
+                <span style="font-size: 20px;">${icons[type]}</span>
+                <span>${message}</span>
+            `;
             
             container.appendChild(toast);
             
@@ -2141,51 +1311,6 @@
                 toast.style.transform = 'translateX(100%)';
                 setTimeout(() => toast.remove(), 300);
             }, 4000);
-        }
-        
-        function exportConfig() {
-            const json = AdminSystem.exportConfig();
-            if (json) {
-                const blob = new Blob([json], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `config-${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast('Configuration exportée !', 'success');
-            }
-        }
-        
-        function importConfig(input) {
-            const file = input.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const result = AdminSystem.importConfig(e.target.result);
-                showToast(result.message, result.success ? 'success' : 'error');
-            };
-            reader.readAsText(file);
-            input.value = '';
-        }
-        
-        function resetAllData() {
-            if (confirm('⚠️ TOUTES les données seront supprimées. Continuer ?')) {
-                const result = AdminSystem.resetAll();
-                showToast(result.message, 'success');
-            }
-        }
-        
-        // Helper functions
-        function hashPassword(password) {
-            let hash = 0;
-            for (let i = 0; i < password.length; i++) {
-                const char = password.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return hash.toString(16);
         }
     </script>
 </body>
