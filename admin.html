@@ -43,7 +43,7 @@
         .login-screen {
             position: fixed;
             inset: 0;
-            z-index: 999999;
+            z-index: 2147483647;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -126,7 +126,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            z-index: 999999;
+            z-index: 2147483646;
             background: var(--gray-100);
             overflow-y: auto;
         }
@@ -192,16 +192,22 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         /* ========================================
-           LAYOUT EN COLONNES
+           LAYOUT EN COLONNES - 3 COLONNES
         ======================================== */
         .admin-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 24px;
         }
         
-        @media (max-width: 1024px) {
+        @media (max-width: 1200px) {
+            .admin-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
             .admin-grid { grid-template-columns: 1fr; }
+            .admin-header { flex-direction: column; align-items: stretch; }
+            .admin-nav { justify-content: center; }
         }
         
         .card {
@@ -261,6 +267,8 @@
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(249,115,22,0.5); }
         .btn-secondary { background: var(--gray-100); color: var(--gray-700); }
         .btn-secondary:hover { background: var(--gray-200); }
+        .btn-danger { background: #fef2f2; color: var(--error); }
+        .btn-danger:hover { background: #fee2e2; }
         
         /* Couleurs */
         .color-picker-wrapper {
@@ -289,14 +297,6 @@
             align-items: center;
         }
         .nav-item input { flex: 1; }
-        .nav-item .btn-danger {
-            padding: 10px 14px;
-            background: #fef2f2;
-            color: var(--error);
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-        }
         
         /* Map preview */
         #mapPreview {
@@ -312,7 +312,7 @@
             position: fixed;
             top: 100px;
             right: 24px;
-            z-index: 1000000;
+            z-index: 2147483647;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -358,6 +358,56 @@
             color: var(--gray-500);
             margin-top: 4px;
         }
+        
+        /* Section Devis */
+        .leads-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .lead-item {
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+        }
+        .lead-item.processed {
+            border-left-color: var(--success);
+            opacity: 0.7;
+        }
+        .lead-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .lead-status {
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .lead-status.new {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+        .lead-status.processed {
+            background: #d1fae5;
+            color: #059669;
+        }
+        .lead-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .lead-actions button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
     </style>
 <base target="_blank">
 </head>
@@ -377,7 +427,7 @@
                 </div>
                 <div class="form-group">
                     <label>Mot de passe</label>
-                    <input type="password" id="loginPassword" placeholder="••••••" required autocomplete="off">
+                    <input type="password" id="loginPassword" placeholder="••••" required autocomplete="off">
                 </div>
                 <button type="submit" class="btn-login" id="loginBtn">Connexion</button>
                 <div class="login-error" id="loginError">❌ Identifiants incorrects</div>
@@ -400,10 +450,13 @@
             <nav class="admin-nav">
                 <button class="active" onclick="showSection('header')">📝 Header</button>
                 <button onclick="showSection('hero')">🖼️ Hero</button>
+                <button onclick="showSection('services')">🛠️ Services</button>
+                <button onclick="showSection('portfolio')">📸 Réalisations</button>
                 <button onclick="showSection('navigation')">🧭 Navigation</button>
                 <button onclick="showSection('colors')">🎨 Couleurs</button>
                 <button onclick="showSection('map')">🗺️ Carte</button>
                 <button onclick="showSection('stats')">📊 Stats</button>
+                <button onclick="showSection('leads')">📋 Devis</button>
             </nav>
             <button class="btn-logout" onclick="logout()">🚪 Déconnexion</button>
         </header>
@@ -446,7 +499,7 @@
                     </div>
                     
                     <div class="card">
-                        <h3 class="card-title">👁️ Aperçu</h3>
+                        <h3 class="card-title">👁️ Aperçu Header</h3>
                         <div style="background: white; padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--gray-200);">
                             <div style="display: flex; align-items: center; gap: 12px;">
                                 <div id="previewLogoBox" style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 16px;">CBR</div>
@@ -458,6 +511,16 @@
                             <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-100);">
                                 <span id="previewPhone" style="display: inline-block; padding: 10px 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; border-radius: var(--radius-md); font-weight: 600; font-size: 14px;">06 12 34 56 78</span>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">📋 Instructions</h3>
+                        <div style="font-size: 14px; color: var(--gray-600); line-height: 1.8;">
+                            <p><strong>Texte Logo :</strong> 2-4 caractères affichés dans le carré coloré.</p>
+                            <p style="margin-top: 12px;"><strong>Nom entreprise :</strong> Apparaît à côté du logo.</p>
+                            <p style="margin-top: 12px;"><strong>Sous-titre :</strong> Description courte sous le nom.</p>
+                            <p style="margin-top: 12px;"><strong>Téléphone :</strong> Affiché dans le bouton orange.</p>
                         </div>
                     </div>
                 </div>
@@ -538,6 +601,87 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">📋 Instructions</h3>
+                        <div style="font-size: 14px; color: var(--gray-600); line-height: 1.8;">
+                            <p><strong>Badge :</strong> Petit texte d'accroche en haut de la section.</p>
+                            <p style="margin-top: 12px;"><strong>Titre principal :</strong> Texte principal en blanc.</p>
+                            <p style="margin-top: 12px;"><strong>Titre coloré :</strong> Texte avec dégradé orange.</p>
+                            <p style="margin-top: 12px;"><strong>Image de fond :</strong> URL d'une image (Unsplash recommandé).</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================
+               SECTION SERVICES
+            ======================================== -->
+            <section class="section" id="servicesSection">
+                <div class="admin-grid" style="grid-template-columns: 1fr;">
+                    <div class="card">
+                        <h3 class="card-title">🛠️ Gestion des Services</h3>
+                        <div id="servicesContainer">
+                            <!-- Services générés dynamiquement -->
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="addService()" style="margin-top: 16px;">+ Ajouter un service</button>
+                        <hr style="border: none; border-top: 1px solid var(--gray-200); margin: 20px 0;">
+                        <button type="button" class="btn btn-primary" onclick="saveServices()">💾 Sauvegarder les services</button>
+                    </div>
+                </div>
+                
+                <div class="admin-grid" style="margin-top: 24px;">
+                    <div class="card">
+                        <h3 class="card-title">👁️ Aperçu Services</h3>
+                        <div id="previewServices" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                            <!-- Aperçu généré dynamiquement -->
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">📋 Instructions</h3>
+                        <div style="font-size: 14px; color: var(--gray-600); line-height: 1.8;">
+                            <p><strong>Icône :</strong> Emoji représentant le service (ex: 🏗️, 🔨, 🚜).</p>
+                            <p style="margin-top: 12px;"><strong>Titre :</strong> Nom du service.</p>
+                            <p style="margin-top: 12px;"><strong>Description :</strong> Texte descriptif du service.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================
+               SECTION RÉALISATIONS (PORTFOLIO)
+            ======================================== -->
+            <section class="section" id="portfolioSection">
+                <div class="admin-grid" style="grid-template-columns: 1fr;">
+                    <div class="card">
+                        <h3 class="card-title">📸 Gestion des Réalisations</h3>
+                        <div id="portfolioContainer">
+                            <!-- Portfolio généré dynamiquement -->
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="addPortfolioItem()" style="margin-top: 16px;">+ Ajouter une réalisation</button>
+                        <hr style="border: none; border-top: 1px solid var(--gray-200); margin: 20px 0;">
+                        <button type="button" class="btn btn-primary" onclick="savePortfolio()">💾 Sauvegarder les réalisations</button>
+                    </div>
+                </div>
+                
+                <div class="admin-grid" style="margin-top: 24px;">
+                    <div class="card">
+                        <h3 class="card-title">👁️ Aperçu Réalisations</h3>
+                        <div id="previewPortfolio" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                            <!-- Aperçu généré dynamiquement -->
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">📋 Instructions</h3>
+                        <div style="font-size: 14px; color: var(--gray-600); line-height: 1.8;">
+                            <p><strong>Image :</strong> URL de l'image (Unsplash recommandé).</p>
+                            <p style="margin-top: 12px;"><strong>Titre :</strong> Nom du projet.</p>
+                            <p style="margin-top: 12px;"><strong>Catégorie :</strong> Type de projet (ex: Rénovation, Maçonnerie).</p>
+                            <p style="margin-top: 12px;"><strong>Description :</strong> Détails du projet.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -562,6 +706,15 @@
                         <h3 class="card-title">👁️ Aperçu Navigation</h3>
                         <div id="previewNav" style="display: flex; gap: 8px; flex-wrap: wrap; padding: 20px; background: white; border-radius: var(--radius-md); border: 1px solid var(--gray-200);">
                             <!-- Aperçu généré dynamiquement -->
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">📋 Instructions</h3>
+                        <div style="font-size: 14px; color: var(--gray-600); line-height: 1.8;">
+                            <p><strong>Label :</strong> Nom affiché dans le menu.</p>
+                            <p style="margin-top: 12px;"><strong>URL :</strong> Page de destination (ex: services.html).</p>
+                            <p style="margin-top: 12px;"><strong>Ordre :</strong> Les onglets apparaissent dans l'ordre de la liste.</p>
                         </div>
                     </div>
                 </div>
@@ -611,6 +764,15 @@
                             <div style="padding: 16px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border-radius: var(--radius-md); color: white; text-align: center; font-weight: 600;">
                                 Dégradé Principal → Secondaire
                             </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">📋 Instructions</h3>
+                        <div style="font-size: 14px; color: var(--gray-600); line-height: 1.8;">
+                            <p><strong>Principale :</strong> Couleur des boutons et accents principaux.</p>
+                            <p style="margin-top: 12px;"><strong>Secondaire :</strong> Couleur des marqueurs et éléments secondaires.</p>
+                            <p style="margin-top: 12px;">Le dégradé entre les deux couleurs est utilisé pour les boutons importants.</p>
                         </div>
                     </div>
                 </div>
@@ -663,6 +825,16 @@
                     <div class="card">
                         <h3 class="card-title">👁️ Aperçu Carte</h3>
                         <div id="mapPreview"></div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">📋 Instructions</h3>
+                        <div style="font-size: 14px; color: var(--gray-600); line-height: 1.8;">
+                            <p><strong>Latitude/Longitude :</strong> Coordonnées GPS de votre entreprise.</p>
+                            <p style="margin-top: 12px;"><strong>Zoom :</strong> Niveau de zoom (16 recommandé).</p>
+                            <p style="margin-top: 12px;"><strong>Titre :</strong> Nom affiché sur le marqueur.</p>
+                            <p style="margin-top: 12px;"><strong>Adresse :</strong> Adresse complète affichée.</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -720,6 +892,28 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="card">
+                        <h3 class="card-title">📋 Instructions</h3>
+                        <div style="font-size: 14px; color: var(--gray-600); line-height: 1.8;">
+                            <p>Ces statistiques s'affichent sous la section Hero.</p>
+                            <p style="margin-top: 12px;">Elles sont automatiquement animées lors du scroll.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================
+               SECTION DEVIS/LEADS
+            ======================================== -->
+            <section class="section" id="leadsSection">
+                <div class="admin-grid" style="grid-template-columns: 1fr;">
+                    <div class="card">
+                        <h3 class="card-title">📋 Demandes de Devis Reçues</h3>
+                        <div id="leadsContainer" class="leads-list">
+                            <!-- Leads générés dynamiquement -->
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
@@ -734,7 +928,7 @@
         // ADMIN JAVASCRIPT
         // ========================================
         
-        let previewMap = null;
+        let previewMapInstance = null;
         let previewMarker = null;
         
         // ========================================
@@ -742,53 +936,24 @@
         // ========================================
         document.addEventListener('DOMContentLoaded', function() {
             // Vérifie si déjà connecté
-            const sessionJson = sessionStorage.getItem('whitelabel_admin_session');
-            let isLoggedIn = false;
-            
-            if (sessionJson) {
-                try {
-                    const session = JSON.parse(sessionJson);
-                    if (session.loggedIn && Date.now() < session.expires) {
-                        isLoggedIn = true;
-                    }
-                } catch (e) {}
-            }
-            
-            if (isLoggedIn) {
-                console.log('Session existante trouvée, affichage du panel admin');
+            if (AdminAuth.isLoggedIn()) {
                 showAdminPanel();
-            } else {
-                console.log('Pas de session, affichage du login');
             }
             
-            // Formulaire de login - attaché de plusieurs façons pour être sûr
+            // Formulaire de login
             const loginForm = document.getElementById('loginForm');
             const loginBtn = document.getElementById('loginBtn');
             
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                handleLogin(e);
-                return false;
-            });
-            
-            loginBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                handleLogin(e);
-                return false;
+                handleLogin();
             });
             
             // Enter key sur les inputs
-            document.getElementById('loginUsername').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    document.getElementById('loginPassword').focus();
-                }
-            });
-            
             document.getElementById('loginPassword').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    handleLogin(e);
+                    handleLogin();
                 }
             });
             
@@ -823,40 +988,24 @@
         // ========================================
         // CONNEXION
         // ========================================
-        function handleLogin(e) {
-            if (e) e.preventDefault();
-            
-            const usernameInput = document.getElementById('loginUsername');
-            const passwordInput = document.getElementById('loginPassword');
-            const username = usernameInput.value.trim();
-            const password = passwordInput.value;
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
             
             console.log('=== LOGIN ATTEMPT ===');
             console.log('Username:', username);
             console.log('Password:', password);
             
-            // Vérification directe sans dépendre de app.js
-            if (username === 'cbr' && password === '1098') {
-                console.log('✅ Login successful!');
-                
-                // Créer la session
-                const session = {
-                    loggedIn: true,
-                    timestamp: Date.now(),
-                    expires: Date.now() + (4 * 60 * 60 * 1000)
-                };
-                sessionStorage.setItem('whitelabel_admin_session', JSON.stringify(session));
-                
+            const result = AdminAuth.login(username, password);
+            
+            if (result.success) {
                 showAdminPanel();
                 showToast('Connexion réussie !', 'success');
             } else {
-                console.log('❌ Login failed!');
                 document.getElementById('loginError').classList.add('show');
-                passwordInput.value = '';
-                passwordInput.focus();
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginPassword').focus();
             }
-            
-            return false;
         }
         
         function showAdminPanel() {
@@ -866,7 +1015,7 @@
         }
         
         function logout() {
-            sessionStorage.removeItem('whitelabel_admin_session');
+            AdminAuth.logout();
             location.reload();
         }
         
@@ -881,6 +1030,9 @@
             event.target.classList.add('active');
             
             if (sectionId === 'map') setTimeout(initMapPreview, 100);
+            if (sectionId === 'leads') renderLeads();
+            if (sectionId === 'services') renderServices();
+            if (sectionId === 'portfolio') renderPortfolio();
         }
         
         // ========================================
@@ -944,6 +1096,9 @@
             config.header.companyName = document.getElementById('headerCompanyName').value;
             config.header.companyTagline = document.getElementById('headerTagline').value;
             config.header.phone = document.getElementById('headerPhone').value;
+            config.company.phone = document.getElementById('headerPhone').value;
+            config.company.name = document.getElementById('headerCompanyName').value;
+            config.company.tagline = document.getElementById('headerTagline').value;
             saveConfig(config);
             showToast('Header sauvegardé !', 'success');
         }
@@ -1017,44 +1172,12 @@
         }
         
         // ========================================
-        // NAVIGATION ITEMS
-        // ========================================
-        function renderNavItems(items) {
-            const container = document.getElementById('navItemsContainer');
-            container.innerHTML = items.map((item, index) => `
-                <div class="nav-item" data-index="${index}">
-                    <input type="text" class="nav-label" value="${item.label}" placeholder="Nom">
-                    <input type="text" class="nav-url" value="${item.url}" placeholder="URL">
-                    <button type="button" class="btn-danger" onclick="removeNavItem(this)">🗑️</button>
-                </div>
-            `).join('');
-        }
-        
-        function addNavItem() {
-            const container = document.getElementById('navItemsContainer');
-            const div = document.createElement('div');
-            div.className = 'nav-item';
-            div.innerHTML = `
-                <input type="text" class="nav-label" placeholder="Nom">
-                <input type="text" class="nav-url" placeholder="URL">
-                <button type="button" class="btn-danger" onclick="removeNavItem(this)">🗑️</button>
-            `;
-            container.appendChild(div);
-            updateNavPreview();
-        }
-        
-        function removeNavItem(btn) {
-            btn.closest('.nav-item').remove();
-            updateNavPreview();
-        }
-        
-        // ========================================
-        // PRÉVISUALISATIONS
+        // PREVIEWS
         // ========================================
         function updateHeaderPreview() {
             document.getElementById('previewLogoBox').textContent = document.getElementById('headerLogoText').value || 'LOGO';
             document.getElementById('previewCompanyName').textContent = document.getElementById('headerCompanyName').value || 'Nom entreprise';
-            document.getElementById('previewTagline').textContent = document.getElementById('headerTagline').value || 'Tagline';
+            document.getElementById('previewTagline').textContent = document.getElementById('headerTagline').value || 'Sous-titre';
             document.getElementById('previewPhone').textContent = document.getElementById('headerPhone').value || 'Téléphone';
         }
         
@@ -1072,22 +1195,16 @@
             }
         }
         
-        function updateNavPreview() {
-            const items = document.querySelectorAll('.nav-item');
-            const preview = document.getElementById('previewNav');
-            preview.innerHTML = Array.from(items).map((item, index) => {
-                const label = item.querySelector('.nav-label').value;
-                return `<span style="padding: 8px 16px; background: ${index === 0 ? 'var(--primary)' : 'var(--gray-100)'}; color: ${index === 0 ? 'white' : 'var(--gray-700)'}; border-radius: var(--radius-md); font-size: 14px; font-weight: 600;">${label || 'Item'}</span>`;
-            }).join('');
-        }
-        
         function updateColorPreview() {
             const primary = document.getElementById('colorPrimary').value;
             const secondary = document.getElementById('colorSecondary').value;
+            
             document.getElementById('colorPrimaryValue').textContent = primary;
             document.getElementById('colorSecondaryValue').textContent = secondary;
+            
             document.getElementById('previewColorPrimary').style.background = primary;
             document.getElementById('previewColorSecondary').style.background = secondary;
+            
             document.documentElement.style.setProperty('--primary', primary);
             document.documentElement.style.setProperty('--secondary', secondary);
         }
@@ -1100,61 +1217,436 @@
         }
         
         // ========================================
-        // CARTE PRÉVISUALISATION
+        // NAVIGATION
+        // ========================================
+        function renderNavItems(items) {
+            const container = document.getElementById('navItemsContainer');
+            container.innerHTML = items.map((item, index) => `
+                <div class="nav-item">
+                    <input type="text" class="nav-label" value="${item.label}" placeholder="Nom">
+                    <input type="text" class="nav-url" value="${item.url}" placeholder="URL">
+                    <button type="button" class="btn btn-danger" onclick="removeNavItem(this)">🗑</button>
+                </div>
+            `).join('');
+        }
+        
+        function addNavItem() {
+            const container = document.getElementById('navItemsContainer');
+            const div = document.createElement('div');
+            div.className = 'nav-item';
+            div.innerHTML = `
+                <input type="text" class="nav-label" placeholder="Nom">
+                <input type="text" class="nav-url" placeholder="URL">
+                <button type="button" class="btn btn-danger" onclick="removeNavItem(this)">🗑</button>
+            `;
+            container.appendChild(div);
+            updateNavPreview();
+        }
+        
+        function removeNavItem(btn) {
+            btn.closest('.nav-item').remove();
+            updateNavPreview();
+        }
+        
+        function updateNavPreview() {
+            const items = [];
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const label = item.querySelector('.nav-label').value;
+                if (label) items.push(label);
+            });
+            document.getElementById('previewNav').innerHTML = items.map(label => 
+                `<span style="padding: 8px 16px; background: var(--gray-100); border-radius: var(--radius-md); font-size: 14px;">${label}</span>`
+            ).join('');
+        }
+        
+        // ========================================
+        // MAP PREVIEW
         // ========================================
         function initMapPreview() {
-            if (previewMap) return;
+            if (previewMapInstance) return;
             
-            const lat = parseFloat(document.getElementById('mapLatitude').value) || 48.7946;
-            const lng = parseFloat(document.getElementById('mapLongitude').value) || 2.4172;
-            const zoom = parseInt(document.getElementById('mapZoom').value) || 16;
+            const config = getConfig();
             
-            previewMap = L.map('mapPreview', { scrollWheelZoom: false }).setView([lat, lng], zoom);
+            previewMapInstance = L.map('mapPreview', {
+                scrollWheelZoom: false
+            }).setView([config.map.latitude, config.map.longitude], config.map.zoom);
             
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(previewMap);
+                attribution: '&copy; OpenStreetMap',
+                maxZoom: 19
+            }).addTo(previewMapInstance);
             
-            previewMarker = L.marker([lat, lng], { draggable: true }).addTo(previewMap);
-            
-            previewMarker.on('dragend', function(e) {
-                const pos = e.target.getLatLng();
-                document.getElementById('mapLatitude').value = pos.lat.toFixed(4);
-                document.getElementById('mapLongitude').value = pos.lng.toFixed(4);
+            const customIcon = L.divIcon({
+                className: 'custom-marker',
+                html: `<div style="background: ${config.colors.secondary}; border: 3px solid white; border-radius: 50%; width: 36px; height: 36px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;">📍</div>`,
+                iconSize: [36, 36],
+                iconAnchor: [18, 18]
             });
+            
+            previewMarker = L.marker([config.map.latitude, config.map.longitude], { icon: customIcon })
+                .addTo(previewMapInstance)
+                .bindPopup(`<b>${config.map.markerTitle}</b><br>${config.map.markerAddress}`);
         }
         
         function previewMap() {
-            if (!previewMap) initMapPreview();
+            if (!previewMapInstance) return;
             
             const lat = parseFloat(document.getElementById('mapLatitude').value);
             const lng = parseFloat(document.getElementById('mapLongitude').value);
             const zoom = parseInt(document.getElementById('mapZoom').value);
             
-            if (!isNaN(lat) && !isNaN(lng)) {
-                previewMap.setView([lat, lng], zoom || 16);
-                previewMarker.setLatLng([lat, lng]);
+            previewMapInstance.setView([lat, lng], zoom);
+            previewMarker.setLatLng([lat, lng]);
+            previewMarker.setPopupContent(`<b>${document.getElementById('mapMarkerTitle').value}</b><br>${document.getElementById('mapMarkerAddress').value}`);
+        }
+        
+        // ========================================
+        // RENDU DES DEVIS
+        // ========================================
+        function renderLeads() {
+            const leads = LeadSystem.getAll();
+            const container = document.getElementById('leadsContainer');
+            
+            if (leads.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--gray-500);">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📭</div>
+                        <p>Aucun devis reçu pour le moment.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = leads.map(lead => `
+                <div class="lead-item ${lead.status === 'processed' ? 'processed' : ''}">
+                    <div class="lead-header">
+                        <div>
+                            <strong>${lead.name || 'Sans nom'}</strong>
+                            <span class="lead-status ${lead.status || 'new'}">${lead.status === 'processed' ? 'Traité' : 'Nouveau'}</span>
+                        </div>
+                        <small style="color: var(--gray-500);">${new Date(lead.date).toLocaleDateString('fr-FR')}</small>
+                    </div>
+                    <div style="font-size: 14px; color: var(--gray-600); margin-bottom: 8px;">
+                        📞 ${lead.phone || '-'} | ✉️ ${lead.email || '-'}
+                    </div>
+                    <div style="font-size: 14px; color: var(--gray-700); margin-bottom: 8px;">
+                        <strong>Type:</strong> ${lead.projectType || '-'} | <strong>Délai:</strong> ${lead.deadline || '-'}
+                    </div>
+                    <div style="font-size: 13px; color: var(--gray-600); background: white; padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+                        ${lead.message || 'Pas de message'}
+                    </div>
+                    <div class="lead-actions">
+                        ${lead.status !== 'processed' 
+                            ? `<button onclick="updateLeadStatus(${lead.id}, 'processed')" style="background: var(--success); color: white;">✓ Marquer comme traité</button>`
+                            : `<button onclick="updateLeadStatus(${lead.id}, 'new')" style="background: var(--primary); color: white;">↩ Marquer comme nouveau</button>`
+                        }
+                        <button onclick="deleteLead(${lead.id})" style="background: var(--error); color: white;">🗑 Supprimer</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function updateLeadStatus(id, status) {
+            LeadSystem.updateStatus(id, status);
+            renderLeads();
+            showToast('Statut mis à jour', 'success');
+        }
+        
+        function deleteLead(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce devis ?')) {
+                LeadSystem.delete(id);
+                renderLeads();
+                showToast('Devis supprimé', 'success');
             }
         }
         
         // ========================================
-        // UTILITAIRES
+        // SERVICES
+        // ========================================
+        function renderServices() {
+            const config = getConfig();
+            const container = document.getElementById('servicesContainer');
+            
+            container.innerHTML = config.services.map((service, index) => `
+                <div class="service-item" style="background: var(--gray-50); padding: 20px; border-radius: var(--radius-md); margin-bottom: 16px; border: 1px solid var(--gray-200);">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Icône (Emoji)</label>
+                            <input type="text" class="service-icon" value="${service.icon}" placeholder="🏗️" style="font-size: 24px; text-align: center;">
+                        </div>
+                        <div class="form-group">
+                            <label>Titre du service</label>
+                            <input type="text" class="service-title" value="${service.title}" placeholder="Nom du service">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="service-desc" rows="2" placeholder="Description du service">${service.description}</textarea>
+                    </div>
+                    <button type="button" class="btn btn-danger" onclick="removeService(this)" style="margin-top: 8px;">🗑 Supprimer ce service</button>
+                </div>
+            `).join('');
+            
+            updateServicesPreview();
+        }
+        
+        function addService() {
+            const container = document.getElementById('servicesContainer');
+            const div = document.createElement('div');
+            div.className = 'service-item';
+            div.style.cssText = 'background: var(--gray-50); padding: 20px; border-radius: var(--radius-md); margin-bottom: 16px; border: 1px solid var(--gray-200);';
+            div.innerHTML = `
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Icône (Emoji)</label>
+                        <input type="text" class="service-icon" placeholder="🏗️" style="font-size: 24px; text-align: center;">
+                    </div>
+                    <div class="form-group">
+                        <label>Titre du service</label>
+                        <input type="text" class="service-title" placeholder="Nom du service">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="service-desc" rows="2" placeholder="Description du service"></textarea>
+                </div>
+                <button type="button" class="btn btn-danger" onclick="removeService(this)" style="margin-top: 8px;">🗑 Supprimer ce service</button>
+            `;
+            container.appendChild(div);
+            
+            // Ajouter les écouteurs d'événements pour le preview en direct
+            div.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('input', updateServicesPreview);
+            });
+        }
+        
+        function removeService(btn) {
+            btn.closest('.service-item').remove();
+            updateServicesPreview();
+        }
+        
+        function updateServicesPreview() {
+            const services = [];
+            document.querySelectorAll('.service-item').forEach(item => {
+                const icon = item.querySelector('.service-icon').value;
+                const title = item.querySelector('.service-title').value;
+                const desc = item.querySelector('.service-desc').value;
+                if (title) {
+                    services.push({ icon: icon || '🔧', title, description: desc });
+                }
+            });
+            
+            const preview = document.getElementById('previewServices');
+            preview.innerHTML = services.map(s => `
+                <div style="background: white; padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--gray-200); text-align: center;">
+                    <div style="font-size: 40px; margin-bottom: 12px;">${s.icon}</div>
+                    <h4 style="font-size: 16px; margin-bottom: 8px;">${s.title}</h4>
+                    <p style="font-size: 13px; color: var(--gray-500);">${s.description}</p>
+                </div>
+            `).join('') || '<p style="color: var(--gray-500); text-align: center;">Aucun service à afficher</p>';
+        }
+        
+        function saveServices() {
+            const config = getConfig();
+            const services = [];
+            
+            document.querySelectorAll('.service-item').forEach(item => {
+                const icon = item.querySelector('.service-icon').value;
+                const title = item.querySelector('.service-title').value;
+                const desc = item.querySelector('.service-desc').value;
+                if (title) {
+                    services.push({
+                        id: Date.now() + Math.random(),
+                        icon: icon || '🔧',
+                        title: title,
+                        description: desc
+                    });
+                }
+            });
+            
+            config.services = services;
+            saveConfig(config);
+            showToast('Services sauvegardés !', 'success');
+        }
+        
+        // ========================================
+        // PORTFOLIO (RÉALISATIONS)
+        // ========================================
+        function renderPortfolio() {
+            const config = getConfig();
+            const container = document.getElementById('portfolioContainer');
+            const portfolio = config.portfolio || [];
+            
+            container.innerHTML = portfolio.map((item, index) => `
+                <div class="portfolio-item-admin" style="background: var(--gray-50); padding: 20px; border-radius: var(--radius-md); margin-bottom: 16px; border: 1px solid var(--gray-200);">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>URL de l'image</label>
+                            <input type="url" class="portfolio-image" value="${item.image || ''}" placeholder="https://images.unsplash.com/...">
+                        </div>
+                        <div class="form-group">
+                            <label>Titre du projet</label>
+                            <input type="text" class="portfolio-title" value="${item.title || ''}" placeholder="Nom du projet">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Catégorie</label>
+                            <input type="text" class="portfolio-category" value="${item.category || ''}" placeholder="Ex: Rénovation, Maçonnerie">
+                        </div>
+                        <div class="form-group">
+                            <label>Date (optionnel)</label>
+                            <input type="text" class="portfolio-date" value="${item.date || ''}" placeholder="Ex: Janvier 2024">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description du projet</label>
+                        <textarea class="portfolio-desc" rows="2" placeholder="Décrivez le projet">${item.description || ''}</textarea>
+                    </div>
+                    <button type="button" class="btn btn-danger" onclick="removePortfolioItem(this)" style="margin-top: 8px;">🗑 Supprimer cette réalisation</button>
+                </div>
+            `).join('');
+            
+            // Ajouter les écouteurs pour le preview
+            document.querySelectorAll('.portfolio-item-admin input, .portfolio-item-admin textarea').forEach(input => {
+                input.addEventListener('input', updatePortfolioPreview);
+            });
+            
+            updatePortfolioPreview();
+        }
+        
+        function addPortfolioItem() {
+            const container = document.getElementById('portfolioContainer');
+            const div = document.createElement('div');
+            div.className = 'portfolio-item-admin';
+            div.style.cssText = 'background: var(--gray-50); padding: 20px; border-radius: var(--radius-md); margin-bottom: 16px; border: 1px solid var(--gray-200);';
+            div.innerHTML = `
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>URL de l'image</label>
+                        <input type="url" class="portfolio-image" placeholder="https://images.unsplash.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>Titre du projet</label>
+                        <input type="text" class="portfolio-title" placeholder="Nom du projet">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Catégorie</label>
+                        <input type="text" class="portfolio-category" placeholder="Ex: Rénovation, Maçonnerie">
+                    </div>
+                    <div class="form-group">
+                        <label>Date (optionnel)</label>
+                        <input type="text" class="portfolio-date" placeholder="Ex: Janvier 2024">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description du projet</label>
+                    <textarea class="portfolio-desc" rows="2" placeholder="Décrivez le projet"></textarea>
+                </div>
+                <button type="button" class="btn btn-danger" onclick="removePortfolioItem(this)" style="margin-top: 8px;">🗑 Supprimer cette réalisation</button>
+            `;
+            container.appendChild(div);
+            
+            div.querySelectorAll('input, textarea').forEach(input => {
+                input.addEventListener('input', updatePortfolioPreview);
+            });
+        }
+        
+        function removePortfolioItem(btn) {
+            btn.closest('.portfolio-item-admin').remove();
+            updatePortfolioPreview();
+        }
+        
+        function updatePortfolioPreview() {
+            const items = [];
+            document.querySelectorAll('.portfolio-item-admin').forEach(item => {
+                const image = item.querySelector('.portfolio-image').value;
+                const title = item.querySelector('.portfolio-title').value;
+                const category = item.querySelector('.portfolio-category').value;
+                if (title) {
+                    items.push({ image: image || 'https://via.placeholder.com/300x200?text=Pas+d\'image', title, category: category || 'Projet' });
+                }
+            });
+            
+            const preview = document.getElementById('previewPortfolio');
+            preview.innerHTML = items.map(item => `
+                <div style="position: relative; border-radius: var(--radius-md); overflow: hidden; aspect-ratio: 4/3;">
+                    <img src="${item.image}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/300x200?text=Image+non+disponible'">
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white;">
+                        <span style="font-size: 11px; background: var(--primary); padding: 2px 8px; border-radius: 50px;">${item.category}</span>
+                        <h4 style="font-size: 14px; margin-top: 4px;">${item.title}</h4>
+                    </div>
+                </div>
+            `).join('') || '<p style="color: var(--gray-500); text-align: center;">Aucune réalisation à afficher</p>';
+        }
+        
+        function savePortfolio() {
+            const config = getConfig();
+            const portfolio = [];
+            
+            document.querySelectorAll('.portfolio-item-admin').forEach(item => {
+                const image = item.querySelector('.portfolio-image').value;
+                const title = item.querySelector('.portfolio-title').value;
+                const category = item.querySelector('.portfolio-category').value;
+                const date = item.querySelector('.portfolio-date').value;
+                const desc = item.querySelector('.portfolio-desc').value;
+                
+                if (title) {
+                    portfolio.push({
+                        id: Date.now() + Math.random(),
+                        image: image,
+                        title: title,
+                        category: category,
+                        date: date,
+                        description: desc,
+                        featured: true
+                    });
+                }
+            });
+            
+            config.portfolio = portfolio;
+            saveConfig(config);
+            showToast('Réalisations sauvegardées !', 'success');
+        }
+        
+        // ========================================
+        // TOAST
         // ========================================
         function showToast(message, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = 'toast' + (type === 'error' ? ' error' : '');
-            toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span><span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-        
-        // Écouteurs pour preview navigation
-        document.addEventListener('input', function(e) {
-            if (e.target.classList.contains('nav-label') || e.target.classList.contains('nav-url')) {
-                updateNavPreview();
+            let container = document.getElementById('toastContainer');
+            
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
             }
-        });
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: '✓',
+                error: '✕',
+                info: 'ℹ',
+                warning: '⚠'
+            };
+            
+            toast.innerHTML = `
+                <span style="font-size: 20px;">${icons[type]}</span>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
     </script>
 </body>
 </html>
