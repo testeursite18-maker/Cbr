@@ -1,5 +1,5 @@
 // ========================================
-// TEMPLATE UNIVERSEL WHITE-LABEL v5.0
+// TEMPLATE UNIVERSEL WHITE-LABEL v6.0
 // Connexion Admin: cbr / 1098
 // ========================================
 
@@ -10,7 +10,7 @@
 // ========================================
 
 const DEFAULT_CONFIG = {
-    // Identifiants Admin (NE PAS MODIFIER - utilisés pour la connexion)
+    // Identifiants Admin
     admin: {
         username: "cbr",
         password: "1098"
@@ -18,10 +18,10 @@ const DEFAULT_CONFIG = {
     
     // HEADER
     header: {
-        logoText: "CBR",                    // Texte dans le carré logo
-        companyName: "C.B.R. Île-de-France", // Nom principal
-        companyTagline: "Maçonnerie & Rénovation", // Sous-titre
-        phone: "06 12 34 56 78"             // Numéro affiché dans le bouton
+        logoText: "CBR",
+        companyName: "C.B.R. Île-de-France",
+        companyTagline: "Maçonnerie & Rénovation",
+        phone: "06 12 34 56 78"
     },
     
     // NAVIGATION
@@ -71,14 +71,18 @@ const DEFAULT_CONFIG = {
     
     // ENTREPRISE
     company: {
+        name: "C.B.R. Île-de-France",
+        tagline: "Maçonnerie & Rénovation",
         address: "33 Rue des Pivoines, 94140 Alfortville",
         email: "contact@cbr-travaux.fr",
+        phone: "06 12 34 56 78",
         hours: {
             weekday: "7h00 - 19h00",
             saturday: "8h00 - 17h00",
             sunday: "Fermé"
         },
-        zones: ["Alfortville", "Paris", "Val-de-Marne", "Seine-Saint-Denis", "Essonne", "Hauts-de-Seine"]
+        zones: ["Alfortville", "Paris", "Val-de-Marne", "Seine-Saint-Denis", "Essonne", "Hauts-de-Seine"],
+        description: "Entreprise familiale spécialisée dans la maçonnerie, la rénovation et la construction."
     },
     
     // STATS
@@ -117,15 +121,16 @@ const DEFAULT_CONFIG = {
     // PORTFOLIO
     portfolio: [],
     
-    // LEADS
+    // DEVIS/LEADS
     leads: []
 };
 
 // ========================================
-// CLÉ LOCALSTORAGE
+// CLÉS LOCALSTORAGE
 // ========================================
-const STORAGE_KEY = 'whitelabel_config_v5';
+const STORAGE_KEY = 'whitelabel_config_v6';
 const ADMIN_SESSION_KEY = 'whitelabel_admin_session';
+const LEADS_KEY = 'whitelabel_leads_v6';
 
 // ========================================
 // FONCTIONS DE STOCKAGE
@@ -136,13 +141,12 @@ function getConfig() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             const parsed = JSON.parse(saved);
-            // Fusion avec les valeurs par défaut pour les nouvelles propriétés
             return mergeDeep(DEFAULT_CONFIG, parsed);
         }
     } catch (e) {
         console.error('Erreur lecture config:', e);
     }
-    return DEFAULT_CONFIG;
+    return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 }
 
 function saveConfig(config) {
@@ -174,28 +178,27 @@ function mergeDeep(defaults, saved) {
 // ========================================
 
 const AdminAuth = {
-    // Vérifie les identifiants
     login(username, password) {
-        const config = getConfig();
-        console.log('Tentative connexion:', username, '| Attendu:', config.admin.username);
-        console.log('MDP fourni:', password, '| Attendu:', config.admin.password);
+        console.log('=== TENTATIVE DE CONNEXION ===');
+        console.log('Username entré:', username);
+        console.log('Password entré:', password);
         
-        if (username === config.admin.username && password === config.admin.password) {
-            // Crée une session
+        // Vérification directe des identifiants
+        if (username === 'cbr' && password === '1098') {
             const session = {
                 loggedIn: true,
                 timestamp: Date.now(),
-                expires: Date.now() + (4 * 60 * 60 * 1000) // 4 heures
+                expires: Date.now() + (4 * 60 * 60 * 1000)
             };
             sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(session));
             console.log('✅ Connexion réussie!');
             return { success: true, message: 'Connexion réussie' };
         }
+        
         console.log('❌ Identifiants incorrects');
         return { success: false, message: 'Identifiants incorrects' };
     },
     
-    // Vérifie si connecté
     isLoggedIn() {
         try {
             const sessionJson = sessionStorage.getItem(ADMIN_SESSION_KEY);
@@ -212,9 +215,63 @@ const AdminAuth = {
         }
     },
     
-    // Déconnexion
     logout() {
         sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    }
+};
+
+// ========================================
+// SYSTÈME DE DEVIS/LEADS
+// ========================================
+
+const LeadSystem = {
+    getAll() {
+        try {
+            const leads = localStorage.getItem(LEADS_KEY);
+            return leads ? JSON.parse(leads) : [];
+        } catch (e) {
+            return [];
+        }
+    },
+    
+    save(lead) {
+        try {
+            const leads = this.getAll();
+            lead.id = Date.now();
+            lead.date = new Date().toISOString();
+            lead.status = 'new';
+            leads.unshift(lead);
+            localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
+            return { success: true, message: 'Devis enregistré' };
+        } catch (e) {
+            return { success: false, message: 'Erreur lors de l\'enregistrement' };
+        }
+    },
+    
+    updateStatus(id, status) {
+        const leads = this.getAll();
+        const lead = leads.find(l => l.id === id);
+        if (lead) {
+            lead.status = status;
+            localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
+            return { success: true };
+        }
+        return { success: false };
+    },
+    
+    delete(id) {
+        let leads = this.getAll();
+        leads = leads.filter(l => l.id !== id);
+        localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
+        return { success: true };
+    },
+    
+    submit(formData) {
+        const lead = {};
+        formData.forEach((value, key) => {
+            lead[key] = value;
+        });
+        return this.save(lead);
     }
 };
 
@@ -223,7 +280,6 @@ const AdminAuth = {
 // ========================================
 
 const SiteRenderer = {
-    // Applique toutes les personnalisations
     render() {
         const config = getConfig();
         
@@ -234,10 +290,12 @@ const SiteRenderer = {
         this.renderFooter(config);
         this.renderStats(config);
         this.renderServices(config);
+        this.renderServicesDetailed(config);
+        this.renderPortfolio(config);
+        this.renderContactInfo(config);
         this.initMap(config);
     },
     
-    // HEADER
     renderHeader(config) {
         const logoBox = document.getElementById('logoBox');
         const companyName = document.getElementById('companyName');
@@ -246,6 +304,8 @@ const SiteRenderer = {
         const footerCompanyName = document.getElementById('footerCompanyName');
         const footerTagline = document.getElementById('footerTagline');
         const footerLogoBox = document.getElementById('footerLogoBox');
+        const ctaPhoneText = document.getElementById('ctaPhoneText');
+        const ctaPhone = document.getElementById('ctaPhone');
         
         if (logoBox) logoBox.textContent = config.header.logoText;
         if (footerLogoBox) footerLogoBox.textContent = config.header.logoText;
@@ -253,19 +313,25 @@ const SiteRenderer = {
         if (footerCompanyName) footerCompanyName.textContent = config.header.companyName;
         if (companyTagline) companyTagline.textContent = config.header.companyTagline;
         if (footerTagline) footerTagline.textContent = config.header.companyTagline;
+        
         if (headerPhone) {
             headerPhone.textContent = config.header.phone;
             headerPhone.href = `tel:${config.header.phone.replace(/\s/g, '')}`;
         }
+        
+        if (ctaPhoneText) ctaPhoneText.textContent = config.header.phone;
+        if (ctaPhone) ctaPhone.href = `tel:${config.header.phone.replace(/\s/g, '')}`;
     },
     
-    // NAVIGATION
     renderNavigation(config) {
         const navContainer = document.getElementById('mainNav');
         const mobileNavContainer = document.getElementById('mobileNav');
         
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        
         const navHTML = config.navigation.items.map(item => {
-            const activeClass = item.active ? 'active' : '';
+            const isActive = currentPage === item.url || (currentPage === '' && item.url === 'index.html');
+            const activeClass = isActive ? 'active' : '';
             return `<a href="${item.url}" class="${activeClass}">${item.label}</a>`;
         }).join('');
         
@@ -279,7 +345,6 @@ const SiteRenderer = {
         }
     },
     
-    // HERO
     renderHero(config) {
         const heroBadge = document.getElementById('heroBadge');
         const heroTitle = document.getElementById('heroTitle');
@@ -293,7 +358,12 @@ const SiteRenderer = {
         if (heroTitle) heroTitle.textContent = config.hero.title;
         if (heroTitleHighlight) heroTitleHighlight.textContent = config.hero.titleHighlight;
         if (heroDescription) heroDescription.textContent = config.hero.description;
-        if (heroBg) heroBg.style.backgroundImage = `url('${config.hero.backgroundImage}')`;
+        
+        if (heroBg && config.hero.backgroundImage) {
+            heroBg.style.backgroundImage = `url('${config.hero.backgroundImage}')`;
+            heroBg.style.backgroundSize = 'cover';
+            heroBg.style.backgroundPosition = 'center';
+        }
         
         if (heroBtn1) {
             heroBtn1.textContent = config.hero.button1.text;
@@ -305,18 +375,18 @@ const SiteRenderer = {
         }
     },
     
-    // COULEURS
     renderColors(config) {
         const root = document.documentElement;
         root.style.setProperty('--primary', config.colors.primary);
         root.style.setProperty('--secondary', config.colors.secondary);
         
-        // Met à jour la meta theme-color
+        const primaryDark = adjustColor(config.colors.primary, -20);
+        root.style.setProperty('--primary-dark', primaryDark);
+        
         const metaTheme = document.querySelector('meta[name="theme-color"]');
         if (metaTheme) metaTheme.content = config.colors.primary;
     },
     
-    // STATS
     renderStats(config) {
         const statsGrid = document.getElementById('statsGrid');
         if (!statsGrid) return;
@@ -337,13 +407,12 @@ const SiteRenderer = {
         `).join('');
     },
     
-    // SERVICES
     renderServices(config) {
         const servicesGrid = document.getElementById('servicesGrid');
         if (!servicesGrid) return;
         
         servicesGrid.innerHTML = config.services.map((service, i) => `
-            <div class="service-card" style="animation-delay: ${i * 0.15}s">
+            <div class="service-card animate-on-scroll" style="animation-delay: ${i * 0.15}s">
                 <div class="service-icon">${service.icon}</div>
                 <h3>${service.title}</h3>
                 <p>${service.description}</p>
@@ -352,7 +421,63 @@ const SiteRenderer = {
         `).join('');
     },
     
-    // FOOTER
+    renderServicesDetailed(config) {
+        const container = document.getElementById('servicesDetailed');
+        if (!container) return;
+        
+        container.innerHTML = config.services.map((service, i) => `
+            <div class="service-detailed animate-on-scroll" style="animation-delay: ${i * 0.1}s">
+                <div class="service-detailed-icon">${service.icon}</div>
+                <div class="service-detailed-content">
+                    <h3>${service.title}</h3>
+                    <p>${service.description}</p>
+                    <a href="contact.html" class="btn-primary" style="margin-top: 16px; display: inline-flex;">Demander un devis →</a>
+                </div>
+            </div>
+        `).join('');
+    },
+    
+    renderPortfolio(config) {
+        const container = document.getElementById('portfolioMasonry');
+        const emptyMsg = document.getElementById('emptyPortfolio');
+        if (!container) return;
+        
+        const portfolio = config.portfolio || [];
+        
+        if (portfolio.length === 0) {
+            container.innerHTML = '';
+            if (emptyMsg) emptyMsg.style.display = 'block';
+            return;
+        }
+        
+        if (emptyMsg) emptyMsg.style.display = 'none';
+        
+        container.innerHTML = portfolio.map((item, i) => `
+            <div class="portfolio-item animate-on-scroll" style="animation-delay: ${i * 0.1}s" onclick="openPortfolioModal(${i})">
+                <img src="${item.image || 'https://via.placeholder.com/400x300?text=Pas+d\'image'}" alt="${item.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Image+non+disponible'">
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">${item.category || 'Projet'}</span>
+                    <h4>${item.title}</h4>
+                </div>
+            </div>
+        `).join('');
+        
+        // Mettre à jour les filtres
+        this.renderPortfolioFilters(config);
+    },
+    
+    renderPortfolioFilters(config) {
+        const container = document.getElementById('filterButtons');
+        if (!container) return;
+        
+        const portfolio = config.portfolio || [];
+        const categories = ['all', ...new Set(portfolio.map(p => p.category).filter(Boolean))];
+        
+        container.innerHTML = categories.map(cat => `
+            <button class="${cat === 'all' ? 'active' : ''}" onclick="setPortfolioFilter('${cat}')">${cat === 'all' ? 'Tous' : cat}</button>
+        `).join('');
+    },
+    
     renderFooter(config) {
         const footerAddress = document.getElementById('footerAddress');
         const footerPhone = document.getElementById('footerPhone');
@@ -361,22 +486,50 @@ const SiteRenderer = {
         const zonesTags = document.getElementById('zonesTags');
         const currentYear = document.getElementById('currentYear');
         const copyrightName = document.getElementById('copyrightName');
+        const footerDesc = document.querySelector('.footer-desc');
         
         if (footerAddress) footerAddress.innerHTML = `📍 ${config.company.address}`;
-        if (footerPhone) footerPhone.innerHTML = `📞 <a href="tel:${config.header.phone.replace(/\s/g, '')}">${config.header.phone}</a>`;
+        if (footerPhone) footerPhone.innerHTML = `📞 <a href="tel:${config.company.phone.replace(/\s/g, '')}">${config.company.phone}</a>`;
         if (footerEmail) footerEmail.innerHTML = `✉️ <a href="mailto:${config.company.email}">${config.company.email}</a>`;
         if (footerHours) footerHours.innerHTML = `🕐 Lun-Ven: ${config.company.hours.weekday}`;
         if (zonesTags) zonesTags.innerHTML = config.company.zones.map(z => `<span>${z}</span>`).join('');
         if (currentYear) currentYear.textContent = new Date().getFullYear();
-        if (copyrightName) copyrightName.textContent = config.header.companyName;
+        if (copyrightName) copyrightName.textContent = config.company.name;
+        if (footerDesc) footerDesc.textContent = config.company.description;
     },
     
-    // CARTE LEAFLET
+    renderContactInfo(config) {
+        const contactAddress = document.getElementById('contactAddress');
+        const contactPhone = document.getElementById('contactPhone');
+        const contactEmail = document.getElementById('contactEmail');
+        const contactHours = document.getElementById('contactHours');
+        const zonesList = document.getElementById('zonesList');
+        const mapAddress = document.getElementById('mapAddress');
+        
+        if (contactAddress) contactAddress.textContent = config.company.address;
+        if (contactPhone) {
+            contactPhone.textContent = config.company.phone;
+            contactPhone.href = `tel:${config.company.phone.replace(/\s/g, '')}`;
+        }
+        if (contactEmail) {
+            contactEmail.textContent = config.company.email;
+            contactEmail.href = `mailto:${config.company.email}`;
+        }
+        if (contactHours) {
+            contactHours.innerHTML = `Lun-Ven: ${config.company.hours.weekday}<br>Sam: ${config.company.hours.saturday}`;
+        }
+        if (zonesList) {
+            zonesList.innerHTML = config.company.zones.map(z => `<span>${z}</span>`).join('');
+        }
+        if (mapAddress) {
+            mapAddress.textContent = `${config.map.markerTitle} - ${config.map.markerAddress}`;
+        }
+    },
+    
     initMap(config) {
         const mapContainer = document.getElementById('map');
         if (!mapContainer || typeof L === 'undefined') return;
         
-        // Évite les initialisations multiples
         if (mapContainer._leaflet_id) return;
         
         const map = L.map('map', {
@@ -388,13 +541,12 @@ const SiteRenderer = {
             maxZoom: 19
         }).addTo(map);
         
-        // Icône personnalisée
         const customIcon = L.divIcon({
             className: 'custom-marker',
-            html: `<div style="background: ${config.colors.secondary}; border: 3px solid white; border-radius: 50%; width: 36px; height: 36px; box-shadow: 0 4px 12px rgba(220,38,38,0.4); display: flex; align-items: center; justify-content: center;">📍</div>`,
+            html: `<div style="background: ${config.colors.secondary}; border: 3px solid white; border-radius: 50%; width: 36px; height: 36px; box-shadow: 0 4px 12px rgba(220,38,38,0.4); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;">📍</div>`,
             iconSize: [36, 36],
-            iconAnchor: [18, 36],
-            popupAnchor: [0, -36]
+            iconAnchor: [18, 18],
+            popupAnchor: [0, -20]
         });
         
         L.marker([config.map.latitude, config.map.longitude], { icon: customIcon })
@@ -420,14 +572,370 @@ function toggleMenu() {
 }
 
 // ========================================
-// INITIALISATION
+// UTILITAIRES
 // ========================================
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialise le site avec la config
-    SiteRenderer.render();
+function adjustColor(color, amount) {
+    const num = parseInt(color.replace('#', ''), 16);
+    const r = Math.min(255, Math.max(0, (num >> 16) + amount));
+    const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
+    const b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
+    return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+}
+
+function showToast(message, type = 'success') {
+    let container = document.getElementById('toastContainer');
     
-    // Animation au scroll
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icons = {
+        success: '✓',
+        error: '✕',
+        info: 'ℹ',
+        warning: '⚠'
+    };
+    
+    toast.innerHTML = `
+        <span style="font-size: 20px;">${icons[type]}</span>
+        <span>${message}</span>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+// ========================================
+// WIDGET ADMIN DEVIS (bas gauche)
+// ========================================
+
+const AdminWidget = {
+    init() {
+        // Ne pas afficher sur la page admin
+        if (window.location.pathname.includes('admin.html')) return;
+        
+        // Créer le bouton flottant
+        const btn = document.createElement('button');
+        btn.id = 'adminWidgetBtn';
+        btn.innerHTML = '📋 Devis';
+        btn.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9998;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        `;
+        
+        btn.addEventListener('mouseenter', () => {
+            btn.style.transform = 'translateY(-2px)';
+            btn.style.boxShadow = '0 6px 20px rgba(0,0,0,0.4)';
+        });
+        
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = 'translateY(0)';
+            btn.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
+        });
+        
+        btn.addEventListener('click', () => this.showLoginModal());
+        
+        document.body.appendChild(btn);
+    },
+    
+    showLoginModal() {
+        // Supprimer modal existant
+        const existingModal = document.getElementById('adminWidgetModal');
+        if (existingModal) existingModal.remove();
+        
+        const modal = document.createElement('div');
+        modal.id = 'adminWidgetModal';
+        modal.style.cssText = `
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        `;
+        
+        modal.innerHTML = `
+            <div style="
+                background: white;
+                border-radius: 16px;
+                padding: 32px;
+                width: 100%;
+                max-width: 400px;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+                animation: slideUp 0.3s ease;
+            ">
+                <h3 style="margin: 0 0 20px 0; font-size: 20px;">🔐 Accès Admin</h3>
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600;">Identifiant</label>
+                    <input type="text" id="widgetUsername" placeholder="cbr" style="
+                        width: 100%;
+                        padding: 12px 16px;
+                        border: 2px solid #e5e7eb;
+                        border-radius: 8px;
+                        font-size: 15px;
+                    ">
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600;">Mot de passe</label>
+                    <input type="password" id="widgetPassword" placeholder="1098" style="
+                        width: 100%;
+                        padding: 12px 16px;
+                        border: 2px solid #e5e7eb;
+                        border-radius: 8px;
+                        font-size: 15px;
+                    ">
+                </div>
+                <div id="widgetError" style="color: #ef4444; font-size: 14px; margin-bottom: 16px; display: none;">
+                    Identifiants incorrects
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="AdminWidget.closeModal()" style="
+                        flex: 1;
+                        padding: 12px;
+                        background: #f3f4f6;
+                        border: none;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    ">Annuler</button>
+                    <button onclick="AdminWidget.doLogin()" style="
+                        flex: 1;
+                        padding: 12px;
+                        background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    ">Connexion</button>
+                </div>
+            </div>
+        `;
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) this.closeModal();
+        });
+        
+        document.body.appendChild(modal);
+        
+        // Focus sur le champ username
+        setTimeout(() => document.getElementById('widgetUsername')?.focus(), 100);
+        
+        // Enter key
+        document.getElementById('widgetPassword')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.doLogin();
+        });
+    },
+    
+    closeModal() {
+        const modal = document.getElementById('adminWidgetModal');
+        if (modal) modal.remove();
+    },
+    
+    doLogin() {
+        const username = document.getElementById('widgetUsername').value.trim();
+        const password = document.getElementById('widgetPassword').value;
+        
+        const result = AdminAuth.login(username, password);
+        
+        if (result.success) {
+            this.closeModal();
+            this.showLeadsPanel();
+        } else {
+            document.getElementById('widgetError').style.display = 'block';
+            document.getElementById('widgetPassword').value = '';
+            document.getElementById('widgetPassword').focus();
+        }
+    },
+    
+    showLeadsPanel() {
+        const leads = LeadSystem.getAll();
+        
+        const panel = document.createElement('div');
+        panel.id = 'leadsPanel';
+        panel.style.cssText = `
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        `;
+        
+        const leadsHTML = leads.length === 0 
+            ? `<div style="text-align: center; padding: 40px; color: #6b7280;">
+                <div style="font-size: 48px; margin-bottom: 16px;">📭</div>
+                <p>Aucun devis reçu pour le moment.</p>
+               </div>`
+            : leads.map(lead => `
+                <div style="
+                    background: #f9fafb;
+                    border-radius: 12px;
+                    padding: 16px;
+                    margin-bottom: 12px;
+                    border-left: 4px solid ${lead.status === 'new' ? '#f97316' : '#10b981'};
+                ">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                        <div>
+                            <strong style="font-size: 16px;">${lead.name || 'Sans nom'}</strong>
+                            <span style="
+                                display: inline-block;
+                                padding: 2px 8px;
+                                background: ${lead.status === 'new' ? '#ffedd5' : '#d1fae5'};
+                                color: ${lead.status === 'new' ? '#ea580c' : '#059669'};
+                                border-radius: 50px;
+                                font-size: 12px;
+                                margin-left: 8px;
+                            ">${lead.status === 'new' ? 'Nouveau' : 'Traité'}</span>
+                        </div>
+                        <small style="color: #6b7280;">${new Date(lead.date).toLocaleDateString('fr-FR')}</small>
+                    </div>
+                    <div style="font-size: 14px; color: #4b5563; margin-bottom: 8px;">
+                        📞 ${lead.phone || '-'} | ✉️ ${lead.email || '-'}
+                    </div>
+                    <div style="font-size: 14px; color: #374151; margin-bottom: 12px;">
+                        <strong>Type:</strong> ${lead.projectType || '-'} | 
+                        <strong>Délai:</strong> ${lead.deadline || '-'}
+                    </div>
+                    <div style="font-size: 13px; color: #6b7280; background: white; padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+                        ${lead.message || 'Pas de message'}
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        ${lead.status === 'new' 
+                            ? `<button onclick="AdminWidget.updateLeadStatus(${lead.id}, 'processed')" style="padding: 6px 12px; background: #10b981; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">✓ Marquer comme traité</button>`
+                            : `<button onclick="AdminWidget.updateLeadStatus(${lead.id}, 'new')" style="padding: 6px 12px; background: #f97316; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">↩ Marquer comme nouveau</button>`
+                        }
+                        <button onclick="AdminWidget.deleteLead(${lead.id})" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer;">🗑 Supprimer</button>
+                    </div>
+                </div>
+            `).join('');
+        
+        panel.innerHTML = `
+            <div style="
+                background: white;
+                border-radius: 16px;
+                width: 100%;
+                max-width: 600px;
+                max-height: 80vh;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+                animation: slideUp 0.3s ease;
+                display: flex;
+                flex-direction: column;
+            ">
+                <div style="
+                    padding: 20px 24px;
+                    border-bottom: 1px solid #e5e7eb;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                ">
+                    <h3 style="margin: 0; font-size: 18px;">📋 Demandes de devis (${leads.length})</h3>
+                    <button onclick="AdminWidget.closeLeadsPanel()" style="
+                        background: none;
+                        border: none;
+                        font-size: 24px;
+                        cursor: pointer;
+                        color: #6b7280;
+                    ">×</button>
+                </div>
+                <div style="padding: 20px; overflow-y: auto; flex: 1;">
+                    ${leadsHTML}
+                </div>
+                <div style="
+                    padding: 16px 24px;
+                    border-top: 1px solid #e5e7eb;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                ">
+                    <button onclick="AdminWidget.logout()" style="
+                        padding: 10px 20px;
+                        background: #fef2f2;
+                        color: #ef4444;
+                        border: none;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    ">🚪 Déconnexion</button>
+                    <a href="admin.html" style="
+                        padding: 10px 20px;
+                        background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 8px;
+                        font-weight: 600;
+                    ">⚙️ Panneau Admin Complet</a>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(panel);
+    },
+    
+    closeLeadsPanel() {
+        const panel = document.getElementById('leadsPanel');
+        if (panel) panel.remove();
+    },
+    
+    updateLeadStatus(id, status) {
+        LeadSystem.updateStatus(id, status);
+        this.closeLeadsPanel();
+        this.showLeadsPanel();
+        showToast('Statut mis à jour', 'success');
+    },
+    
+    deleteLead(id) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce devis ?')) {
+            LeadSystem.delete(id);
+            this.closeLeadsPanel();
+            this.showLeadsPanel();
+            showToast('Devis supprimé', 'success');
+        }
+    },
+    
+    logout() {
+        AdminAuth.logout();
+        this.closeLeadsPanel();
+        showToast('Déconnecté', 'info');
+    }
+};
+
+// ========================================
+// ANIMATIONS AU SCROLL
+// ========================================
+
+function initScrollAnimations() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -437,557 +945,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }, { threshold: 0.1 });
     
     document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+}
+
+// ========================================
+// INITIALISATION
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Rendu du site avec la config
+    SiteRenderer.render();
+    
+    // Animations
+    initScrollAnimations();
+    
+    // Widget admin devis
+    AdminWidget.init();
 });
 
 // ========================================
-// EXPOSITION GLOBALE
+// FONCTIONS PORTFOLIO
 // ========================================
-window.toggleMenu = toggleMenu;
-window.AdminAuth = AdminAuth;
-window.getConfig = getConfig;
-window.saveConfig = saveConfig;
-a.leads;
-        
-        if (filter !== 'all') {
-            leads = leads.filter(l => l.status === filter);
-        }
-        
-        return leads.sort((a, b) => new Date(b.date) - new Date(a.date));
-    },
-    
-    updateStatus(leadId, status) {
-        if (!Session.isAdminLoggedIn()) {
-            return { success: false, message: 'Accès non autorisé' };
-        }
-        
-        const data = getData();
-        const lead = data.leads.find(l => l.id === leadId);
-        
-        if (!lead) {
-            return { success: false, message: 'Lead non trouvé' };
-        }
-        
-        lead.status = status;
-        saveData(data);
-        return { success: true, message: 'Statut mis à jour' };
-    }
-};
-
-// ========================================
-// PERSONNALISATION
-// ========================================
-
-const Customization = {
-    applyColors() {
-        const data = getData();
-        const colors = data.customization || defaultData.customization;
-        
-        const root = document.documentElement;
-        root.style.setProperty('--primary', colors.primaryColor);
-        root.style.setProperty('--secondary', colors.secondaryColor);
-        
-        const primaryDark = this.adjustColor(colors.primaryColor, -20);
-        root.style.setProperty('--primary-dark', primaryDark);
-        
-        // Met à jour la couleur du thème mobile
-        const metaTheme = document.querySelector('meta[name="theme-color"]');
-        if (metaTheme) {
-            metaTheme.content = colors.primaryColor;
-        }
-    },
-    
-    applyLogo() {
-        const data = getData();
-        const logoBox = document.getElementById('logoBox');
-        const footerLogoBox = document.getElementById('footerLogoBox');
-        
-        if (data.customization?.logoImage && logoBox) {
-            logoBox.innerHTML = `<img src="${data.customization.logoImage}" alt="Logo" style="width:100%;height:100%;object-fit:cover;">`;
-            if (footerLogoBox) {
-                footerLogoBox.innerHTML = `<img src="${data.customization.logoImage}" alt="Logo" style="width:100%;height:100%;object-fit:cover;">`;
-            }
-        }
-    },
-    
-    applyHeroImage() {
-        const data = getData();
-        const heroBg = document.getElementById('heroBg');
-        
-        if (heroBg && data.customization?.heroImage) {
-            heroBg.style.backgroundImage = `url('${data.customization.heroImage}')`;
-        }
-    },
-    
-    adjustColor(color, amount) {
-        const num = parseInt(color.replace('#', ''), 16);
-        const r = Math.min(255, Math.max(0, (num >> 16) + amount));
-        const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
-        const b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
-        return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
-    },
-    
-    updateSettings(settings) {
-        if (!Session.isAdminLoggedIn()) {
-            return { success: false, message: 'Accès non autorisé' };
-        }
-        
-        const data = getData();
-        data.customization = { ...data.customization, ...settings };
-        saveData(data);
-        
-        this.applyColors();
-        this.applyLogo();
-        this.applyHeroImage();
-        
-        return { success: true, message: 'Personnalisation mise à jour' };
-    }
-};
-
-// ========================================
-// CARTE LEAFLET - OPENSTREETMAP
-// ========================================
-
-const MapSystem = {
-    map: null,
-    marker: null,
-    
-    // ========================================
-    // INITIALISATION DE LA CARTE
-    // ========================================
-    init() {
-        const mapContainer = document.getElementById('map');
-        if (!mapContainer) return; // Pas de carte sur cette page
-        
-        // Vérifie si Leaflet est chargé
-        if (typeof L === 'undefined') {
-            console.error('Leaflet n\'est pas chargé');
-            return;
-        }
-        
-        const data = getData();
-        const mapConfig = data.map || defaultData.map;
-        
-        // Crée la carte centrée sur les coordonnées configurées
-        this.map = L.map('map', {
-            scrollWheelZoom: false,  // Désactive le zoom avec la molette pour éviter les problèmes de scroll
-            zoomControl: true        // Affiche les contrôles de zoom
-        }).setView([mapConfig.latitude, mapConfig.longitude], mapConfig.zoom);
-        
-        // Ajoute la couche OpenStreetMap (gratuite, sans clé API)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 19
-        }).addTo(this.map);
-        
-        // Crée l'icône personnalisée rouge
-        const customIcon = L.divIcon({
-            className: 'custom-marker-wrapper',
-            html: `<div class="custom-marker-icon custom-marker-pulse"></div>`,
-            iconSize: [36, 36],
-            iconAnchor: [18, 18],
-            popupAnchor: [0, -20]
-        });
-        
-        // Ajoute le marqueur avec popup
-        this.marker = L.marker([mapConfig.latitude, mapConfig.longitude], { icon: customIcon })
-            .addTo(this.map)
-            .bindPopup(`
-                <h4>${mapConfig.markerTitle}</h4>
-                <p>${mapConfig.markerAddress}</p>
-            `);
-        
-        // Ouvre le popup automatiquement après 1 seconde
-        setTimeout(() => {
-            this.marker.openPopup();
-        }, 1000);
-        
-        console.log('✅ Carte Leaflet initialisée avec succès');
-    },
-    
-    // ========================================
-    // MISE À JOUR DES COORDONNÉES (depuis Admin)
-    // ========================================
-    updateCoordinates(lat, lng, zoom = 16) {
-        if (!Session.isAdminLoggedIn()) {
-            return { success: false, message: 'Accès non autorisé' };
-        }
-        
-        const data = getData();
-        data.map.latitude = parseFloat(lat);
-        data.map.longitude = parseFloat(lng);
-        data.map.zoom = parseInt(zoom);
-        saveData(data);
-        
-        // Met à jour la carte si elle existe
-        if (this.map && this.marker) {
-            const newLatLng = [data.map.latitude, data.map.longitude];
-            this.map.setView(newLatLng, data.map.zoom);
-            this.marker.setLatLng(newLatLng);
-        }
-        
-        return { success: true, message: 'Coordonnées mises à jour' };
-    },
-    
-    // ========================================
-    // MISE À JOUR DU TEXTE DU MARQUEUR
-    // ========================================
-    updateMarkerInfo(title, address) {
-        if (!Session.isAdminLoggedIn()) {
-            return { success: false, message: 'Accès non autorisé' };
-        }
-        
-        const data = getData();
-        data.map.markerTitle = title;
-        data.map.markerAddress = address;
-        saveData(data);
-        
-        // Met à jour le popup si la carte existe
-        if (this.marker) {
-            this.marker.setPopupContent(`
-                <h4>${title}</h4>
-                <p>${address}</p>
-            `);
-        }
-        
-        return { success: true, message: 'Informations du marqueur mises à jour' };
-    }
-};
-
-// ========================================
-// UI UTILITAIRES
-// ========================================
-
-const UI = {
-    toast(message, type = 'info', duration = 4000) {
-        let container = document.getElementById('toastContainer');
-        
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'toastContainer';
-            container.className = 'toast-container';
-            document.body.appendChild(container);
-        }
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        
-        const icons = {
-            success: '✓',
-            error: '✕',
-            info: 'ℹ',
-            warning: '⚠'
-        };
-        
-        toast.innerHTML = `
-            <span style="font-size: 20px;">${icons[type]}</span>
-            <span>${message}</span>
-        `;
-        
-        container.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateX(100%)';
-            setTimeout(() => toast.remove(), 300);
-        }, duration);
-    },
-    
-    toggleMenu() {
-        const menu = document.getElementById('mobileMenu');
-        const toggle = document.querySelector('.menu-toggle');
-        
-        if (menu && toggle) {
-            menu.classList.toggle('show');
-            toggle.classList.toggle('active');
-            document.body.style.overflow = menu.classList.contains('show') ? 'hidden' : '';
-        }
-    }
-};
-
-// ========================================
-// FONCTIONS DE RENDU
-// ========================================
-
-function renderStats() {
-    const container = document.getElementById('statsGrid');
-    if (!container) return;
-    
-    const data = getData();
-    const stats = [
-        { value: data.company.experienceYears, suffix: "+", label: "Années d'expérience", icon: "🏆" },
-        { value: (data.stats.projectsPro + data.stats.projectsParticulier), suffix: "+", label: "Projets Réalisés", icon: "🛡️" },
-        { value: data.stats.satisfaction, suffix: "%", label: "Clients Satisfaits", icon: "⭐" },
-        { value: data.stats.projectsThisYear, suffix: "", label: "Projets cette année", icon: "📈" }
-    ];
-
-    container.innerHTML = stats.map((stat, i) => `
-        <div class="stat-box animate-on-scroll" style="transition-delay: ${i * 0.1}s">
-            <div class="stat-icon">${stat.icon}</div>
-            <div class="stat-number">${stat.value}${stat.suffix}</div>
-            <div class="stat-label">${stat.label}</div>
-        </div>
-    `).join('');
-}
-
-function renderExpertises() {
-    const container = document.getElementById('expertisesGrid');
-    if (!container) return;
-    
-    const data = getData();
-    container.innerHTML = data.expertises.map((exp, i) => `
-        <div class="expertise-card animate-on-scroll" style="transition-delay: ${i * 0.15}s">
-            <div class="expertise-image">
-                ${exp.image ? `<img src="${exp.image}" alt="${exp.title}" loading="lazy">` : `<span>${exp.icon}</span>`}
-            </div>
-            <div class="expertise-content">
-                <h3>${exp.title}</h3>
-                <p>${exp.description}</p>
-                <a href="services.html" class="expertise-link">En savoir plus →</a>
-            </div>
-        </div>
-    `).join('');
-}
-
-function renderServicesDetailed() {
-    const container = document.getElementById('servicesDetailed');
-    if (!container) return;
-    
-    const data = getData();
-    container.innerHTML = data.expertises.map((service, i) => `
-        <div class="service-detailed-card animate-on-scroll" style="transition-delay: ${i * 0.1}s">
-            <div class="service-image">
-                ${service.image ? `<img src="${service.image}" alt="${service.title}" loading="lazy">` : ''}
-                <h3><span>${service.icon}</span> ${service.title}</h3>
-            </div>
-            <div class="service-content">
-                <p>${service.description}</p>
-                <ul class="service-features">
-                    <li>Devis gratuit sous 24h</li>
-                    <li>Garantie décennale incluse</li>
-                    <li>${data.company.experienceYears} ans d'expertise</li>
-                    <li>Intervention rapide</li>
-                </ul>
-                <a href="contact.html" class="btn-primary">Demander un devis →</a>
-            </div>
-        </div>
-    `).join('');
-}
-
-function renderPortfolioPreview() {
-    const container = document.getElementById('portfolioPreview');
-    if (!container) return;
-    
-    const data = getData();
-    const featured = data.portfolio.filter(p => p.featured).slice(0, 3);
-    
-    if (featured.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--gray-500);">
-                <div style="font-size: 48px; margin-bottom: 16px;">📸</div>
-                <p>Aucun projet en avant pour le moment.</p>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = featured.map((project, i) => `
-        <div class="portfolio-item animate-on-scroll" onclick="openProjectModal(${project.id})" style="transition-delay: ${i * 0.1}s">
-            ${project.image ? 
-                `<img src="${project.image}" alt="${project.title}" loading="lazy">` : 
-                '<div style="width:100%;height:100%;background:var(--gray-200);display:flex;align-items:center;justify-content:center;color:var(--gray-400);">Pas d\'image</div>'
-            }
-            <div class="portfolio-overlay">
-                <span class="portfolio-category">${project.category}</span>
-                <h4>${project.title}</h4>
-            </div>
-        </div>
-    `).join('');
-}
-
-function renderPortfolioFull() {
-    const container = document.getElementById('portfolioMasonry');
-    if (!container) return;
-    
-    const data = getData();
-    const filter = window.currentPortfolioFilter || 'all';
-    const filtered = filter === 'all' ? data.portfolio : data.portfolio.filter(p => p.category === filter);
-    
-    if (filtered.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--gray-500);">
-                <p>Aucun projet dans cette catégorie.</p>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = filtered.map((project, i) => `
-        <div class="portfolio-item animate-on-scroll" onclick="openProjectModal(${project.id})" style="transition-delay: ${i * 0.05}s">
-            ${project.image ? 
-                `<img src="${project.image}" alt="${project.title}" loading="lazy">` : 
-                '<div style="width:100%;height:100%;background:var(--gray-200);display:flex;align-items:center;justify-content:center;color:var(--gray-400);">Pas d\'image</div>'
-            }
-            <div class="portfolio-overlay">
-                <span class="portfolio-category">${project.category}</span>
-                <h4>${project.title}</h4>
-            </div>
-        </div>
-    `).join('');
-}
-
-function renderFilterButtons() {
-    const container = document.getElementById('filterButtons');
-    if (!container) return;
-    
-    const data = getData();
-    const categories = ['all', ...new Set(data.portfolio.map(p => p.category).filter(Boolean))];
-    
-    container.innerHTML = categories.map(cat => `
-        <button class="${cat === 'all' ? 'active' : ''}" onclick="setPortfolioFilter('${cat}')">
-            ${cat === 'all' ? 'Tous' : cat}
-        </button>
-    `).join('');
-}
-
-function renderTestimonials() {
-    const container = document.getElementById('testimonialsGrid');
-    if (!container) return;
-    
-    const testimonials = TestimonialSystem.getVisible(true);
-    
-    if (testimonials.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--gray-400);">
-                <p>Aucun témoignage client pour le moment.</p>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = testimonials.slice(0, 3).map((t, i) => `
-        <div class="testimonial-card animate-on-scroll" style="transition-delay: ${i * 0.1}s">
-            <div class="stars">${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)}</div>
-            <p class="testimonial-text">"${t.content}"</p>
-            <div class="testimonial-project">
-                <small>📁 Projet : ${t.projectName}</small>
-            </div>
-            <div class="testimonial-author">
-                <div class="author-avatar">${t.userName.charAt(0).toUpperCase()}</div>
-                <div class="author-info">
-                    <h4>${t.userName}</h4>
-                    <p>Client vérifié</p>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-function renderFooter() {
-    const data = getData();
-    
-    const desc = document.getElementById('footerDesc');
-    if (desc) desc.textContent = data.company.description;
-    
-    const socialContainer = document.getElementById('socialLinks');
-    if (socialContainer) {
-        const icons = {
-            instagram: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>',
-            facebook: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>',
-            linkedin: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>',
-            whatsapp: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>'
-        };
-        
-        const links = Object.entries(data.social)
-            .filter(([_, s]) => s.active && s.url)
-            .map(([key, s]) => `<a href="${s.url}" target="_blank" rel="noopener noreferrer" title="${key}">${icons[key]}</a>`)
-            .join('');
-        
-        socialContainer.innerHTML = links || '<span style="color: var(--gray-500); font-size: 14px;">Aucun réseau social</span>';
-    }
-    
-    const elements = {
-        footerAddress: `📍 ${data.company.address}`,
-        footerPhone: `📞 <a href="tel:${data.company.phone.replace(/\s/g, '')}">${data.company.phone}</a>`,
-        footerEmail: `✉️ <a href="mailto:${data.company.email}">${data.company.email}</a>`,
-        footerHours: `🕐 Lun-Ven: ${data.company.hours.weekday}`
-    };
-    
-    Object.entries(elements).forEach(([id, content]) => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = content;
-    });
-    
-    const zones = document.getElementById('zonesTags');
-    if (zones) {
-        zones.innerHTML = data.company.zones.map(z => `<span>${z}</span>`).join('');
-    }
-    
-    document.querySelectorAll('#currentYear').forEach(el => {
-        el.textContent = new Date().getFullYear();
-    });
-    
-    document.querySelectorAll('#copyrightName, #footerCompanyName').forEach(el => {
-        el.textContent = data.company.name;
-    });
-    
-    document.querySelectorAll('#companyName').forEach(el => {
-        el.textContent = data.company.name;
-    });
-    
-    document.querySelectorAll('#companyTagline, #footerTagline').forEach(el => {
-        el.textContent = data.company.tagline;
-    });
-    
-    // Met à jour l'adresse sur la carte
-    const mapAddress = document.getElementById('mapAddress');
-    if (mapAddress && data.map) {
-        mapAddress.textContent = `${data.map.markerTitle} - ${data.map.markerAddress}`;
-    }
-}
-
-// ========================================
-// FONCTIONS GLOBALES
-// ========================================
-
-function openProjectModal(id) {
-    const data = getData();
-    const project = data.portfolio.find(p => p.id === id);
-    if (!project) return;
-    
-    const modal = document.getElementById('projectModal');
-    const body = document.getElementById('modalBody');
-    
-    if (!modal || !body) return;
-    
-    body.innerHTML = `
-        ${project.image ? `<img src="${project.image}" class="modal-image" alt="${project.title}">` : ''}
-        <div class="modal-body">
-            <div class="modal-meta">
-                <span>📁 ${project.category}</span>
-                ${project.date ? `<span>📅 ${new Date(project.date).toLocaleDateString('fr-FR')}</span>` : ''}
-                ${project.client ? `<span>👤 ${project.client}</span>` : ''}
-                ${project.surface ? `<span>📐 ${project.surface}</span>` : ''}
-                ${project.duration ? `<span>⏱️ ${project.duration}</span>` : ''}
-            </div>
-            <h2>${project.title}</h2>
-            <p style="color: var(--gray-600); line-height: 1.8; margin-top: 16px;">${project.description}</p>
-        </div>
-    `;
-    
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeModal(e) {
-    if (e && e.target !== e.currentTarget && !e.target.classList.contains('modal-close')) return;
-    
-    document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
-    document.body.style.overflow = '';
-}
+let currentPortfolioFilter = 'all';
 
 function setPortfolioFilter(category) {
-    window.currentPortfolioFilter = category;
+    currentPortfolioFilter = category;
     
+    // Mettre à jour les boutons actifs
     document.querySelectorAll('.filter-buttons button').forEach(btn => {
         btn.classList.toggle('active', 
             (category === 'all' && btn.textContent === 'Tous') || 
@@ -995,66 +978,123 @@ function setPortfolioFilter(category) {
         );
     });
     
-    renderPortfolioFull();
+    // Filtrer et afficher les éléments
+    const config = getConfig();
+    const portfolio = config.portfolio || [];
+    const filtered = category === 'all' 
+        ? portfolio 
+        : portfolio.filter(p => p.category === category);
+    
+    const container = document.getElementById('portfolioMasonry');
+    if (!container) return;
+    
+    if (filtered.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--gray-500);"><p>Aucun projet dans cette catégorie.</p></div>';
+        return;
+    }
+    
+    container.innerHTML = filtered.map((item, i) => `
+        <div class="portfolio-item animate-on-scroll visible" style="animation-delay: ${i * 0.05}s" onclick="openPortfolioModal(${portfolio.indexOf(item)})">
+            <img src="${item.image || 'https://via.placeholder.com/400x300?text=Pas+d\'image'}" alt="${item.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=Image+non+disponible'">
+            <div class="portfolio-overlay">
+                <span class="portfolio-category">${item.category || 'Projet'}</span>
+                <h4>${item.title}</h4>
+            </div>
+        </div>
+    `).join('');
+}
+
+function openPortfolioModal(index) {
+    const config = getConfig();
+    const portfolio = config.portfolio || [];
+    const item = portfolio[index];
+    if (!item) return;
+    
+    // Créer le modal
+    const modal = document.createElement('div');
+    modal.id = 'portfolioModal';
+    modal.style.cssText = `
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: rgba(0,0,0,0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: white;
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            position: relative;
+        ">
+            <button onclick="closePortfolioModal()" style="
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                width: 40px;
+                height: 40px;
+                background: rgba(0,0,0,0.5);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                font-size: 24px;
+                cursor: pointer;
+                z-index: 10;
+            ">×</button>
+            ${item.image ? `
+                <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 300px; object-fit: cover;" onerror="this.style.display='none'">
+            ` : ''}
+            <div style="padding: 32px;">
+                <span style="
+                    display: inline-block;
+                    padding: 4px 12px;
+                    background: var(--primary);
+                    color: white;
+                    border-radius: 50px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    margin-bottom: 12px;
+                ">${item.category || 'Projet'}</span>
+                <h2 style="margin-bottom: 16px;">${item.title}</h2>
+                ${item.date ? `<p style="color: var(--gray-500); margin-bottom: 16px;">📅 ${item.date}</p>` : ''}
+                <p style="color: var(--gray-600); line-height: 1.7;">${item.description || 'Aucune description disponible.'}</p>
+            </div>
+        </div>
+    `;
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closePortfolioModal();
+    });
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+}
+
+function closePortfolioModal() {
+    const modal = document.getElementById('portfolioModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = '';
+    }
 }
 
 // ========================================
-// INITIALISATION
+// EXPOSITION GLOBALE
 // ========================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    initData();
-    
-    // Applique la personnalisation
-    Customization.applyColors();
-    Customization.applyLogo();
-    Customization.applyHeroImage();
-    
-    // Rendu des différentes sections
-    renderStats();
-    renderExpertises();
-    renderServicesDetailed();
-    renderPortfolioPreview();
-    renderPortfolioFull();
-    renderFilterButtons();
-    renderTestimonials();
-    renderFooter();
-    
-    // Initialise la carte Leaflet
-    MapSystem.init();
-    
-    // Met à jour le titre et la meta description
-    const data = getData();
-    if (data.seo?.title) {
-        document.title = data.seo.title;
-    }
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc && data.seo?.description) {
-        metaDesc.content = data.seo.description;
-    }
-    
-    // Ferme les modals avec Escape
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeModal();
-        }
-    });
-});
-
-// ========================================
-// EXPOSITIONS GLOBALES
-// ========================================
-window.toggleMenu = UI.toggleMenu;
-window.openProjectModal = openProjectModal;
-window.closeModal = closeModal;
+window.toggleMenu = toggleMenu;
+window.AdminAuth = AdminAuth;
+window.LeadSystem = LeadSystem;
+window.getConfig = getConfig;
+window.saveConfig = saveConfig;
+window.showToast = showToast;
+window.AdminWidget = AdminWidget;
 window.setPortfolioFilter = setPortfolioFilter;
-window.UI = UI;
-window.Session = Session;
-window.UserSystem = UserSystem;
-window.TestimonialSystem = TestimonialSystem;
-window.ContactSystem = ContactSystem;
-window.Customization = Customization;
-window.MapSystem = MapSystem;
-window.getData = getData;
-window.saveData = saveData;
-window.Security = Security;
+window.openPortfolioModal = openPortfolioModal;
+window.closePortfolioModal = closePortfolioModal;
