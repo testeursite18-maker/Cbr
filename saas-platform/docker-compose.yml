@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./uploads:/app/uploads
+    environment:
+      - DEBUG=false
+      - SECRET_KEY=change-this-in-production
+      - DATABASE_URL=sqlite+aiosqlite:///./saas_platform.db
+      - ENCRYPTION_KEY=your-32-byte-encryption-key!!
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Optional: PostgreSQL database for production
+  # db:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     - POSTGRES_USER=saas
+  #     - POSTGRES_PASSWORD=change-this-in-production
+  #     - POSTGRES_DB=saas_platform
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+# volumes:
+#   postgres_data:
